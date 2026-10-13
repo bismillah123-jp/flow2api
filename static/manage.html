@@ -10,7 +10,35 @@
         .animate-slide-up{animation:slide-up .3s ease-out}
         .tab-btn{transition:all .2s ease}
         .line-clamp-2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
-        /* ===== Modern premium layer (ShanIA Studio) ===== */
+        /* ===== Rombak total dashboard (ShanIA Studio v2) ===== */
+        .tab-nav{display:flex;gap:8px;background:#f1f5f9;padding:6px;border-radius:14px;margin-bottom:24px;width:fit-content}
+        .tab-btn{border:none;background:transparent;padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;color:#64748b;cursor:pointer;transition:all .2s ease;position:static}
+        .tab-btn:hover{color:#4f46e5;background:rgba(99,102,241,.08)}
+        .tab-btn.active-tab{background:#fff;color:#4f46e5;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+        #tabTestPage{text-decoration:none;display:inline-flex;align-items:center}
+        /* Section headers */
+        .section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+        .section-header .icon-badge{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 12px -4px rgba(99,102,241,.5)}
+        .section-header h2{font-size:20px;font-weight:800;letter-spacing:-.02em;margin:0}
+        .section-header p{font-size:13px;color:#64748b;margin:2px 0 0}
+        /* Modern cards */
+        .mod-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:box-shadow .2s ease}
+        .mod-card:hover{box-shadow:0 8px 24px -12px rgba(99,102,241,.2)}
+        /* Token table overhaul */
+        .token-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+        .token-table thead th{background:#f8fafc;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.05em;color:#64748b;padding:12px 16px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+        .token-table thead th:first-child{border-radius:12px 0 0 0}
+        .token-table thead th:last-child{border-radius:0 12px 0 0}
+        .token-table tbody td{padding:14px 16px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+        .token-table tbody tr:last-child td{border-bottom:none}
+        .token-table tbody tr{transition:background .15s ease}
+        .token-table tbody tr:hover{background:#f8faff}
+        .status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700}
+        .status-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+        .status-pill.active{background:#dcfce7;color:#15803d}
+        .status-pill.active::before{box-shadow:0 0 8px #22c55e;animation:pulse-dot 2s infinite}
+        .status-pill.inactive{background:#fee2e2;color:#b91c1c}
+        @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
         body{background-image:radial-gradient(1200px 400px at 10% -5%,rgba(99,102,241,.07),transparent),radial-gradient(900px 380px at 95% 0%,rgba(56,189,248,.06),transparent);background-attachment:fixed}
         header{box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 24px -12px rgba(99,102,241,.15)}
         .tab-btn{position:relative}
@@ -37,18 +65,19 @@
 </head>
 <body class="h-full bg-background text-foreground antialiased">
     <!-- Navigasi -->
-    <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
-        <div class="mx-auto flex h-14 max-w-7xl items-center px-6">
+    <header class="sticky top-0 z-50 w-full border-b border-indigo-100/60 bg-white/80 backdrop-blur-xl">
+        <div class="mx-auto flex h-16 max-w-7xl items-center px-6">
             <div class="mr-4 flex items-baseline gap-3">
-                <div class="flex items-center gap-2"><span class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold shadow-sm">F</span><span class="font-bold text-xl">Flow2API</span><span class="text-xs px-2 py-0.5 rounded-full bg-muted font-medium text-muted-foreground">ShanIA Studio</span></div>
+                <div class="flex items-center gap-2.5"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-lg font-extrabold shadow-lg shadow-indigo-500/30">F</span><span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Flow2API</span><span class="text-[11px] px-2.5 py-1 rounded-full bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-100 font-semibold text-indigo-600">ShanIA Studio</span></div>
             </div>
             <div class="flex flex-1 items-center justify-end gap-3">
-                <a href="https://github.com/TheSmallHanCat/flow2api" target="_blank" class="inline-flex items-center justify-center text-xs transition-colors hover:bg-accent hover:text-accent-foreground h-7 px-2.5" title="GitHub Repo">
+                <a href="https://github.com/bismillah123-jp/flow2api" target="_blank" class="inline-flex items-center justify-center text-xs font-medium transition-all hover:bg-indigo-50 hover:text-indigo-600 text-slate-500 h-8 px-3 rounded-lg gap-1.5" title="GitHub Repo">
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
+                    GitHub
                 </a>
-                <button onclick="logout()" class="inline-flex items-center justify-center text-xs transition-colors hover:bg-accent hover:text-accent-foreground h-7 px-2.5 gap-1">
+                <button onclick="logout()" class="inline-flex items-center justify-center text-xs font-semibold transition-all hover:bg-red-50 hover:text-red-600 text-slate-500 h-8 px-3 rounded-lg gap-1.5">
                     <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                         <polyline points="16 17 21 12 16 7"/>
@@ -62,13 +91,11 @@
 
     <main class="mx-auto max-w-7xl px-6 py-6">
         <!-- Tab Menu -->
-        <div class="border-b border-border mb-6">
-            <nav class="flex space-x-8">
-                <button onclick="switchTab('tokens')" id="tabTokens" class="tab-btn border-b-2 border-primary text-sm font-medium py-3 px-1">Manajemen Token</button>
-                <button onclick="switchTab('settings')" id="tabSettings" class="tab-btn border-b-2 border-transparent text-sm font-medium py-3 px-1">Konfigurasi Sistem</button>
-                <button onclick="switchTab('logs')" id="tabLogs" class="tab-btn border-b-2 border-transparent text-sm font-medium py-3 px-1">Log Request</button>
-                <a href="/test" id="tabTestPage" class="tab-btn inline-flex items-center border-b-2 border-transparent text-sm font-medium py-3 px-1">Uji Model</a>
-            </nav>
+        <div class="tab-nav">
+            <button onclick="switchTab('tokens')" id="tabTokens" class="tab-btn active-tab">🎫 Manajemen Token</button>
+            <button onclick="switchTab('settings')" id="tabSettings" class="tab-btn">⚙️ Konfigurasi Sistem</button>
+            <button onclick="switchTab('logs')" id="tabLogs" class="tab-btn">📋 Log Request</button>
+            <a href="/test" id="tabTestPage" class="tab-btn">🧪 Uji Model</a>
         </div>
 
         <!-- Panel Manajemen Token -->
@@ -1121,7 +1148,7 @@
         resumeCaptchaRuntimeStatusPollingIfNeeded=async(method)=>{if(method!=='browser'&&method!=='personal')return;const status=await pollCaptchaRuntimeStatus(method,{silent:true});if(status&&(status.active||status.task_running||status.state==='running'))startCaptchaRuntimeStatusPolling(method)},
         showToast=(m,t='info',duration=2000)=>{const d=document.createElement('div'),bc={success:'bg-green-600',error:'bg-destructive',info:'bg-primary'};d.className=`fixed bottom-4 right-4 ${bc[t]||bc.info} text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium z-50 animate-slide-up`;d.textContent=m;document.body.appendChild(d);setTimeout(()=>{d.style.opacity='0';d.style.transition='opacity .3s';setTimeout(()=>d.parentNode&&document.body.removeChild(d),300)},duration)},
         logout=async()=>{if(!confirm('Yakin ingin keluar dari dashboard?'))return;try{await fetch('/api/admin/logout',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'}})}catch(e){console.error('Gagal logout dari server:',e)}finally{location.href='/login'}},
-        switchTab=t=>{const cap=n=>n.charAt(0).toUpperCase()+n.slice(1);['tokens','settings','logs'].forEach(n=>{const active=n===t;$(`panel${cap(n)}`).classList.toggle('hidden',!active);$(`tab${cap(n)}`).classList.toggle('border-primary',active);$(`tab${cap(n)}`).classList.toggle('text-primary',active);$(`tab${cap(n)}`).classList.toggle('border-transparent',!active);$(`tab${cap(n)}`).classList.toggle('text-muted-foreground',!active)});if(t==='settings'){stopLogsAutoRefresh();loadAdminConfig();loadProxyConfig();loadCacheConfig();loadGenerationTimeout();loadCallLogicConfig();loadCaptchaConfig();loadPluginConfig();loadATAutoRefreshConfig()}else if(t==='logs'){startLogsAutoRefresh();loadLogs()}else{stopLogsAutoRefresh()}};
+        switchTab=t=>{const cap=n=>n.charAt(0).toUpperCase()+n.slice(1);['tokens','settings','logs'].forEach(n=>{const active=n===t;$(`panel${cap(n)}`).classList.toggle('hidden',!active);$(`tab${cap(n)}`).classList.toggle('active-tab',active)});if(t==='settings'){stopLogsAutoRefresh();loadAdminConfig();loadProxyConfig();loadCacheConfig();loadGenerationTimeout();loadCallLogicConfig();loadCaptchaConfig();loadPluginConfig();loadATAutoRefreshConfig()}else if(t==='logs'){startLogsAutoRefresh();loadLogs()}else{stopLogsAutoRefresh()}};
 
         function escapeLogHtml(text){
             if(text===null||text===undefined) return '';

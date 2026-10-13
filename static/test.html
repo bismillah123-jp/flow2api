@@ -52,12 +52,30 @@ input:focus, textarea:focus { border-color: #7c8aff !important; box-shadow: 0 0 
 }
 .model-list.hidden { display: none; }
 .model-item {
-  padding: 8px 12px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #1e1f2e;
-  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #1e1f2e;
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
 }
 .model-item:last-child { border-bottom: none; }
-.model-item:hover { background: #1e1f2e; }
-.model-item.active { background: #2a2b5a; color: #7c8aff; }
+.model-item:hover { background: #22233a; transform: translateX(3px); }
+.model-item.active { background: linear-gradient(90deg, #2a2b5a, #232348); color: #a5b4ff; border-left: 3px solid #7c8aff; }
+.model-item .model-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.model-item.active .model-name::before { content: "✓ "; color: #4ade80; font-weight: 700; }
+/* ===== Sidebar search & filter (rombak total) ===== */
+.sidebar-search { margin-bottom: 10px; }
+.sidebar-search input {
+  width: 100%; background: #1a1b26; border: 1px solid #2a2b3a; color: #e1e1e6;
+  padding: 10px 14px; border-radius: 10px; font-size: 13px; font-family: inherit;
+}
+.sidebar-search input:focus { outline: none; border-color: #7c8aff; box-shadow: 0 0 0 3px rgba(124,138,255,.15); }
+.sidebar-filters { display: flex; gap: 6px; margin-bottom: 12px; }
+.filter-btn {
+  flex: 1; padding: 8px 4px; font-size: 12px; font-weight: 600; border-radius: 8px;
+  background: #1a1b26; border: 1px solid #2a2b3a; color: #888; cursor: pointer;
+  transition: all .15s ease; font-family: inherit;
+}
+.filter-btn:hover { border-color: #7c8aff; color: #a5b4ff; }
+.filter-btn.active { background: linear-gradient(135deg, #7c8aff, #6b5cff); border-color: transparent; color: #fff; box-shadow: 0 4px 12px -4px rgba(124,138,255,.5); }
+.model-count { font-size: 11px; color: #555; padding: 0 4px 8px; }
 .model-tag {
   font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 500;
 }
@@ -149,7 +167,17 @@ input:focus, textarea:focus { border-color: #7c8aff !important; box-shadow: 0 0 
   <p class="config-note">💡 Info: Jika daftar model belum termuat otomatis, sistem akan memakai daftar model bawaan.</p>
 
   <div class="main-layout">
-    <div class="sidebar" id="modelSidebar"></div>
+    <div class="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="modelSearch" placeholder="🔍 Cari model..." autocomplete="off">
+      </div>
+      <div class="sidebar-filters">
+        <button class="filter-btn active" data-filter="all">Semua</button>
+        <button class="filter-btn" data-filter="image">🖼️ Gambar</button>
+        <button class="filter-btn" data-filter="video">🎬 Video</button>
+      </div>
+      <div id="modelSidebar"></div>
+    </div>
     <div class="content">
       <div class="gen-panel">
         <h3 id="selectedModelName">Silakan Pilih Model</h3>
@@ -342,15 +370,35 @@ function getModelMeta(modelId) {
   return { type: "video", supportsImages: false, minImages: 0, maxImages: 0 };
 }
 
+let MODEL_SEARCH_TERM = "";
+let MODEL_TYPE_FILTER = "all";
+
 function renderSidebar() {
   const sidebar = document.getElementById("modelSidebar");
   sidebar.innerHTML = "";
 
-  const modelIds = Object.keys(ALL_MODELS).sort();
+  let modelIds = Object.keys(ALL_MODELS).sort();
+
+  // Filter by type
+  if (MODEL_TYPE_FILTER !== "all") {
+    modelIds = modelIds.filter(id => getModelType(id) === MODEL_TYPE_FILTER);
+  }
+  // Filter by search term
+  if (MODEL_SEARCH_TERM) {
+    const term = MODEL_SEARCH_TERM.toLowerCase();
+    modelIds = modelIds.filter(id => id.toLowerCase().includes(term) || (ALL_MODELS[id] || "").toLowerCase().includes(term));
+  }
+
   if (modelIds.length === 0) {
-    sidebar.innerHTML = '<div class="model-section"><div class="model-list" style="border-radius:8px;"><div class="model-item" style="cursor:default;color:#888;">Tidak ada model yang ditemukan. Silakan periksa API Key atau coba lagi nanti</div></div></div>';
+    sidebar.innerHTML = '<div class="model-section"><div class="model-list" style="border-radius:8px;"><div class="model-item" style="cursor:default;color:#888;">Tidak ada model yang cocok. Coba kata kunci lain.</div></div></div>';
     return;
   }
+
+  // Count total for display
+  const countDiv = document.createElement("div");
+  countDiv.className = "model-count";
+  countDiv.textContent = `${modelIds.length} model ditemukan`;
+  sidebar.appendChild(countDiv);
 
   for (const [catName, catDef] of Object.entries(MODEL_CATEGORIES)) {
     const models = modelIds.filter(catDef.filter);
@@ -361,19 +409,21 @@ function renderSidebar() {
 
     const title = document.createElement("div");
     title.className = "section-title";
-    title.innerHTML = `<span>${catName} (${models.length})</span><span class="arrow">▼</span>`;
+    // Category icons
+    const icon = catName.includes("Gambar") ? "🖼️" : catName.includes("Upscale") ? "🔍" : "🎬";
+    title.innerHTML = `<span>${icon} ${catName} (${models.length})</span><span class="arrow">▼</span>`;
 
     const list = document.createElement("div");
     list.className = "model-list";
 
     models.forEach(modelId => {
       const item = document.createElement("div");
-      item.className = "model-item";
+      item.className = "model-item" + (STATE.selectedModel === modelId ? " active" : "");
       item.dataset.model = modelId;
 
       const type = getModelType(modelId);
       const shortName = modelId.replace("gemini-3.1-flash-image-", "").replace("gemini-3.1-flash-lite-image-", "").replace("gemini-3.0-pro-image-", "");
-      item.innerHTML = `<span>${shortName}</span><span class="model-tag ${type === 'image' ? 'tag-image' : 'tag-video'}">${type === 'image' ? 'Gambar' : 'Video'}</span>`;
+      item.innerHTML = `<span class="model-name" title="${modelId}">${shortName}</span><span class="model-tag ${type === 'image' ? 'tag-image' : 'tag-video'}">${type === 'image' ? '🖼️' : '🎬'}</span>`;
       item.onclick = () => selectModel(modelId);
       list.appendChild(item);
     });
@@ -388,6 +438,25 @@ function renderSidebar() {
     sidebar.appendChild(section);
   }
 }
+
+// Search & filter wiring (langsung attach, script di akhir body)
+(function initModelFilters() {
+  const searchInput = document.getElementById("modelSearch");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      MODEL_SEARCH_TERM = e.target.value.trim();
+      renderSidebar();
+    });
+  }
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      MODEL_TYPE_FILTER = btn.dataset.filter;
+      renderSidebar();
+    });
+  });
+})();
 
 function selectModel(modelId) {
   STATE.selectedModel = modelId;
