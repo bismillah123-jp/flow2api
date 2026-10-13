@@ -35,7 +35,7 @@ def _video_poll_attempt_budget(
 
 # Model configuration
 MODEL_CONFIG = {
-    # 图片生成 - GEM_PIX_2 (Gemini 3.0 Pro)
+    # Generate gambar - GEM_PIX_2 (Gemini 3.0 Pro)
     "gemini-3.0-pro-image-landscape": {
         "type": "image",
         "model_name": "GEM_PIX_2",
@@ -61,7 +61,7 @@ MODEL_CONFIG = {
         "model_name": "GEM_PIX_2",
         "aspect_ratio": "IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR",
     },
-    # 图片生成 - GEM_PIX_2 (Gemini 3.0 Pro) 2K 放大版
+    # Generate gambar - GEM_PIX_2 (Gemini 3.0 Pro) versi upscale 2K
     "gemini-3.0-pro-image-landscape-2k": {
         "type": "image",
         "model_name": "GEM_PIX_2",
@@ -92,7 +92,7 @@ MODEL_CONFIG = {
         "aspect_ratio": "IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR",
         "upsample": "UPSAMPLE_IMAGE_RESOLUTION_2K",
     },
-    # 图片生成 - GEM_PIX_2 (Gemini 3.0 Pro) 4K 放大版
+    # Generate gambar - GEM_PIX_2 (Gemini 3.0 Pro) versi upscale 4K
     "gemini-3.0-pro-image-landscape-4k": {
         "type": "image",
         "model_name": "GEM_PIX_2",
@@ -123,7 +123,7 @@ MODEL_CONFIG = {
         "aspect_ratio": "IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR",
         "upsample": "UPSAMPLE_IMAGE_RESOLUTION_4K",
     },
-    # 图片生成 - BELUGA (Nano Banana 2.1)
+    # Generate gambar - BELUGA (Nano Banana 2.1)
     "gemini-3.1-flash-image-landscape": {
         "type": "image",
         "model_name": "BELUGA",
@@ -209,10 +209,10 @@ MODEL_CONFIG = {
         "aspect_ratio": "IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR",
         "upsample": "UPSAMPLE_IMAGE_RESOLUTION_4K",
     },
-    # ========== 文生视频 (T2V - Text to Video) ==========
-    # 不支持上传图片，只使用文本提示词生成
-    # veo_3_1_t2v_fast_portrait (竖屏)
-    # 上游模型名: veo_3_1_t2v_fast_portrait
+    # ========== Text-to-video (T2V) ==========
+    # nggak dukung upload gambar, cuma pakai prompt teks
+    # veo_3_1_t2v_fast_portrait (portrait)
+    # nama model upstream: veo_3_1_t2v_fast_portrait
     "veo_3_1_t2v_fast_portrait": {
         "type": "video",
         "video_type": "t2v",
@@ -221,8 +221,8 @@ MODEL_CONFIG = {
         "supports_images": False,
         "use_v2_model_config": True,
     },
-    # veo_3_1_t2v_fast_landscape (横屏)
-    # 上游模型名: veo_3_1_t2v_fast
+    # veo_3_1_t2v_fast_landscape (landscape)
+    # nama model upstream: veo_3_1_t2v_fast
     "veo_3_1_t2v_fast_landscape": {
         "type": "video",
         "video_type": "t2v",
@@ -231,7 +231,7 @@ MODEL_CONFIG = {
         "supports_images": False,
         "use_v2_model_config": True,
     },
-    # veo_3_1_t2v_fast_ultra (横竖屏)
+    # veo_3_1_t2v_fast_ultra (portrait/landscape)
     "veo_3_1_t2v_fast_portrait_ultra": {
         "type": "video",
         "video_type": "t2v",
@@ -248,7 +248,7 @@ MODEL_CONFIG = {
         "supports_images": False,
         "use_v2_model_config": True,
     },
-    # veo_3_1_t2v_fast_ultra_relaxed (横竖屏)
+    # veo_3_1_t2v_fast_ultra_relaxed (portrait/landscape)
     "veo_3_1_t2v_fast_portrait_ultra_relaxed": {
         "type": "video",
         "video_type": "t2v",
@@ -265,7 +265,7 @@ MODEL_CONFIG = {
         "supports_images": False,
         "use_v2_model_config": True,
     },
-    # veo_3_1_t2v (横竖屏)
+    # veo_3_1_t2v (portrait/landscape)
     "veo_3_1_t2v_portrait": {
         "type": "video",
         "video_type": "t2v",
@@ -282,7 +282,7 @@ MODEL_CONFIG = {
         "supports_images": False,
         "use_v2_model_config": True,
     },
-    # veo_3_1_t2v_lite（横竖屏）
+    # veo_3_1_t2v_lite (portrait/landscape)
     "veo_3_1_t2v_lite_portrait": {
         "type": "video",
         "video_type": "t2v",
@@ -301,9 +301,9 @@ MODEL_CONFIG = {
         "use_v2_model_config": True,
         "allow_tier_upgrade": False,
     },
-    # ========== 首尾帧模型 (I2V - Image to Video) ==========
-    # 支持1-2张图片：1张作为首帧，2张作为首尾帧
-    # veo_3_1_i2v_s_fast_fl (需要新增横竖屏)
+    # ========== Model first-last frame (I2V - Image to Video) ==========
+    # dukung 1-2 gambar: 1 jadi first frame, 2 jadi first-last frame
+    # veo_3_1_i2v_s_fast_fl (perlu tambah portrait/landscape)
     "veo_3_1_i2v_s_fast_portrait_fl": {
         "type": "video",
         "video_type": "i2v",
@@ -322,7 +322,7 @@ MODEL_CONFIG = {
         "min_images": 1,
         "max_images": 2,
     },
-    # veo_3_1_i2v_s_fast_ultra (横竖屏)
+    # veo_3_1_i2v_s_fast_ultra (portrait/landscape)
     "veo_3_1_i2v_s_fast_portrait_ultra_fl": {
         "type": "video",
         "video_type": "i2v",
@@ -341,7 +341,7 @@ MODEL_CONFIG = {
         "min_images": 1,
         "max_images": 2,
     },
-    # veo_3_1_i2v_s_fast_ultra_relaxed (需要新增横竖屏)
+    # veo_3_1_i2v_s_fast_ultra_relaxed (perlu tambah portrait/landscape)
     "veo_3_1_i2v_s_fast_portrait_ultra_relaxed": {
         "type": "video",
         "video_type": "i2v",
@@ -360,7 +360,7 @@ MODEL_CONFIG = {
         "min_images": 1,
         "max_images": 2,
     },
-    # veo_3_1_i2v_s (需要新增横竖屏)
+    # veo_3_1_i2v_s (perlu tambah portrait/landscape)
     "veo_3_1_i2v_s_portrait": {
         "type": "video",
         "video_type": "i2v",
@@ -379,7 +379,7 @@ MODEL_CONFIG = {
         "min_images": 1,
         "max_images": 2,
     },
-    # veo_3_1_i2v_lite（横竖屏，仅首帧）
+    # veo_3_1_i2v_lite (portrait/landscape, cuma first frame)
     "veo_3_1_i2v_lite_portrait": {
         "type": "video",
         "video_type": "i2v",
@@ -402,7 +402,7 @@ MODEL_CONFIG = {
         "use_v2_model_config": True,
         "allow_tier_upgrade": False,
     },
-    # veo_3_1_interpolation_lite（横竖屏，首尾帧）
+    # veo_3_1_interpolation_lite (portrait/landscape, first-last frame)
     "veo_3_1_interpolation_lite_portrait": {
         "type": "video",
         "video_type": "i2v",
@@ -425,9 +425,9 @@ MODEL_CONFIG = {
         "use_v2_model_config": True,
         "allow_tier_upgrade": False,
     },
-    # ========== 多图生成 (R2V - Reference Images to Video) ==========
-    # 当前上游协议最多支持 3 张参考图
-    # veo_3_1_r2v_fast (横竖屏)
+    # ========== Generate multi-gambar (R2V - Reference Images to Video) ==========
+    # protokol upstream sekarang maksimal 3 gambar referensi
+    # veo_3_1_r2v_fast (portrait/landscape)
     "veo_3_1_r2v_fast_portrait": {
         "type": "video",
         "video_type": "r2v",
@@ -446,7 +446,7 @@ MODEL_CONFIG = {
         "min_images": 0,
         "max_images": 3,
     },
-    # veo_3_1_r2v_fast_ultra (横竖屏)
+    # veo_3_1_r2v_fast_ultra (portrait/landscape)
     "veo_3_1_r2v_fast_portrait_ultra": {
         "type": "video",
         "video_type": "r2v",
@@ -465,7 +465,7 @@ MODEL_CONFIG = {
         "min_images": 0,
         "max_images": 3,
     },
-    # veo_3_1_r2v_fast_ultra_relaxed (横竖屏)
+    # veo_3_1_r2v_fast_ultra_relaxed (portrait/landscape)
     "veo_3_1_r2v_fast_portrait_ultra_relaxed": {
         "type": "video",
         "video_type": "r2v",
@@ -484,9 +484,9 @@ MODEL_CONFIG = {
         "min_images": 0,
         "max_images": 3,
     },
-    # ========== 视频放大 (Video Upsampler) ==========
-    # 仅 3.1 支持，需要先生成视频后再放大，可能需要 30 分钟
-    # T2V 4K 放大版
+    # ========== Upscale video (Video Upsampler) ==========
+    # cuma 3.1 yang dukung, harus generate video dulu baru upscale, bisa butuh 30 menit
+    # T2V versi upscale 4K
     "veo_3_1_t2v_fast_portrait_4k": {
         "type": "video",
         "video_type": "t2v",
@@ -531,7 +531,7 @@ MODEL_CONFIG = {
             "model_key": "veo_3_1_upsampler_4k",
         },
     },
-    # T2V 1080P 放大版
+    # T2V versi upscale 1080P
     "veo_3_1_t2v_fast_portrait_1080p": {
         "type": "video",
         "video_type": "t2v",
@@ -576,7 +576,7 @@ MODEL_CONFIG = {
             "model_key": "veo_3_1_upsampler_1080p",
         },
     },
-    # I2V 4K 放大版
+    # I2V versi upscale 4K
     "veo_3_1_i2v_s_fast_portrait_ultra_fl_4k": {
         "type": "video",
         "video_type": "i2v",
@@ -603,7 +603,7 @@ MODEL_CONFIG = {
             "model_key": "veo_3_1_upsampler_4k",
         },
     },
-    # I2V 1080P 放大版
+    # I2V versi upscale 1080P
     "veo_3_1_i2v_s_fast_portrait_ultra_fl_1080p": {
         "type": "video",
         "video_type": "i2v",
@@ -630,7 +630,7 @@ MODEL_CONFIG = {
             "model_key": "veo_3_1_upsampler_1080p",
         },
     },
-    # R2V 4K 放大版
+    # R2V versi upscale 4K
     "veo_3_1_r2v_fast_portrait_ultra_4k": {
         "type": "video",
         "video_type": "r2v",
@@ -657,7 +657,7 @@ MODEL_CONFIG = {
             "model_key": "veo_3_1_upsampler_4k",
         },
     },
-    # R2V 1080P 放大版
+    # R2V versi upscale 1080P
     "veo_3_1_r2v_fast_portrait_ultra_1080p": {
         "type": "video",
         "video_type": "r2v",
@@ -684,10 +684,10 @@ MODEL_CONFIG = {
             "model_key": "veo_3_1_upsampler_1080p",
         },
     },
-    # ========== 视频续写 (Extend - Video Continuation) ==========
-    # 基于已生成的视频续写7秒，最多续写20次（最长148秒）
-    # 需要提供源视频的 mediaGenerationId
-    # VEO 3.1 Extend (横竖屏)
+    # ========== Lanjutin video (Extend - Video Continuation) ==========
+    # lanjutkan video yang sudah digenerate 7 detik, maksimal 20x (paling panjang 148 detik)
+    # wajib kasih mediaGenerationId video sumber
+    # VEO 3.1 Extend (portrait/landscape)
     "veo_3_1_extend_portrait": {
         "type": "video",
         "video_type": "extend",
@@ -705,9 +705,9 @@ MODEL_CONFIG = {
         "requires_video_id": True,
     },
     # ========== Gemini Omni Flash ==========
-    # 2026-05-26 实测上游真实请求：
-    # - 纯文本 -> YhhmEf, videoModelKey=abra_t2v_8s
-    # - 参考图 -> MZZa6b, videoModelKey=abra_r2v_8s
+    # 2026-05-26 hasil test request upstream asli:
+    # - teks murni -> YhhmEf, videoModelKey=abra_t2v_8s
+    # - gambar referensi -> MZZa6b, videoModelKey=abra_r2v_8s
     "omni": {
         "type": "video",
         "video_type": "omni",
@@ -1179,8 +1179,8 @@ def _apply_current_flow_model_catalog():
             "allow_tier_upgrade": False,
         }
 
-    # Veo 3.1 Lite. 实测 2026-09：Pro 账号对 lite 全系（含 *_low_priority 变体）
-    # 均返回 MODEL_ACCESS_DENIED，veo 系需更高级别订阅；key 保持上游默认值。
+    # Veo 3.1 Lite. Hasil test 2026-09: akun Pro ke semua lite (termasuk varian *_low_priority)
+    # semuanya return MODEL_ACCESS_DENIED, seri veo butuh subscription lebih tinggi; key tetap default upstream.
     for seconds, key in (
         (4, "veo_3_1_t2v_lite_4s"),
         (6, "veo_3_1_t2v_lite_6s"),
@@ -1381,7 +1381,7 @@ def _resolve_tier_two_model_key(model_key: str) -> str:
 
 
 class GenerationHandler:
-    """统一生成处理器"""
+    """Handler generate terpadu"""
 
     def __init__(
         self,
@@ -1411,7 +1411,7 @@ class GenerationHandler:
         return dict(success=False, error_message=None, error_emitted=False)
 
     def _create_response_state(self) -> Dict[str, Any]:
-        """为单次请求创建独立的响应状态，避免并发请求互相污染。"""
+        """Bikin status response independen per request, biar request konkuren nggak saling ngotorin."""
         return {
             "url": None,
             "generated_assets": None,
@@ -1439,7 +1439,7 @@ class GenerationHandler:
         token,
         operation: Dict[str, Any],
     ) -> Dict[str, Any]:
-        """按当前上游逻辑解析视频资产：状态由 media 决定，URL 通过 redirect 二段获取。"""
+        """Parse aset video ikut logika upstream sekarang: status ditentukan media, URL diambil via redirect dua tahap."""
         metadata = (operation.get("operation") or {}).get("metadata", {}) or {}
         video_info = (
             metadata.get("video", {}) if isinstance(metadata.get("video"), dict) else {}
@@ -1461,9 +1461,9 @@ class GenerationHandler:
         )
         media_lookup_id = media_generation_id or media_name
 
-        # jwpduf 轮询响应可能已携带带签名的 flow-content 直链（与图片路径一致），
-        # 直接复用；仅在没有直链时才通过 as29s 换取（部分模型如 abra 的
-        # media 名不被 as29s 接受，会返回 code=[5]）。
+        # response polling jwpduf mungkin sudah bawa direct link flow-content bertanda tangan (sama dengan path gambar),
+        # langsung pakai ulang; cuma kalau nggak ada direct link baru tukar via as29s (sebagian model kayak abra
+        # nama media nggak diterima as29s, bakal return code=[5]).
         video_url = str(video_info.get("fifeUrl") or "").strip()
         if not video_url and media_lookup_id:
             video_url = (
@@ -1499,14 +1499,14 @@ class GenerationHandler:
         }
 
     def _normalize_error_message(self, error_message: Any, max_length: int = 1000) -> str:
-        """归一化错误文本，避免写入超长内容。"""
-        text = str(error_message or "").strip() or "未知错误"
+        """Normalisasi teks error, biar nggak kepanjangan."""
+        text = str(error_message or "").strip() or "Error tidak dikenal"
         if len(text) <= max_length:
             return text
         return f"{text[:max_length - 3]}..."
 
     def _resolve_video_model_key_for_tier(self, model_config: Dict[str, Any], user_tier: str) -> tuple[str, Optional[str]]:
-        """根据账号层级调整视频模型 key。"""
+        """Sesuaikan key model video berdasarkan tier akun."""
         model_key = model_config["model_key"]
         allow_tier_upgrade = bool(model_config.get("allow_tier_upgrade", True))
 
@@ -1516,20 +1516,20 @@ class GenerationHandler:
                 if upgraded_model_key != model_key:
                     return (
                         upgraded_model_key,
-                        f"TIER_TWO 账号自动切换到 ultra 模型: {upgraded_model_key}",
+                        f"TIER_TWO akun otomatis switch ke model ultra: {upgraded_model_key}",
                     )
             return model_key, None
 
         if user_tier == "PAYGATE_TIER_ONE" and "ultra" in model_key:
             model_key = model_key.replace("_ultra_fl", "_fl").replace("_ultra", "")
-            return model_key, f"TIER_ONE 账号自动切换到标准模型: {model_key}"
+            return model_key, f"TIER_ONE akun otomatis switch ke model standar: {model_key}"
 
         return model_key, None
 
     async def _fail_video_task(
         self, operations: Optional[List[Dict[str, Any]]], error_message: str
     ):
-        """将视频任务收口到失败态，避免残留 processing。"""
+        """Tutup task video ke status gagal, biar nggak nyangkut processing."""
         if not operations:
             return
 
@@ -1546,17 +1546,17 @@ class GenerationHandler:
                 completed_at=time.time(),
             )
         except Exception as exc:
-            debug_logger.log_error(f"[VIDEO] 更新任务失败状态失败: {exc}")
+            debug_logger.log_error(f"[VIDEO] Gagal update status gagal task: {exc}")
 
     async def check_token_availability(self, is_image: bool, is_video: bool) -> bool:
-        """检查Token可用性
+        """Cek ketersediaan Token
 
         Args:
-            is_image: 是否检查图片生成Token
-            is_video: 是否检查视频生成Token
+            is_image: apakah cek Token generate gambar
+            is_video: apakah cek Token generate video
 
         Returns:
-            True表示有可用Token, False表示无可用Token
+            True = ada Token tersedia, False = nggak ada Token tersedia
         """
         token_obj = await self.load_balancer.select_token(
             for_image_generation=is_image, for_video_generation=is_video
@@ -1572,13 +1572,13 @@ class GenerationHandler:
         base_url_override: Optional[str] = None,
         video_media_id: Optional[str] = None,
     ) -> AsyncGenerator:
-        """统一生成入口
+        """Entry point generate terpadu
 
         Args:
-            model: 模型名称
-            prompt: 提示词
-            images: 图片列表 (bytes格式)
-            stream: 是否流式输出
+            model: nama model
+            prompt: prompt
+            images: list gambar (format bytes)
+            stream: apakah output streaming
         """
         start_time = time.time()
         token = None
@@ -1597,13 +1597,13 @@ class GenerationHandler:
         ) or None
         request_log_state: Dict[str, Any] = {"id": None, "progress": 0}
 
-        # 防止并发链路复用到上一次请求的指纹上下文
+        # cegah chain konkuren pakai ulang konteks fingerprint request sebelumnya
         if hasattr(self.flow_client, "clear_request_fingerprint"):
             self.flow_client.clear_request_fingerprint()
 
-        # 1. 验证模型
+        # 1. validasi model
         if model not in MODEL_CONFIG:
-            error_msg = f"不支持的模型: {model}"
+            error_msg = f"Model nggak didukung: {model}"
             debug_logger.log_error(error_msg)
             record_generation_result("unknown", "invalid", time.time() - start_time)
             yield self._create_error_response(error_msg, status_code=400)
@@ -1626,10 +1626,10 @@ class GenerationHandler:
             "has_images": images is not None and len(images) > 0,
         }
         debug_logger.log_info(
-            f"[GENERATION] 开始生成 - 模型: {model}, 类型: {generation_type}, Prompt: {prompt[:50]}..."
+            f"[GENERATION] Mulai generate - model: {model}, tipe: {generation_type}, Prompt: {prompt[:50]}..."
         )
 
-        # 向用户展示开始信息
+        # tampilin info mulai ke user
         if stream:
             yield self._create_stream_chunk(
                 f"✨ Tugas pembuatan {'video' if generation_type == 'video' else 'gambar'} dimulai\n",
@@ -1651,8 +1651,8 @@ class GenerationHandler:
                 progress=0,
             )
 
-        # 2. 选择Token
-        debug_logger.log_info(f"[GENERATION] 正在选择可用Token...")
+        # 2. pilih Token
+        debug_logger.log_info(f"[GENERATION] Lagi milih Token yang tersedia...")
         token_select_started_at = time.time()
 
         if generation_type == "image":
@@ -1703,11 +1703,11 @@ class GenerationHandler:
                 progress=request_log_state.get("progress", 0),
             )
             if stream:
-                yield self._create_stream_chunk(f"错误: {error_msg}\n")
+                yield self._create_stream_chunk(f"Error: {error_msg}\n")
             yield self._create_error_response(error_msg, status_code=503)
             return
 
-        debug_logger.log_info(f"[GENERATION] 已选择Token: {token.id} ({token.email})")
+        debug_logger.log_info(f"[GENERATION] Token kepilih: {token.id} ({token.email})")
         pending_token_state["active"] = True
         await self._update_request_log_progress(
             request_log_state,
@@ -1718,8 +1718,8 @@ class GenerationHandler:
         )
 
         try:
-            # 3. 确保AT有效
-            debug_logger.log_info(f"[GENERATION] 检查Token AT有效性...")
+            # 3. pastikan AT valid
+            debug_logger.log_info(f"[GENERATION] Cek validitas AT Token...")
             if stream:
                 yield self._create_stream_chunk("Menginisialisasi lingkungan...\n")
 
@@ -1735,25 +1735,25 @@ class GenerationHandler:
                 (time.time() - ensure_at_started_at) * 1000
             )
             if not token:
-                error_msg = "Token AT无效或刷新失败"
+                error_msg = "AT Token nggak valid atau gagal refresh"
                 debug_logger.log_error(f"[GENERATION] {error_msg}")
                 record_generation_result(
                     generation_type, "failed", time.time() - start_time
                 )
                 if stream:
-                    yield self._create_stream_chunk(f"错误: {error_msg}\n")
+                    yield self._create_stream_chunk(f"Error: {error_msg}\n")
                 yield self._create_error_response(error_msg, status_code=503)
                 return
 
-            # 4. 确保Project存在
-            debug_logger.log_info(f"[GENERATION] 检查/创建Project...")
+            # 4. pastikan Project ada
+            debug_logger.log_info(f"[GENERATION] Cek/bikin Project...")
 
             if not supports_model_for_tier(model, token.user_paygate_tier):
                 required_tier = get_required_paygate_tier_for_model(model)
                 error_msg = (
-                    "当前模型需要 "
+                    "Model ini butuh akun "
                     + get_paygate_tier_label(required_tier)
-                    + " 账号: "
+                    + ": "
                     + model
                 )
                 debug_logger.log_error(f"[GENERATION] {error_msg}")
@@ -1761,7 +1761,7 @@ class GenerationHandler:
                     generation_type, "failed", time.time() - start_time
                 )
                 if stream:
-                    yield self._create_stream_chunk(f"错误: {error_msg}\n")
+                    yield self._create_stream_chunk(f"Error: {error_msg}\n")
                 yield self._create_error_response(error_msg, status_code=403)
                 return
 
@@ -1787,10 +1787,10 @@ class GenerationHandler:
                 token_id=token.id,
             )
 
-            # 5. 根据类型处理
+            # 5. proses berdasarkan tipe
             generation_pipeline_started_at = time.time()
             if generation_type == "image":
-                debug_logger.log_info(f"[GENERATION] 开始图片生成流程...")
+                debug_logger.log_info(f"[GENERATION] Mulai proses generate gambar...")
                 async for chunk in self._handle_image_generation(
                     token,
                     project_id,
@@ -1806,7 +1806,7 @@ class GenerationHandler:
                 ):
                     yield chunk
             else:  # video
-                debug_logger.log_info(f"[GENERATION] 开始视频生成流程...")
+                debug_logger.log_info(f"[GENERATION] Mulai proses generate video...")
                 async for chunk in self._handle_video_generation(
                     token,
                     project_id,
@@ -1826,11 +1826,11 @@ class GenerationHandler:
                 (time.time() - generation_pipeline_started_at) * 1000
             )
 
-            # 6. 记录使用
+            # 6. catat pemakaian
             if not generation_result.get("success"):
-                error_msg = generation_result.get("error_message") or "生成未成功完成"
+                error_msg = generation_result.get("error_message") or "Generate nggak selesai dengan sukses"
                 debug_logger.log_warning(
-                    f"[GENERATION] 生成未成功，不扣次数: {error_msg}"
+                    f"[GENERATION] Generate nggak sukses, nggak potong kuota: {error_msg}"
                 )
                 if token:
                     await self.token_manager.record_error(token.id)
@@ -1855,29 +1855,29 @@ class GenerationHandler:
                 )
                 if not generation_result.get("error_emitted"):
                     if stream:
-                        yield self._create_stream_chunk(f"错误: {error_msg}\n")
+                        yield self._create_stream_chunk(f"Error: {error_msg}\n")
                     yield self._create_error_response(error_msg, status_code=500)
                 return
 
             is_video = generation_type == "video"
             await self.token_manager.record_usage(token.id, is_video=is_video)
 
-            # 重置错误计数 (请求成功时清空连续错误计数)
+            # reset hitungan error (bersihin hitungan error beruntun saat request sukses)
             await self.token_manager.record_success(token.id)
 
-            debug_logger.log_info(f"[GENERATION] ✅ 生成成功完成")
+            debug_logger.log_info(f"[GENERATION] ✅ Generate selesai dengan sukses")
 
-            # 7. 记录成功日志
+            # 7. catat log sukses
             duration = time.time() - start_time
             record_generation_result(generation_type, "success", duration)
             perf_trace["status"] = "success"
             perf_trace["total_ms"] = int(duration * 1000)
-            # 日志中保留更完整的 prompt，避免管理页只看到过短内容
+            # simpan prompt yang lebih lengkap di log, biar halaman admin nggak cuma lihat yang kependek
             prompt_for_log = (
                 prompt if len(prompt) <= 2000 else f"{prompt[:2000]}...(truncated)"
             )
 
-            # 构建响应数据，包含生成的URL
+            # bangun data response, termasuk URL hasil generate
             response_data = {
                 "status": "success",
                 "model": model,
@@ -1885,7 +1885,7 @@ class GenerationHandler:
                 "performance": perf_trace,
             }
 
-            # 添加生成的URL（如果有）
+            # tambahin URL hasil generate (kalau ada)
             if response_state.get("url"):
                 response_data["url"] = response_state["url"]
             if response_state.get("generated_assets"):
@@ -1925,7 +1925,7 @@ class GenerationHandler:
             )
 
         except asyncio.CancelledError:
-            error_msg = "生成已取消: 客户端连接已断开"
+            error_msg = "Generate dibatalkan: koneksi client putus"
             debug_logger.log_warning(f"[GENERATION] ⚠️ {error_msg}")
             duration = time.time() - start_time
             record_generation_result(
@@ -1951,16 +1951,16 @@ class GenerationHandler:
             raise
         except Exception as e:
             error_msg = f"Gagal membuat: {str(e)}"
-            debug_logger.log_error(f"[GENERATION] 生成失败: {error_msg}")
+            debug_logger.log_error(f"[GENERATION] Generate gagal: {error_msg}")
             if token:
                 if self._should_count_token_error(e):
                     await self.token_manager.record_error(token.id)
                 else:
                     debug_logger.log_info(
-                        f"[GENERATION] 跳过 token 错误计数: token_id={token.id}, reason={str(e)[:200]}"
+                        f"[GENERATION] Lewati hitungan error token: token_id={token.id}, reason={str(e)[:200]}"
                     )
 
-            # 先将最终失败状态落库，再返回错误响应，避免日志停在 102。
+            # simpan dulu status gagal final ke DB, baru return error response, biar log nggak mentok di 102.
             duration = time.time() - start_time
             record_generation_result(generation_type or "unknown", "failed", duration)
             perf_trace["status"] = "failed"
@@ -1981,7 +1981,7 @@ class GenerationHandler:
                 progress=request_log_state.get("progress", 0),
             )
             if stream:
-                yield self._create_stream_chunk(f"错误: {error_msg}\n")
+                yield self._create_stream_chunk(f"Error: {error_msg}\n")
             yield self._create_error_response(error_msg, status_code=500)
         finally:
             if pending_token_state.get("active") and token and self.load_balancer:
@@ -1993,17 +1993,17 @@ class GenerationHandler:
                 pending_token_state["active"] = False
 
     def _get_no_token_error_message(self, generation_type: str) -> str:
-        """获取无可用Token时的详细错误信息"""
+        """Ambil detail error saat nggak ada Token tersedia"""
         if generation_type == "image":
             return "Tidak ada Akun/Token yang aktif untuk pembuatan gambar. Status akun saat ini sedang nonaktif atau sesi Cookie Google belum terhubung."
         else:
             return "Tidak ada Akun/Token yang aktif untuk pembuatan video. Status akun saat ini sedang nonaktif atau sesi Cookie Google belum terhubung."
 
     def _should_count_token_error(self, error: Exception) -> bool:
-        """判断失败是否应计入 token 连续错误。
+        """Tentukan apakah failure harus dihitung sebagai error beruntun token.
 
-        reCAPTCHA 获取失败、验证码供应商错误、打码资源不足等问题通常不是账号本身异常；
-        若将其纳入连续错误，会在回归测试或代理波动时把 token 自动打成 inactive。
+        kegagalan ambil reCAPTCHA, error provider captcha, atau resource captcha kurang biasanya bukan salah akunnya;
+        kalau dihitung sebagai error beruntun, token bisa ke-disable otomatis pas regression test atau proxy goyang.
         """
         error_text = str(error or "").strip().lower()
         if not error_text:
@@ -2012,13 +2012,13 @@ class GenerationHandler:
         non_token_fault_markers = (
             "failed to obtain recaptcha token",
             "recaptcha evaluation failed",
-            "recaptcha 验证失败",
-            "recaptcha 错误",
+            "verifikasi recaptcha gagal",
+            "error recaptcha",
             "public_error_unusual_activity",
             "too much traffic",
             "error_no_slot_available",
-            "打码服务资源不足",
-            "打码服务资源阻塞",
+            "resource jasa captcha kurang",
+            "resource jasa captcha keblokir",
             "yescaptcha",
             "capsolver",
             "captcharun",
@@ -2030,7 +2030,7 @@ class GenerationHandler:
         if any(marker in error_text for marker in non_token_fault_markers):
             return False
 
-        if "没有可用的token进行" in error_text:
+        if "nggak ada token tersedia buat" in error_text:
             return False
 
         return True
@@ -2049,7 +2049,7 @@ class GenerationHandler:
         request_log_state: Optional[Dict[str, Any]] = None,
         pending_token_state: Optional[Dict[str, bool]] = None,
     ) -> AsyncGenerator:
-        """处理图片生成 (同步返回)"""
+        """Proses generate gambar (return sinkron)"""
 
         if response_state is None:
             response_state = self._create_response_state()
@@ -2059,7 +2059,7 @@ class GenerationHandler:
             image_trace = perf_trace.setdefault("image_generation", {})
             image_trace["input_image_count"] = len(images) if images else 0
 
-        # 不在本地等待图片硬并发槽位；请求一到就直接向上游提交。
+        # nggak nunggu slot konkurensi gambar lokal; request langsung di-submit ke upstream begitu datang.
         normalized_tier = normalize_user_paygate_tier(token.user_paygate_tier)
 
         if image_trace is not None:
@@ -2081,16 +2081,16 @@ class GenerationHandler:
             )
 
         try:
-            # 上传图片 (如果有)
+            # upload gambar (kalau ada)
             upload_started_at = time.time()
             image_inputs = []
             if images and len(images) > 0:
                 if stream:
                     yield self._create_stream_chunk(
-                        f"上传 {len(images)} 张参考图片...\n"
+                        f"Upload {len(images)} gambar referensi...\n"
                     )
 
-                # 支持多图输入
+                # dukung input multi-gambar
                 for idx, image_bytes in enumerate(images):
                     media_id = await self.flow_client.upload_image(
                         token.at,
@@ -2115,7 +2115,7 @@ class GenerationHandler:
                     (time.time() - upload_started_at) * 1000
                 )
 
-            # 调用生成API
+            # panggil API generate
             if stream:
                 if images and len(images) > 0:
                     yield self._create_stream_chunk(
@@ -2176,23 +2176,23 @@ class GenerationHandler:
                 progress=72,
             )
 
-            # 提取URL和mediaId
+            # ekstrak URL dan mediaId
             media = result.get("media", [])
             if not media:
                 self._mark_generation_failed(
                     generation_result, "\u751f\u6210\u7ed3\u679c\u4e3a\u7a7a"
                 )
-                yield self._create_error_response("生成结果为空", status_code=502)
+                yield self._create_error_response("Hasil generate kosong", status_code=502)
                 return
 
             image_url = media[0]["image"]["generatedImage"]["fifeUrl"]
-            media_id = media[0].get("name")  # 用于 upsample
+            media_id = media[0].get("name")  # buat upsample
             response_state["generated_assets"] = {
                 "type": "image",
                 "origin_image_url": image_url,
             }
 
-            # 检查是否需要 upsample
+            # cek apakah perlu upsample
             upsample_resolution = model_config.get("upsample")
             if upsample_resolution and media_id:
                 upsample_started_at = time.time()
@@ -2205,14 +2205,14 @@ class GenerationHandler:
                 )
                 if stream:
                     yield self._create_stream_chunk(
-                        f"正在放大图片到 {resolution_name}...\n"
+                        f"Lagi upscale gambar ke {resolution_name}...\n"
                     )
 
-                # 4K/2K 图片重试逻辑 - 使用配置的最大重试次数
+                # 4K/2K logika retry gambar - pakai max retry dari konfigurasi
                 max_retries = config.flow_max_retries
                 for retry_attempt in range(max_retries):
                     try:
-                        # 调用 upsample API
+                        # panggil API upsample
                         encoded_image = await self.flow_client.upsample_image(
                             at=token.at,
                             project_id=project_id,
@@ -2226,15 +2226,15 @@ class GenerationHandler:
 
                         if encoded_image:
                             debug_logger.log_info(
-                                f"[UPSAMPLE] 图片已放大到 {resolution_name}"
+                                f"[UPSAMPLE] Gambar sudah di-upscale ke {resolution_name}"
                             )
 
                             if stream:
                                 yield self._create_stream_chunk(
-                                    f"✅ 图片已放大到 {resolution_name}\n"
+                                    f"✅ Gambar sudah di-upscale ke {resolution_name}\n"
                                 )
 
-                            # 2K/4K 图片统一落盘为真实文件，日志里只保留链接。
+                            # 2K/4K gambar disatuin disimpan sebagai file asli, di log cuma simpan link.
                             response_state["generated_assets"] = {
                                 "type": "image",
                                 "origin_image_url": image_url,
@@ -2275,7 +2275,7 @@ class GenerationHandler:
                                 )
                                 if stream:
                                     yield self._create_stream_chunk(
-                                        f"缓存 {resolution_name} 图片中...\n"
+                                        f"Cache {resolution_name} gambar...\n"
                                     )
                                 cached_filename = (
                                     await self.file_cache.cache_base64_image(
@@ -2293,7 +2293,7 @@ class GenerationHandler:
                                 self._mark_generation_succeeded(generation_result)
                                 if stream:
                                     yield self._create_stream_chunk(
-                                        f"✅ {resolution_name} 图片缓存成功\n"
+                                        f"✅ {resolution_name} gambar berhasil di-cache\n"
                                     )
                                     yield self._create_stream_chunk(
                                         f"![Generated Image]({local_url})",
@@ -2329,7 +2329,7 @@ class GenerationHandler:
                                         e, max_length=120
                                     )
                                     yield self._create_stream_chunk(
-                                        f"⚠️ 缓存失败: {cache_error}，返回内联图片...\n"
+                                        f"⚠️ Gagal cache: {cache_error}, balikin gambar inline...\n"
                                     )
                                     yield self._create_stream_chunk(
                                         f"![Generated Image]({base64_url})",
@@ -2345,40 +2345,40 @@ class GenerationHandler:
                                     )
                                 return
                         else:
-                            debug_logger.log_warning("[UPSAMPLE] 返回结果为空")
+                            debug_logger.log_warning("[UPSAMPLE] hasil return kosong")
                             if stream:
                                 yield self._create_stream_chunk(
-                                    f"⚠️ 放大失败，返回原图...\n"
+                                    f"⚠️ Upscale gagal, balikin gambar asli...\n"
                                 )
-                            break  # 空结果不重试
+                            break  # hasil kosong nggak di-retry
 
                     except Exception as e:
                         error_str = str(e)
                         debug_logger.log_error(
-                            f"[UPSAMPLE] 放大失败 (尝试 {retry_attempt + 1}/{max_retries}): {error_str}"
+                            f"[UPSAMPLE] Upscale gagal (percobaan {retry_attempt + 1}/{max_retries}): {error_str}"
                         )
                         
-                        # 检查是否是可重试错误（403、reCAPTCHA、超时等）
+                        # cek apakah error bisa di-retry (403, reCAPTCHA, timeout, dll)
                         retry_reason = self.flow_client._get_retry_reason(error_str)
                         if retry_reason and retry_attempt < max_retries - 1:
                             if stream:
                                 yield self._create_stream_chunk(
-                                    f"⚠️ 放大遇到{retry_reason}，正在重试 ({retry_attempt + 2}/{max_retries})...\n"
+                                    f"⚠️ Upscale kena {retry_reason}, lagi retry ({retry_attempt + 2}/{max_retries})...\n"
                                 )
-                            # 等待一小段时间后重试
+                            # tunggu sebentar terus retry
                             await asyncio.sleep(1)
                             continue
                         else:
                             if stream:
                                 yield self._create_stream_chunk(
-                                    f"⚠️ 放大失败: {error_str}，返回原图...\n"
+                                    f"⚠️ Upscale gagal: {error_str}, balikin gambar asli...\n"
                                 )
                             break
                 if image_trace is not None:
                     image_trace["upsample_ms"] = int(
                         (time.time() - upsample_started_at) * 1000
                     )
-                # 放大失败回退原图时记录失败标记，便于调用方感知实际交付分辨率
+                # pas upscale gagal dan fallback ke gambar asli, catat flag gagal biar caller tahu resolusi aktual yang dikirim
                 if upsample_resolution and media_id:
                     response_state.setdefault("generated_assets", {})[
                         "upscaled_image"
@@ -2408,7 +2408,7 @@ class GenerationHandler:
                     )
                     if stream:
                         yield self._create_stream_chunk(
-                            "✅ 1K 图片缓存成功,准备返回缓存地址...\n"
+                            "✅ 1K gambar berhasil di-cache, siap return alamat cache...\n"
                         )
                 except Exception as e:
                     debug_logger.log_error(f"Failed to cache 1K image: {str(e)}")
@@ -2416,7 +2416,7 @@ class GenerationHandler:
                     if stream:
                         cache_error = self._normalize_error_message(e, max_length=120)
                         yield self._create_stream_chunk(
-                            f"⚠️ 缓存失败: {cache_error}\n正在返回源链接...\n"
+                            f"⚠️ Gagal cache: {cache_error}\nlagi return link sumber...\n"
                         )
             elif stream:
                 yield self._create_stream_chunk("Cache nonaktif, mengembalikan URL resmi...\n")
@@ -2425,15 +2425,15 @@ class GenerationHandler:
                     (time.time() - cache_started_at) * 1000
                 )
 
-            # 返回结果
-            # 存储URL用于日志记录
+            # return hasil
+            # simpan URL buat pencatatan log
             response_state["url"] = local_url
             final_assets = {
                 "type": "image",
                 "origin_image_url": image_url,
                 "final_image_url": local_url,
             }
-            # 保留放大失败回退标记（如有），便于调用方感知实际交付分辨率
+            # pertahankan flag fallback gagal upscale (kalau ada), biar caller tahu resolusi aktual
             upscaled_marker = (response_state.get("generated_assets") or {}).get(
                 "upscaled_image"
             )
@@ -2448,7 +2448,7 @@ class GenerationHandler:
                 )
             else:
                 yield self._create_completion_response(
-                    local_url,  # 直接传URL,让方法内部格式化
+                    local_url,  # langsung oper URL, biar method yang format di dalam
                     media_type="image",
                 )
 
@@ -2470,7 +2470,7 @@ class GenerationHandler:
         pending_token_state: Optional[Dict[str, bool]] = None,
         video_media_id: Optional[str] = None,
     ) -> AsyncGenerator:
-        """处理视频生成 (异步轮询)"""
+        """Proses generate video (polling asinkron)"""
 
         if response_state is None:
             response_state = self._create_response_state()
@@ -2480,7 +2480,7 @@ class GenerationHandler:
             video_trace = perf_trace.setdefault("video_generation", {})
             video_trace["input_image_count"] = len(images) if images else 0
 
-        # 不在本地等待视频硬并发槽位；请求一到就直接向上游提交。
+        # nggak nunggu slot konkurensi video lokal; request langsung di-submit ke upstream begitu datang.
         normalized_tier = normalize_user_paygate_tier(token.user_paygate_tier)
 
         if video_trace is not None:
@@ -2494,14 +2494,14 @@ class GenerationHandler:
         )
 
         try:
-            # 获取模型类型和配置
+            # ambil tipe model dan konfigurasi
             video_type = model_config.get("video_type")
             supports_images = model_config.get("supports_images", False)
             min_images = model_config.get("min_images", 0)
             max_images = model_config.get("max_images", 0)
             use_v2_model_config = bool(model_config.get("use_v2_model_config", False))
 
-            # 根据账号tier自动调整模型 key
+            # sesuaikan model otomatis berdasarkan tier akun key
             user_tier = normalized_tier
 
             original_model_key = model_config["model_key"]
@@ -2512,74 +2512,74 @@ class GenerationHandler:
                 if stream:
                     yield self._create_stream_chunk(f"{tier_message}\n")
                 debug_logger.log_info(
-                    f"[VIDEO] 账号层级模型调整: {original_model_key} -> {model_key}"
+                    f"[VIDEO] adjustment model tier akun: {original_model_key} -> {model_key}"
                 )
             elif user_tier == "PAYGATE_TIER_TWO" and original_model_key == model_key:
                 debug_logger.log_info(
-                    f"[VIDEO] TIER_TWO 账号，未找到有效 ultra 变体，保持模型: {model_key}"
+                    f"[VIDEO] akun TIER_TWO, nggak nemu varian ultra yang valid, pertahankan model: {model_key}"
                 )
 
-            # 更新 model_config 中的 model_key
-            model_config = dict(model_config)  # 创建副本避免修改原配置
+            # update model_key di model_config
+            model_config = dict(model_config)  # bikin copy biar nggak ubah konfigurasi asli
             model_config["model_key"] = model_key
 
-            # 图片数量
+            # jumlah gambar
             image_count = len(images) if images else 0
 
-            # ========== 验证和处理图片 ==========
+            # ========== validasi dan proses gambar ==========
 
-            # T2V: 文生视频 - 不支持图片
+            # T2V: text-to-video - nggak dukung gambar
             if video_type == "t2v":
                 if image_count > 0:
                     if stream:
                         yield self._create_stream_chunk(
-                            "⚠️ 文生视频模型不支持上传图片,将忽略图片仅使用文本提示词生成\n"
+                            "⚠️ Model text-to-video nggak dukung upload gambar, gambar diabaikan, cuma pakai prompt teks\n"
                         )
                     debug_logger.log_warning(
-                        f"[T2V] 模型 {model_config['model_key']} 不支持图片,已忽略 {image_count} 张图片"
+                        f"[T2V] model {model_config['model_key']} nggak dukung gambar, sudah diabaikan {image_count} gambar"
                     )
-                images = None  # 清空图片
+                images = None  # bersihin gambar
                 image_count = 0
 
-            # Omni: 无图走 T2V，有图走当前上游 Reference Images 直连链路
+            # Omni: nggak ada gambar pakai T2V, ada gambar pakai jalur langsung Reference Images upstream sekarang
             elif video_type == "omni":
                 if max_images is not None and image_count > max_images:
-                    error_msg = f"Omni 模型最多支持 {max_images} 张参考图，当前提供了 {image_count} 张"
+                    error_msg = f"Model Omni maksimal dukung {max_images} gambar referensi, sekarang dikasih {image_count} gambar"
                     if stream:
                         yield self._create_stream_chunk(f"{error_msg}\n")
                     self._mark_generation_failed(generation_result, error_msg)
                     yield self._create_error_response(error_msg, status_code=400)
                     return
 
-            # I2V: 首尾帧模型 - 需要1-2张图片
+            # I2V: model first-last frame - butuh 1-2 gambar
             elif video_type == "i2v":
                 if image_count < min_images or image_count > max_images:
-                    error_msg = f"首尾帧模型需要 {min_images}-{max_images} 张图片，当前提供了 {image_count} 张"
+                    error_msg = f"Model first-last frame butuh {min_images}-{max_images} gambar, sekarang dikasih {image_count} gambar"
                     if stream:
                         yield self._create_stream_chunk(f"{error_msg}\n")
                     self._mark_generation_failed(generation_result, error_msg)
                     yield self._create_error_response(error_msg, status_code=400)
                     return
 
-            # R2V: 多图生成 - 当前上游协议最多 3 张参考图
+            # R2V: generate multi-gambar - protokol upstream sekarang maksimal 3 gambar referensi
             elif video_type == "r2v":
                 if max_images is not None and image_count > max_images:
-                    error_msg = f"多图视频模型最多支持 {max_images} 张参考图，当前提供了 {image_count} 张"
+                    error_msg = f"Model video multi-gambar maksimal dukung {max_images} gambar referensi, sekarang dikasih {image_count} gambar"
                     if stream:
                         yield self._create_stream_chunk(f"{error_msg}\n")
                     self._mark_generation_failed(generation_result, error_msg)
                     yield self._create_error_response(error_msg, status_code=400)
                     return
 
-            # ========== 上传图片 ==========
+            # ========== upload gambar ==========
             start_media_id = None
             end_media_id = None
             reference_images = []
 
-            # I2V: 首尾帧处理
+            # I2V: proses first-last frame
             if video_type == "i2v" and images:
                 if image_count == 1:
-                    # 只有1张图: 仅作为首帧
+                    # cuma 1 gambar: jadi first frame aja
                     if stream:
                         yield self._create_stream_chunk("Mengunggah frame awal gambar...\n")
                     start_media_id = await self.flow_client.upload_image(
@@ -2590,10 +2590,10 @@ class GenerationHandler:
                         token_id=token.id,
                         google_cookies=getattr(token, "google_cookies", None),
                     )
-                    debug_logger.log_info(f"[I2V] 仅上传首帧: {start_media_id}")
+                    debug_logger.log_info(f"[I2V] Cuma upload first frame: {start_media_id}")
 
                 elif image_count == 2:
-                    # 2张图: 首帧+尾帧
+                    # 2 gambar: first frame + last frame
                     if stream:
                         yield self._create_stream_chunk("Mengunggah frame awal dan akhir gambar...\n")
                     start_media_id = await self.flow_client.upload_image(
@@ -2613,14 +2613,14 @@ class GenerationHandler:
                         google_cookies=getattr(token, "google_cookies", None),
                     )
                     debug_logger.log_info(
-                        f"[I2V] 上传首尾帧: {start_media_id}, {end_media_id}"
+                        f"[I2V] Upload first-last frame: {start_media_id}, {end_media_id}"
                     )
 
-            # R2V: 多图处理
+            # R2V: proses multi-gambar
             elif video_type == "r2v" and images:
                 if stream:
                     yield self._create_stream_chunk(
-                        f"上传 {image_count} 张参考图片...\n"
+                        f"Upload {image_count} gambar referensi...\n"
                     )
 
                 for img in images:
@@ -2639,14 +2639,14 @@ class GenerationHandler:
                         }
                     )
                 debug_logger.log_info(
-                    f"[R2V] 上传了 {len(reference_images)} 张参考图片"
+                    f"[R2V] Sudah upload {len(reference_images)} gambar referensi"
                 )
 
-            # Omni R2V: 参考图上传到 project，随后走当前参考图视频 RPC
+            # Omni R2V: gambar referensi diupload ke project, terus pakai RPC video gambar referensi sekarang
             elif video_type == "omni" and images:
                 if stream:
                     yield self._create_stream_chunk(
-                        f"上传 {image_count} 张 Omni 参考图片...\n"
+                        f"Upload {image_count} gambar referensi Omni...\n"
                     )
 
                 for img in images:
@@ -2665,18 +2665,18 @@ class GenerationHandler:
                         }
                     )
                 debug_logger.log_info(
-                    f"[VIDEO OMNI-R2V] 上传了 {len(reference_images)} 张参考图片"
+                    f"[VIDEO OMNI-R2V] Sudah upload {len(reference_images)} gambar referensi"
                 )
 
-            # ========== 调用生成API ==========
+            # ========== panggil API generate ==========
             if stream:
                 yield self._create_stream_chunk("Mengirim tugas pembuatan video...\n")
             submit_started_at = time.time()
 
-            # I2V: 首尾帧生成
+            # I2V: generate first-last frame
             if video_type == "i2v" and start_media_id:
                 if end_media_id:
-                    # 有首尾帧
+                    # ada first-last frame
                     result = await self.flow_client.generate_video_start_end(
                         at=token.at,
                         project_id=project_id,
@@ -2692,14 +2692,14 @@ class GenerationHandler:
                         google_cookies=getattr(token, "google_cookies", None),
                     )
                 else:
-                    # 只有首帧 - 需要去掉 model_key 中的 _fl
-                    # 情况1: _fl_ 在中间 (如 veo_3_1_i2v_s_fast_fl_ultra_relaxed -> veo_3_1_i2v_s_fast_ultra_relaxed)
-                    # 情况2: _fl 在结尾 (如 veo_3_1_i2v_s_fast_ultra_fl -> veo_3_1_i2v_s_fast_ultra)
+                    # cuma first frame - perlu buang _fl dari model_key
+                    # kasus 1: _fl_ di tengah (misal veo_3_1_i2v_s_fast_fl_ultra_relaxed -> veo_3_1_i2v_s_fast_ultra_relaxed)
+                    # kasus 2: _fl di akhir (misal veo_3_1_i2v_s_fast_ultra_fl -> veo_3_1_i2v_s_fast_ultra)
                     actual_model_key = model_config["model_key"].replace("_fl_", "_")
                     if actual_model_key.endswith("_fl"):
                         actual_model_key = actual_model_key[:-3]
                     debug_logger.log_info(
-                        f"[I2V] 单帧模式，model_key: {model_config['model_key']} -> {actual_model_key}"
+                        f"[I2V] mode single frame, model_key: {model_config['model_key']} -> {actual_model_key}"
                     )
                     result = await self.flow_client.generate_video_start_image(
                         at=token.at,
@@ -2715,7 +2715,7 @@ class GenerationHandler:
                         google_cookies=getattr(token, "google_cookies", None),
                     )
 
-            # R2V: 多图生成
+            # R2V: generate multi-gambar
             elif video_type == "r2v" and reference_images:
                 result = await self.flow_client.generate_video_reference_images(
                     at=token.at,
@@ -2730,7 +2730,7 @@ class GenerationHandler:
                     google_cookies=getattr(token, "google_cookies", None),
                 )
 
-            # Omni: 有图走 Reference Images 直连链路，无图走纯文本链路
+            # Omni: ada gambar pakai jalur langsung Reference Images, nggak ada gambar pakai jalur teks murni
             elif video_type == "omni" and reference_images:
                 if stream:
                     yield self._create_stream_chunk("Mengirim tugas video referensi Omni...\n")
@@ -2747,20 +2747,20 @@ class GenerationHandler:
                     google_cookies=getattr(token, "google_cookies", None),
                 )
 
-            # Extend: 视频续写
+            # Extend: lanjutin video
             elif video_type == "extend":
                 if not video_media_id:
-                    error_msg = "视频续写需要提供源视频的 mediaGenerationId，请在 image_url 中传入 extend://VIDEO_MEDIA_ID"
+                    error_msg = "Lanjutin video butuh mediaGenerationId video sumber, kirim via image_url sebagai extend://VIDEO_MEDIA_ID"
                     if stream:
                         yield self._create_stream_chunk(f"{error_msg}\n")
                     self._mark_generation_failed(generation_result, error_msg)
                     yield self._create_error_response(error_msg, status_code=400)
                     return
 
-                debug_logger.log_info(f"[EXTEND] 续写视频: {video_media_id}")
+                debug_logger.log_info(f"[EXTEND] Lanjutin video: {video_media_id}")
                 if stream:
                     yield self._create_stream_chunk(
-                        f"视频续写任务提交中，源视频: {video_media_id[:8]}...\n"
+                        f"Task lanjutin video lagi di-submit, video sumber: {video_media_id[:8]}...\n"
                     )
                 result = await self.flow_client.generate_video_extend(
                     at=token.at,
@@ -2774,7 +2774,7 @@ class GenerationHandler:
                     token_video_concurrency=token.video_concurrency,
                 )
 
-            # T2V 或 R2V无图: 纯文本生成
+            # T2V atau R2V tanpa gambar: generate teks murni
             else:
                 result = await self.flow_client.generate_video_text(
                     at=token.at,
@@ -2862,21 +2862,21 @@ class GenerationHandler:
                     )
                 return
 
-            # 获取task_id和operations
+            # ambil task_id dan operations
             operations = result.get("operations", [])
             if not operations:
                 self._mark_generation_failed(
                     generation_result,
                     "\u751f\u6210\u4efb\u52a1\u521b\u5efa\u5931\u8d25",
                 )
-                yield self._create_error_response("生成任务创建失败", status_code=502)
+                yield self._create_error_response("Gagal bikin task generate", status_code=502)
                 return
 
             operation = operations[0]
             task_id = operation["operation"]["name"]
             scene_id = operation.get("sceneId")
 
-            # 保存Task到数据库
+            # simpan Task ke database
             task = Task(
                 task_id=task_id,
                 token_id=token.id,
@@ -2894,14 +2894,14 @@ class GenerationHandler:
                 response_extra={"task_id": task_id, "scene_id": scene_id},
             )
 
-            # 轮询结果
+            # polling hasil
             if stream:
                 yield self._create_stream_chunk(f"Video sedang diproses...\n")
 
-            # 检查是否需要放大
+            # cek apakah perlu upscale
             upsample_config = model_config.get("upsample")
 
-            # 如果是 extend，传入源视频 media_id 用于后续拼接
+            # kalau extend, oper media_id video sumber buat digabung nanti
             extend_source_id = video_media_id if video_type == "extend" else None
             async for chunk in self._poll_video_result(
                 token,
@@ -2931,10 +2931,10 @@ class GenerationHandler:
         request_log_state: Optional[Dict[str, Any]] = None,
         extend_source_media_id: Optional[str] = None,
     ) -> AsyncGenerator:
-        """轮询视频生成结果
+        """Polling hasil generate video
         
         Args:
-            upsample_config: 放大配置 {"resolution": "VIDEO_RESOLUTION_4K", "model_key": "veo_3_1_upsampler_4k"}
+            upsample_config: konfigurasi upscale {"resolution": "VIDEO_RESOLUTION_4K", "model_key": "veo_3_1_upsampler_4k"}
         """
 
         if response_state is None:
@@ -2985,9 +2985,9 @@ class GenerationHandler:
                 operation = checked_operations[0]
                 status = operation.get("status")
 
-                # 状态更新 - 每20秒报告一次 (poll_interval=3秒, 20秒约7次轮询)
-                progress_update_interval = 7  # 每7次轮询 = 21秒
-                if stream and attempt % progress_update_interval == 0:  # 每20秒报告一次
+                # update status - lapor tiap 20 detik (poll_interval=3 detik, 20 detik ~7x polling)
+                progress_update_interval = 7  # tiap 7x polling = 21 detik
+                if stream and attempt % progress_update_interval == 0:  # lapor tiap 20 detik
                     progress = min(int((attempt / max_attempts) * 100), 95)
                     await self._update_request_log_progress(
                         request_log_state,
@@ -2998,7 +2998,7 @@ class GenerationHandler:
                     )
                     yield self._create_stream_chunk(f"Progres: {progress}%\n")
 
-                # 检查状态
+                # cek status
                 if status == "MEDIA_GENERATION_STATUS_SUCCESSFUL":
                     try:
                         resolved_video = await self._resolve_video_asset(
@@ -3010,9 +3010,9 @@ class GenerationHandler:
                             or operation.get("name")
                             or operation["operation"].get("name")
                         )
-                        error_msg = f"视频生成成功但获取媒体地址失败: {self._normalize_error_message(redirect_error)}"
+                        error_msg = f"Video berhasil digenerate tapi gagal ambil alamat media: {self._normalize_error_message(redirect_error)}"
                         debug_logger.log_warning(
-                            f"[VIDEO POLL] 获取视频URL失败: media={media_name}, error={redirect_error}"
+                            f"[VIDEO POLL] Gagal ambil URL video: media={media_name}, error={redirect_error}"
                         )
                         await self._fail_video_task(checked_operations, error_msg)
                         self._mark_generation_failed(generation_result, error_msg)
@@ -3033,7 +3033,7 @@ class GenerationHandler:
                         if media_name_for_fetch:
                             if stream:
                                 yield self._create_stream_chunk(
-                                    "视频生成完成，正在下载视频文件...\n"
+                                    "Generate video selesai, lagi download file video...\n"
                                 )
                             try:
                                 media_result = await self.flow_client.get_media(
@@ -3069,7 +3069,7 @@ class GenerationHandler:
                                 )
 
                     if not video_url:
-                        error_msg = "视频生成成功但未获取到媒体地址"
+                        error_msg = "Video berhasil digenerate tapi nggak dapet alamat media"
                         await self._fail_video_task(checked_operations, error_msg)
                         self._mark_generation_failed(generation_result, error_msg)
                         yield self._create_error_response(error_msg, status_code=502)
@@ -3081,7 +3081,7 @@ class GenerationHandler:
                     metadata.setdefault("video", video_info)
                     operation["operation"]["metadata"] = metadata
 
-                    # ========== 视频放大处理 ==========
+                    # ========== proses upscale video ==========
                     if upsample_config and video_media_id:
                         if stream:
                             resolution_name = (
@@ -3090,11 +3090,11 @@ class GenerationHandler:
                                 else "1080P"
                             )
                             yield self._create_stream_chunk(
-                                f"\n视频生成完成，开始 {resolution_name} 放大处理...（可能需要 30 分钟）\n"
+                                f"\nGenerate video selesai, mulai {resolution_name} upscale... (bisa butuh 30  menit)\n"
                             )
                         
                         try:
-                            # 提交放大任务
+                            # submit task upscale
                             upsample_result = await self.flow_client.upsample_video(
                                 at=token.at,
                                 project_id=project_id,
@@ -3112,10 +3112,10 @@ class GenerationHandler:
                             if upsample_operations:
                                 if stream:
                                     yield self._create_stream_chunk(
-                                        "放大任务已提交，继续轮询...\n"
+                                        "Task upscale sudah di-submit, lanjut polling...\n"
                                     )
                                 
-                                # 递归轮询放大结果（不再放大）
+                                # polling rekursif hasil upscale (nggak di-upscale lagi)
                                 async for chunk in self._poll_video_result(
                                     token,
                                     project_id,
@@ -3131,13 +3131,13 @@ class GenerationHandler:
                             else:
                                 if stream:
                                     yield self._create_stream_chunk(
-                                        "⚠️ 放大任务创建失败，返回原始视频\n"
+                                        "⚠️ Gagal bikin task upscale, balikin video asli\n"
                                     )
                         except Exception as e:
                             debug_logger.log_error(f"Video upsample failed: {str(e)}")
                             if stream:
                                 yield self._create_stream_chunk(
-                                    f"⚠️ 放大失败: {str(e)}，返回原始视频\n"
+                                    f"⚠️ Upscale gagal: {str(e)}, balikin video asli\n"
                             )
                             
                     # Current Flow returns the generated extend media as its own
@@ -3146,10 +3146,10 @@ class GenerationHandler:
                     # completed 16-second composite.
                     if extend_source_media_id and video_media_id and stream:
                         yield self._create_stream_chunk(
-                            "续写片段已生成；当前 Flow 前端未提供媒体拼接 RPC，返回续写片段。\n"
+                            "Potongan lanjutan sudah digenerate; frontend Flow sekarang nggak sediain RPC sambung media, return potongannya aja.\n"
                         )
 
-                    # 缓存视频 (如果启用)
+                    # cache video (kalau diaktifkan)
                     local_url = video_url
                     if config.cache_enabled:
                         await self._update_request_log_progress(
@@ -3167,26 +3167,26 @@ class GenerationHandler:
                             local_url = f"{self._get_base_url(response_state)}/tmp/{cached_filename}"
                             if stream:
                                 yield self._create_stream_chunk(
-                                    "✅ 视频缓存成功,准备返回缓存地址...\n"
+                                    "✅ video berhasil di-cache, siap return alamat cache...\n"
                                 )
                         except Exception as e:
                             debug_logger.log_error(f"Failed to cache video: {str(e)}")
-                            # 缓存失败不影响结果返回,使用原始URL
+                            # gagal cache nggak ngaruh ke hasil, pakai URL asli
                             local_url = video_url
                             if stream:
                                 cache_error = self._normalize_error_message(
                                     e, max_length=120
                                 )
                                 yield self._create_stream_chunk(
-                                    f"⚠️ 缓存失败: {cache_error}\n正在返回源链接...\n"
+                                    f"⚠️ Gagal cache: {cache_error}\nlagi return link sumber...\n"
                                 )
                     else:
                         if stream:
                             yield self._create_stream_chunk(
-                                "缓存已关闭,正在返回源链接...\n"
+                                "cache dimatikan, lagi return link sumber...\n"
                             )
 
-                    # 更新数据库
+                    # update database
                     task_id = operation["operation"]["name"]
                     await self.db.update_task(
                         task_id,
@@ -3196,7 +3196,7 @@ class GenerationHandler:
                         completed_at=time.time(),
                     )
 
-                    # 存储URL用于日志记录
+                    # simpan URL buat pencatatan log
                     response_state["url"] = local_url
                     response_state["generated_assets"] = {
                         "type": "video",
@@ -3208,7 +3208,7 @@ class GenerationHandler:
                         "duration": resolved_video.get("duration"),
                     }
 
-                    # 返回结果
+                    # return hasil
                     self._mark_generation_succeeded(generation_result)
 
                     if stream:
@@ -3219,27 +3219,27 @@ class GenerationHandler:
 
                     else:
                         yield self._create_completion_response(
-                            local_url,  # 直接传URL,让方法内部格式化
+                            local_url,  # langsung oper URL, biar method yang format di dalam
                             media_type="video",
                         )
                     return
 
                 elif status == "MEDIA_GENERATION_STATUS_FAILED":
-                    # 生成失败 - 提取错误信息
+                    # generate gagal - ekstrak info error
                     error_info = operation.get("operation", {}).get("error", {})
                     error_code = error_info.get("code", "unknown")
-                    error_message = error_info.get("message", "未知错误")
+                    error_message = error_info.get("message", "Error tidak dikenal")
                     
-                    # 更新数据库任务状态
+                    # update status task di database
                     await self._fail_video_task(
                         checked_operations, f"{error_message} (code: {error_code})"
                     )
                     
-                    # 返回友好的错误消息，提示用户重试
+                    # return pesan error yang ramah, suruh user retry
                     friendly_error = f"Gagal membuat video: {error_message}, silakan coba lagi"
                     self._mark_generation_failed(generation_result, friendly_error)
                     if stream:
-                        yield self._create_stream_chunk(f"错误: {friendly_error}\n")
+                        yield self._create_stream_chunk(f"Error: {friendly_error}\n")
                     yield self._create_error_response(friendly_error, status_code=502)
                     return
 
@@ -3256,30 +3256,30 @@ class GenerationHandler:
                 consecutive_poll_errors += 1
                 debug_logger.log_error(f"Poll error: {str(e)}")
                 if consecutive_poll_errors >= max_consecutive_poll_errors:
-                    error_msg = f"视频状态查询失败: {self._normalize_error_message(e)}"
+                    error_msg = f"Gagal query status video: {self._normalize_error_message(e)}"
                     await self._fail_video_task(operations, error_msg)
                     self._mark_generation_failed(generation_result, error_msg)
                     if stream:
-                        yield self._create_stream_chunk(f"错误: {error_msg}\n")
+                        yield self._create_stream_chunk(f"Error: {error_msg}\n")
                     yield self._create_error_response(error_msg, status_code=502)
                     return
                 continue
 
-        # 超时
+        # timeout
         if last_poll_error is not None:
-            error_msg = f"视频状态查询持续失败: {self._normalize_error_message(last_poll_error)}"
+            error_msg = f"Query status video gagal terus: {self._normalize_error_message(last_poll_error)}"
         else:
-            error_msg = f"视频生成超时 (超过 {int(poll_budget_seconds)} 秒仍未完成)"
+            error_msg = f"Generate video timeout (lebih dari {int(poll_budget_seconds)} detik belum selesai)"
         await self._fail_video_task(operations, error_msg)
         self._mark_generation_failed(generation_result, error_msg)
         yield self._create_error_response(error_msg, status_code=504)
 
-    # ========== 响应格式化 ==========
+    # ========== format response ==========
 
     def _create_stream_chunk(
         self, content: str, role: str = None, finish_reason: str = None
     ) -> str:
-        """创建流式响应chunk"""
+        """Bikin chunk response streaming"""
         import json
         import time
 
@@ -3307,24 +3307,24 @@ class GenerationHandler:
         media_type: str = "image",
         is_availability_check: bool = False,
     ) -> str:
-        """创建非流式响应
+        """Bikin response non-streaming
 
         Args:
-            content: 媒体URL或纯文本消息
-            media_type: 媒体类型 ("image" 或 "video")
-            is_availability_check: 是否为可用性检查响应 (纯文本消息)
+            content: URL media atau pesan teks murni
+            media_type: tipe media ("image" atau "video")
+            is_availability_check: apakah response cek ketersediaan (pesan teks murni)
 
         Returns:
-            JSON格式的响应
+            response format JSON
         """
         import json
         import time
 
-        # 可用性检查: 返回纯文本消息
+        # cek ketersediaan: return pesan teks murni
         if is_availability_check:
             formatted_content = content
         else:
-            # 媒体生成: 根据媒体类型格式化内容为Markdown
+            # generate media: format konten jadi Markdown sesuai tipe media
             if media_type == "video":
                 formatted_content = (
                     f"```html\n<video src='{content}' controls></video>\n```"
@@ -3349,7 +3349,7 @@ class GenerationHandler:
         return json.dumps(response, ensure_ascii=False)
 
     def _create_error_response(self, error_message: str, status_code: int = 500) -> str:
-        """创建错误响应"""
+        """Bikin response error"""
         import json
 
         error = {
@@ -3366,8 +3366,8 @@ class GenerationHandler:
         return json.dumps(error, ensure_ascii=False)
 
     def _get_base_url(self, response_state: Optional[Dict[str, Any]] = None) -> str:
-        """获取基础URL用于缓存文件访问"""
-        # 已配置缓存访问域名时，始终优先使用它，避免被请求 Host/IP 覆盖。
+        """Ambil base URL buat akses file cache"""
+        # kalau domain akses cache dikonfigurasi, selalu utamakan itu, biar nggak ketimpa Host/IP request.
         if config.cache_base_url:
             return config.cache_base_url.rstrip("/")
 
@@ -3379,7 +3379,7 @@ class GenerationHandler:
         if request_base_url:
             return request_base_url
 
-        # 回退到服务地址，避免把监听地址 0.0.0.0 / :: 直接返回给客户端
+        # fallback ke alamat service, biar alamat listen 0.0.0.0 / :: nggak langsung dikasih ke client
         server_host = (config.server_host or "").strip()
         if server_host in {"", "0.0.0.0", "::", "[::]"}:
             server_host = "127.0.0.1"

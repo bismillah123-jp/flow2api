@@ -566,10 +566,10 @@ class FlowFrontendMixin:
             metadata["video"] = video_info
             error_message = {
                 "PUBLIC_ERROR_PROMINENT_PEOPLE_FILTER_FAILED": (
-                    "提示词或参考素材触发了人物安全过滤"
+                    "Prompt atau materi referensi memicu filter keamanan orang"
                 ),
-                "PUBLIC_ERROR_UNSAFE_GENERATION": "提示词或参考素材触发了内容安全过滤",
-            }.get(error_code, f"Flow 上游拒绝视频生成：{error_code}")
+                "PUBLIC_ERROR_UNSAFE_GENERATION": "Prompt atau materi referensi memicu filter keamanan konten",
+            }.get(error_code, f"Flow upstream menolak generate video: {error_code}")
             operation_body = {"name": operation_id, "metadata": metadata}
             if error_code:
                 operation_body["error"] = {
@@ -594,7 +594,7 @@ class FlowFrontendMixin:
         if not normalized:
             error_code = cls._extract_frontend_rpc_error_code(payload)
             if error_code:
-                error_message = f"Flow 上游拒绝视频生成：{error_code}"
+                error_message = f"Flow upstream menolak generate video: {error_code}"
                 for previous in operations:
                     operation_id = str(
                         (previous or {}).get("name")
@@ -768,7 +768,7 @@ class FlowFrontendMixin:
 
     @staticmethod
     def _extract_stream_chat_at_token(bootstrap_text: str) -> str:
-        """从 bootstrap HTML 提取 WIZ_global_data.SNlM0e（XSRF at token）。"""
+        """Ekstrak WIZ_global_data.SNlM0e (XSRF at token) dari bootstrap HTML."""
         for pattern in (
             r'"SNlM0e"\s*:\s*"((?:\\.|[^"\\])+)"',
             r"SNlM0e['\"]?\s*[:=]\s*['\"]([A-Za-z0-9_:\-.]+)['\"]",
@@ -789,7 +789,7 @@ class FlowFrontendMixin:
         recaptcha_token: str,
         session_id: str,
     ) -> str:
-        """构造 StreamChat f.req（结构复刻自新版前端真实请求）。
+        """Bangun StreamChat f.req (struktur meniru request asli frontend versi baru).
 
         outer = [null, "<inner json>"]
         inner = [session_id, [[[[prompt]]]],
@@ -806,11 +806,11 @@ class FlowFrontendMixin:
 
     @classmethod
     def _extract_stream_chat_media_ids(cls, payloads: Any) -> List[str]:
-        """从 StreamChat 响应帧中提取 generate_image 结果的 media_id。
+        """Ekstrak media_id hasil generate_image dari frame respons StreamChat.
 
-        batchexecute 帧形如 ["wrb.fr", null, "<inner json>"]，业务数据在
-        内层 JSON 字符串里，需要先 json.loads 再递归查找
-        ["media_id", [null, null, "<uuid>"]] 模式。
+        frame batchexecute berbentuk ["wrb.fr", null, "<inner json>"], data bisnis ada di
+        dalam string JSON inner, perlu json.loads dulu lalu cari rekursif
+        pola ["media_id", [null, null, "<uuid>"]].
         """
         found: List[str] = []
 
@@ -858,7 +858,7 @@ class FlowFrontendMixin:
         timeout: int,
         cookie_storage: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """新版 Flow 图片生成入口：FlowCreationAgentService/StreamChat。"""
+        """Entry point generate gambar Flow versi baru: FlowCreationAgentService/StreamChat."""
         page_url = f"https://flow.google.com/project/{project_id}"
         bootstrap_cookie_header = (
             serialize_cookie_header_for_url(cookie_storage, page_url)

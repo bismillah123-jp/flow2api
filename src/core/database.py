@@ -524,19 +524,19 @@ class Database:
                     ("video_enabled", "BOOLEAN DEFAULT 1"),
                     ("image_concurrency", "INTEGER DEFAULT -1"),
                     ("video_concurrency", "INTEGER DEFAULT -1"),
-                    ("captcha_proxy_url", "TEXT"),  # token级打码代理
-                    ("extension_route_key", "TEXT"),  # extension 模式路由键
-                    ("protocol_mode", "TEXT DEFAULT 'session'"),  # ST 刷新模式
-                    ("google_cookies", "TEXT DEFAULT ''"),  # 协议登录 Google Cookies
-                    ("login_account", "TEXT DEFAULT ''"),  # 协议登录账号提示
-                    ("login_password", "TEXT DEFAULT ''"),  # 预留
-                    ("proxy_url", "TEXT DEFAULT ''"),  # 协议刷新代理
+                    ("captcha_proxy_url", "TEXT"),  # Proxy captcha level token
+                    ("extension_route_key", "TEXT"),  # Route key mode extension
+                    ("protocol_mode", "TEXT DEFAULT 'session'"),  # Mode refresh ST
+                    ("google_cookies", "TEXT DEFAULT ''"),  # Google Cookies login protokol
+                    ("login_account", "TEXT DEFAULT ''"),  # Hint akun login protokol
+                    ("login_password", "TEXT DEFAULT ''"),  # Cadangan
+                    ("proxy_url", "TEXT DEFAULT ''"),  # Proxy refresh protokol
                     ("auto_refresh_enabled", "BOOLEAN DEFAULT 1"),
                     ("refresh_interval_minutes", "INTEGER DEFAULT 120"),
                     ("last_st_refresh_at", "TIMESTAMP"),
                     ("last_st_refresh_result", "TEXT DEFAULT ''"),
-                    ("ban_reason", "TEXT"),  # 禁用原因
-                    ("banned_at", "TIMESTAMP"),  # 禁用时间
+                    ("ban_reason", "TEXT"),  # Alasan ban
+                    ("banned_at", "TIMESTAMP"),  # Waktu di-ban
                 ]
 
                 for col_name, col_type in columns_to_add:
@@ -651,7 +651,7 @@ class Database:
                     ("today_video_count", "INTEGER DEFAULT 0"),
                     ("today_error_count", "INTEGER DEFAULT 0"),
                     ("today_date", "DATE"),
-                    ("consecutive_error_count", "INTEGER DEFAULT 0"),  # 🆕 连续错误计数
+                    ("consecutive_error_count", "INTEGER DEFAULT 0"),  # 🆕 Counter error beruntun
                 ]
 
                 for col_name, col_type in stats_columns_to_add:
@@ -667,7 +667,7 @@ class Database:
             # Check and add missing columns to plugin_config table
             if await self._table_exists(db, "plugin_config"):
                 plugin_columns_to_add = [
-                    ("auto_enable_on_update", "BOOLEAN DEFAULT 1"),  # 默认开启
+                    ("auto_enable_on_update", "BOOLEAN DEFAULT 1"),  # Default aktif
                 ]
 
                 for col_name, col_type in plugin_columns_to_add:
@@ -740,7 +740,7 @@ class Database:
         async with self._connect(write=True) as db:
             await db.execute("PRAGMA journal_mode = WAL")
             await db.execute("PRAGMA synchronous = NORMAL")
-            # Tokens table (Flow2API版本)
+            # Tabel Tokens (versi Flow2API)
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS tokens (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -778,7 +778,7 @@ class Database:
                 )
             """)
 
-            # Projects table (新增)
+            # Tabel Projects (baru)
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS projects (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -991,7 +991,7 @@ class Database:
             # Migrate request_logs table if needed
             await self._migrate_request_logs(db)
 
-            # Request logs query indexes (列表按 created_at 排序 / token 过滤)
+            # Index query request logs (daftar diurutkan by created_at / filter token)
             await db.execute(
                 "CREATE INDEX IF NOT EXISTS idx_request_logs_created_at ON request_logs(created_at DESC)"
             )
@@ -1110,7 +1110,7 @@ class Database:
         query += " LIMIT 1"
         cursor = await db.execute(query, params)
         if await cursor.fetchone():
-            raise ValueError(f"账号已存在: {identities[0]}")
+            raise ValueError(f"Akun sudah ada: {identities[0]}")
 
     # Token operations
     async def add_token(self, token: Token) -> int:
@@ -2438,11 +2438,11 @@ class Database:
                 )
                 new_personal_max_tabs = max(
                     1, min(50, int(new_personal_max_tabs))
-                )  # 限制1-50
+                )  # Batasi 1-50
                 new_personal_fresh_restart_every = max(
                     0, int(new_personal_fresh_restart_every)
                 )
-                new_personal_idle_ttl = max(60, int(new_personal_idle_ttl))  # 最少60秒
+                new_personal_idle_ttl = max(60, int(new_personal_idle_ttl))  # Minimal 60 detik
 
                 await db.execute(
                     """

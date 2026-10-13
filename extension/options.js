@@ -50,20 +50,20 @@ function saveSettings() {
   });
 
   if (!isValidWsUrl(settings.serverUrl)) {
-    setStatus("WebSocket URL 必须以 ws:// 或 wss:// 开头。", true);
+    setStatus("URL WebSocket harus diawali ws:// atau wss://.", true);
     return;
   }
   if (!settings.apiKey) {
-    setStatus("请填写 Flow2API API Key。", true);
+    setStatus("Isi Flow2API API Key dulu.", true);
     return;
   }
 
   chrome.storage.local.set(settings, () => {
     if (chrome.runtime.lastError) {
-      setStatus(`保存失败：${chrome.runtime.lastError.message}`, true);
+      setStatus(`Gagal simpan: ${chrome.runtime.lastError.message}`, true);
       return;
     }
-    setStatus("已保存，后台连接会自动重连。");
+    setStatus("Tersimpan, koneksi backend akan reconnect otomatis.");
   });
 }
 

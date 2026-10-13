@@ -7,11 +7,11 @@
 [![FastAPI](https://img.shields.io/badge/fastapi-0.119.0-green.svg)](https://fastapi.tiangolo.com/)
 [![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](https://www.docker.com/)
 
-**一个功能完整的 OpenAI 兼容 API 服务，为 Flow 提供统一的接口**
+**Layanan API yang kompatibel penuh dengan OpenAI, menyediakan satu interface terpadu untuk Flow**
 
 </div>
 
-## ❤️赞助商
+## ❤️ Sponsor
 
 <table>
 <tr>
@@ -21,7 +21,7 @@
   </a>
 </td>
 <td valign="top">
-  感谢 <strong>useapi.net</strong> 赞助了本项目！<strong>一个订阅，全部 API</strong>：useapi.net 为你自己的 Google 账号提供托管 API：<strong>Google Flow</strong>（Veo 3.1、带原生音频的 Omni 1.1 Flash、Nano Banana Pro）、<strong>Google Vids</strong>（Gemini Omni 1.1 Flash 带配音数字人，<strong>无需验证码</strong>，额度与 Flow 分开，同一账号同时使用 Flow 和 Vids，Omni 产能约翻倍）、<strong>Google Flow Music</strong>（Lyria 3.5 整首歌曲）和 <strong>Gemini Notebook</strong>（NotebookLM）。新上线 <strong>Meta Muse</strong>（muse.ai）：用你自己的 Muse 账号生成图片和约 10 秒带台词配音的视频，免费账号可用。无需自己部署。同一订阅还包含 Dreamina、可灵 Kling、PixVerse、海螺 MiniMax、Mureka、Runway 等 API，每月固定 $15。<a href="https://useapi.net/docs/articles/google-flow-api-zh?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Flow 中文教程</a> · <a href="https://useapi.net/docs/articles/google-vids-api-zh?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Vids 中文教程</a> · <a href="https://useapi.net/docs/articles/muse-api-zh?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Muse 中文教程</a> · <a href="https://buy.stripe.com/8x2aEX4Bd8Vh9PMg4qeUU03?client_reference_id=flow2api">订阅</a><br><br>
+  Terima kasih kepada <strong>useapi.net</strong> yang telah mensponsori proyek ini! <strong>Satu langganan, semua API</strong>: useapi.net menyediakan API terkelola untuk akun Googlemu sendiri: <strong>Google Flow</strong> (Veo 3.1, Omni 1.1 Flash dengan audio native, Nano Banana Pro), <strong>Google Vids</strong> (Gemini Omni 1.1 Flash dengan avatar manusia digital berdubbing, <strong>tanpa captcha</strong>, kuota terpisah dari Flow — memakai Flow dan Vids bersamaan di satu akun kira-kira melipatgandakan kapasitas Omni), <strong>Google Flow Music</strong> (lagu utuh dengan Lyria 3.5) dan <strong>Gemini Notebook</strong> (NotebookLM). Baru: <strong>Meta Muse</strong> (muse.ai): buat gambar dan video sekitar 10 detik dengan dialog bersuara memakai akun Musemu sendiri, akun gratis pun bisa. Tidak perlu self-host. Langganan yang sama juga mencakup API Dreamina, Kling, PixVerse, MiniMax, Mureka, Runway, dan lainnya, dengan tarif flat $15/bulan.<a href="https://useapi.net/docs/articles/google-flow-api-zh?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Tutorial Flow (Mandarin)</a> · <a href="https://useapi.net/docs/articles/google-vids-api-zh?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Tutorial Vids (Mandarin)</a> · <a href="https://useapi.net/docs/articles/muse-api-zh?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Tutorial Muse (Mandarin)</a> · <a href="https://buy.stripe.com/8x2aEX4Bd8Vh9PMg4qeUU03?client_reference_id=flow2api">Berlangganan</a><br><br>
   Thanks to <strong>useapi.net</strong> for sponsoring this project! <strong>One subscription, every API</strong>: useapi.net runs hosted APIs on your own Google account: <strong>Google Flow</strong> (Veo 3.1, audio-native Omni 1.1 Flash, Nano Banana Pro), <strong>Google Vids</strong> (Gemini Omni 1.1 Flash with voiced avatars, <strong>no captcha</strong>, an allowance separate from Flow, so using both on one account roughly doubles your Omni capacity), <strong>Google Flow Music</strong> (full songs with Lyria 3.5) and <strong>Gemini Notebook</strong> (NotebookLM). New: <strong>Meta Muse</strong> (muse.ai): images and about 10-second videos with spoken dialogue on your own Muse account, free plan included. Nothing to self-host. The same flat $15/month also covers Dreamina, Kling, PixVerse, MiniMax, Mureka, Runway and more. <a href="https://useapi.net/docs/api-google-flow-v1?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Flow docs</a> · <a href="https://useapi.net/docs/api-google-vids-v1?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Vids docs</a> · <a href="https://useapi.net/docs/api-muse-v1?utm_source=flow2api&utm_medium=referral&utm_campaign=flow2api-sponsor">Muse docs</a> · <a href="https://buy.stripe.com/8x2aEX4Bd8Vh9PMg4qeUU03?client_reference_id=flow2api">Subscribe</a>
 </td>
 </tr>
@@ -35,192 +35,192 @@
   </a>
 </td>
 <td valign="top">
-  感谢 <strong>ProxyLane</strong> 赞助了本项目！ProxyLane 是住宅代理服务，覆盖 195 个国家，95%+ IP 获 Scamalytics 低风险评级，支持 HTTP / SOCKS5 和账号密码认证。在 Token 的「协议代理」「打码代理」或全局「请求代理地址」里填入代理，用户名中写上城市和会话名，每个 Token 最长 72 小时使用同一个住宅 IP，换 IP 也留在同一城市。中文界面，支持 USDT 付款，首次购买使用优惠码 <strong>FLOW2API30</strong> 享 7 折，通过<a href="https://proxylane.dev/?utm_source=flow2api&utm_medium=partnership&utm_campaign=flow2api_sponsor_202610&utm_content=github_readme">此链接</a>注册即可。<br><br>
+  Terima kasih kepada <strong>ProxyLane</strong> yang telah mensponsori proyek ini! ProxyLane adalah layanan residential proxy yang mencakup 195 negara, 95%+ IP berpredikat risiko rendah oleh Scamalytics, mendukung autentikasi HTTP / SOCKS5 dan username–password. Masukkan proxy ke kolom "proxy protokol" / "proxy captcha" di Token, atau ke "alamat proxy request" global — tulis kota dan nama sesi di username: setiap Token memakai satu IP residential yang sama hingga 72 jam, dan IP pengganti pun tetap di kota yang sama. Antarmuka berbahasa Mandarin, mendukung pembayaran USDT, pembelian pertama dapat diskon 30% dengan kode <strong>FLOW2API30</strong> — daftar lewat <a href="https://proxylane.dev/?utm_source=flow2api&utm_medium=partnership&utm_campaign=flow2api_sponsor_202610&utm_content=github_readme">link ini</a>.<br><br>
   Thanks to <strong>ProxyLane</strong> for sponsoring this project! ProxyLane is a residential proxy service in 195 countries, with 95%+ of IPs rated low risk by Scamalytics and HTTP / SOCKS5 with username and password. Put the proxy into a Token's protocol or captcha proxy, or into the global request proxy, with a city and a session name in the username: each Token keeps one residential IP for up to 72 hours, and a replacement IP stays in the same city. New customers get 30% off the first purchase with code <strong>FLOW2API30</strong>. <a href="https://proxylane.dev/?utm_source=flow2api&utm_medium=partnership&utm_campaign=flow2api_sponsor_202610&utm_content=github_readme_en">Sign up here</a> to get started.
 </td>
 </tr>
 </table>
 
-## ✨ 核心特性
+## ✨ Fitur Utama
 
-- 🎨 **文生图** / **图生图**
-- 🎬 **文生视频** / **图生视频**
-- 🎞️ **首尾帧视频**
-- 🔄 **Cookie 自动刷新** - 定时刷新完整 Google/Flow Cookie 并验证登录态，支持 browser/personal 浏览器兜底；登录失效后需重新同步 Cookie
-- 📊 **余额显示** - 实时查询和显示 VideoFX Credits
-- 🚀 **负载均衡** - 多 Token 轮询和并发控制
-- 🌐 **代理支持** - 支持 HTTP/SOCKS5 代理
-- 📱 **Web 管理界面** - 直观的 Token 和配置管理
-- 🎨 **图片生成连续对话**
-- 🧩 **Gemini 官方请求体兼容** - 支持 `generateContent` / `streamGenerateContent`、`systemInstruction`、`contents.parts.text/inlineData/fileData`
-- ✅ **Gemini 官方格式已实测出图** - 已使用真实 Token 验证 `/models/{model}:generateContent` 可正常返回官方 `candidates[].content.parts[].inlineData`
+- 🎨 **Text-to-image** / **Image-to-image**
+- 🎬 **Text-to-video** / **Image-to-video**
+- 🎞️ **Video frame awal–akhir**
+- 🔄 **Refresh Cookie otomatis** - me-refresh Cookie Google/Flow lengkap secara berkala dan memverifikasi status login, dengan fallback browser `browser`/`personal`; jika login kedaluwarsa, Cookie harus disinkronkan ulang
+- 📊 **Tampilan saldo** - query dan tampilkan VideoFX Credits secara real-time
+- 🚀 **Load balancing** - round-robin multi-Token dan kontrol konkurensi
+- 🌐 **Dukungan proxy** - mendukung proxy HTTP/SOCKS5
+- 📱 **Antarmuka web admin** - manajemen Token dan konfigurasi yang intuitif
+- 🎨 **Percakapan berkelanjutan untuk pembuatan gambar**
+- 🧩 **Kompatibel dengan request body resmi Gemini** - mendukung `generateContent` / `streamGenerateContent`, `systemInstruction`, `contents.parts.text/inlineData/fileData`
+- ✅ **Format resmi Gemini sudah diuji menghasilkan gambar** - sudah diverifikasi dengan Token asli bahwa `/models/{model}:generateContent` mengembalikan `candidates[].content.parts[].inlineData` resmi dengan normal
 
-## 🚀 快速开始
+## 🚀 Mulai Cepat
 
-### 前置要求
+### Persyaratan
 
-- Docker 和 Docker Compose（推荐）
-- 或 Python 3.8+
+- Docker dan Docker Compose (direkomendasikan)
+- atau Python 3.8+
 
-- 由于 Flow 增加了额外的验证码，你可以自行选择使用浏览器打码或第三方打码：
-  - 注册 [YesCaptcha](https://yescaptcha.com/i/13Xd8K) 并获取 API Key，填入系统配置页面的 `YesCaptcha API 密钥`。
-  - 注册 [CapSolver](https://dashboard.capsolver.com/passport/register?inviteCode=z95yVf1HvixI) 并获取 API Key，填入系统配置页面的 `CapSolver API 密钥`。
-  - 注册 [Captcha.run](https://captcha.run/sso?inviter=36179602-dbd1-4227-8ec8-98f8c0170c59) 并获取 API Key，填入系统配置页面的 `Captcha.run API 密钥`。
-  - 注册 [2Captcha](https://2captcha.com/auth/register/?from=24953866) 并获取 API Key，填入系统配置页面的 `2Captcha API 密钥`。
-- YesCaptcha 支持在管理页切换 `type`：`RecaptchaV3TaskProxyless`、`RecaptchaV3TaskProxylessM1`、`RecaptchaV3TaskProxylessM1S7`、`RecaptchaV3TaskProxylessM1S9`；当前默认推荐 `M1S9`，S7/S9 会强制提交 `minScore` 0.7/0.9。
-- 默认 `docker-compose.yml` 建议搭配第三方打码（yescaptcha/captcharun/twocaptcha/capmonster/ezcaptcha/capsolver）。
-如需 Docker 内有头打码（browser/personal），请使用下方 `docker-compose.headed.yml`。
+- Karena Flow menambahkan captcha tambahan, kamu bisa memilih memakai captcha browser atau captcha pihak ketiga:
+  - Daftar [YesCaptcha](https://yescaptcha.com/i/13Xd8K) dan dapatkan API Key, lalu isi di kolom `YesCaptcha API Key` pada halaman konfigurasi sistem.
+  - Daftar [CapSolver](https://dashboard.capsolver.com/passport/register?inviteCode=z95yVf1HvixI) dan dapatkan API Key, lalu isi di kolom `CapSolver API Key` pada halaman konfigurasi sistem.
+  - Daftar [Captcha.run](https://captcha.run/sso?inviter=36179602-dbd1-4227-8ec8-98f8c0170c59) dan dapatkan API Key, lalu isi di kolom `Captcha.run API Key` pada halaman konfigurasi sistem.
+  - Daftar [2Captcha](https://2captcha.com/auth/register/?from=24953866) dan dapatkan API Key, lalu isi di kolom `2Captcha API Key` pada halaman konfigurasi sistem.
+- YesCaptcha mendukung pergantian `type` di halaman admin: `RecaptchaV3TaskProxyless`, `RecaptchaV3TaskProxylessM1`, `RecaptchaV3TaskProxylessM1S7`, `RecaptchaV3TaskProxylessM1S9`; default yang direkomendasikan saat ini adalah `M1S9`, S7/S9 akan memaksa submit `minScore` 0.7/0.9.
+- `docker-compose.yml` default disarankan dipakai bersama captcha pihak ketiga (yescaptcha/captcharun/twocaptcha/capmonster/ezcaptcha/capsolver).
+- Jika butuh captcha headed di dalam Docker (browser/personal), gunakan `docker-compose.headed.yml` di bawah.
 
-- 自动推送新版 Flow 登录态的浏览器扩展：[Flow2API-Token-Updater](https://github.com/TheSmallHanCat/Flow2API-Token-Updater)。
+- Ekstensi browser yang otomatis mendorong status login Flow terbaru: [Flow2API-Token-Updater](https://github.com/TheSmallHanCat/Flow2API-Token-Updater).
 
-### 方式一：Docker 部署（推荐）
+### Cara 1: Deploy Docker (direkomendasikan)
 
-#### 标准模式（不使用代理）
+#### Mode standar (tanpa proxy)
 
 ```bash
-# 克隆项目
+# Clone proyek
 git clone https://github.com/TheSmallHanCat/flow2api.git
 cd flow2api
 
-# 启动服务
+# Jalankan layanan
 docker-compose up -d
 
-# 查看日志
+# Lihat log
 docker-compose logs -f
 ```
 
-> 说明：Compose 已默认挂载 `./tmp:/app/tmp`。如果把缓存超时设为 `0`，语义是“不自动过期删除”；若希望容器重建后仍保留缓存文件，也需要保留这个 `tmp` 挂载。
+> Catatan: Compose secara default mem-mount `./tmp:/app/tmp`. Jika timeout cache diset ke `0`, artinya "tidak otomatis dihapus saat kedaluwarsa"; jika ingin file cache tetap ada setelah container dibangun ulang, mount `tmp` ini juga harus dipertahankan.
 
-#### WARP 模式（使用代理）
+#### Mode WARP (dengan proxy)
 
 ```bash
-# 使用 WARP 代理启动
+# Jalankan dengan proxy WARP
 docker-compose -f docker-compose.proxy.yml up -d
 
-# 查看日志
+# Lihat log
 docker-compose -f docker-compose.proxy.yml logs -f
 ```
 
-#### Docker 有头打码模式（browser / personal）
+#### Mode captcha headed di Docker (browser / personal)
 
-> 适用于你有虚拟化桌面需求、希望在容器里启用有头浏览器打码的场景。  
-> 该模式默认启动 `Xvfb + Fluxbox` 实现容器内部可视化，并设置 `ALLOW_DOCKER_HEADED_CAPTCHA=true`。  
-> 仅开放应用端口，不提供任何远程桌面连接端口。
-> `personal` 内置浏览器现在默认按有头模式启动；如需临时切回无头，可额外设置环境变量 `PERSONAL_BROWSER_HEADLESS=true`。
+> Cocok untuk skenario di mana kamu butuh desktop virtual dan ingin mengaktifkan captcha via browser headed di dalam container.
+> Mode ini secara default menjalankan `Xvfb + Fluxbox` untuk visualisasi di dalam container, dan mengatur `ALLOW_DOCKER_HEADED_CAPTCHA=true`.
+> Hanya port aplikasi yang dibuka; tidak ada port koneksi remote desktop.
+> Browser bawaan `personal` kini berjalan dalam mode headed secara default; untuk sementara beralih kembali ke headless, set environment variable `PERSONAL_BROWSER_HEADLESS=true`.
 
 ```bash
-# 启动有头模式（首次建议带 --build）
+# Jalankan mode headed (disarankan pakai --build saat pertama kali)
 docker compose -f docker-compose.headed.yml up -d --build
 
-# 查看日志
+# Lihat log
 docker compose -f docker-compose.headed.yml logs -f
 ```
 
-- API 端口：`8000`
-- 进入管理后台后，将验证码方式设为 `browser` 或 `personal`
+- Port API: `8000`
+- Setelah masuk ke panel admin, set metode captcha ke `browser` atau `personal`
 
-### 方式二：本地部署
+### Cara 2: Deploy lokal
 
 ```bash
-# 克隆项目
+# Clone proyek
 git clone https://github.com/TheSmallHanCat/flow2api.git
 cd flow2api
 
-# 创建虚拟环境
+# Buat virtual environment
 python -m venv venv
 
-# 激活虚拟环境
+# Aktifkan virtual environment
 # Windows
 venv\Scripts\activate
 # Linux/Mac
 source venv/bin/activate
 
-# 安装依赖
+# Instal dependensi
 pip install -r requirements.txt
 
-# 启动服务
+# Jalankan layanan
 python main.py
 ```
 
-### 首次访问
+### Akses Pertama
 
-服务启动后,访问管理后台: **http://localhost:8000**,首次登录后请立即修改密码!
+Setelah layanan berjalan, buka panel admin: **http://localhost:8000**, dan segera ganti password setelah login pertama!
 
-- **用户名**: `admin`
-- **密码**: `admin`
+- **Username**: `admin`
+- **Password**: `admin`
 
-## 📈 监控接口
+## 📈 Endpoint Pemantauan
 
-- `GET /health`：公开健康检查，返回服务是否存活、活跃 Token 数、即将过期 Token 数、已过期 Token 数、429 禁用数等摘要
-- `GET /metrics`：Prometheus 指标接口
-- `GET /api/tokens`：管理接口，返回 `at_expires`、`at_expired`、`at_expiring_within_1h`、`ban_reason`、`consecutive_error_count` 等 Token 状态
+- `GET /health`: health check publik, mengembalikan ringkasan — apakah layanan hidup, jumlah Token aktif, Token yang akan kedaluwarsa, Token yang sudah kedaluwarsa, jumlah disable karena 429, dll
+- `GET /metrics`: endpoint metrik Prometheus
+- `GET /api/tokens`: endpoint admin, mengembalikan status Token `at_expires`, `at_expired`, `at_expiring_within_1h`, `ban_reason`, `consecutive_error_count`, dll
 
-Prometheus 可直接抓 `/metrics`。如果部署到 Kubernetes，建议只在集群内抓取，并在 Ingress/Gateway 层单独限制 `/metrics` 的外部访问。
+Prometheus bisa langsung scrape `/metrics`. Jika deploy ke Kubernetes, disarankan hanya scrape dari dalam cluster, dan batasi akses eksternal `/metrics` di layer Ingress/Gateway.
 
-### 模型测试页面
+### Halaman Uji Model
 
-访问 **http://localhost:8000/test** 可打开内置的模型测试页面，支持：
+Buka **http://localhost:8000/test** untuk membuka halaman uji model bawaan, yang mendukung:
 
-- 按分类浏览所有可用模型（图片生成、文/图生视频、多图视频、视频放大等）
-- 输入提示词一键测试，流式显示生成进度
-- 图生图 / 图生视频场景支持上传图片
-- 生成完成后直接预览图片或视频
+- Jelajahi semua model yang tersedia berdasarkan kategori (pembuatan gambar, video dari teks/gambar, video multi-gambar, upscaling video, dll)
+- Uji dengan satu klik setelah memasukkan prompt, progres pembuatan ditampilkan secara streaming
+- Skenario image-to-image / image-to-video mendukung upload gambar
+- Pratinjau gambar atau video langsung setelah pembuatan selesai
 
-## 📋 支持的模型
+## 📋 Model yang Didukung
 
-### 图片生成
+### Pembuatan Gambar
 
-当前 `/v1/models` 与 Gemini `/models` 公开 Nano Banana 2.1 和 Nano Banana 2 Lite 两个图片系列，共 30 个比例与分辨率变体。已有 `gemini-3.1-flash-image-*` 名称继续保留，调用新版 Nano Banana 2.1（`BELUGA`）。旧 Pro 名称 `gemini-3.0-pro-image-*` 继续调用 Nano Banana Pro（`GEM_PIX_2`），但不出现在模型列表中。旧 Imagen 模型已停止支持；模型不存在时不会回退到旧上游字段。
+Saat ini `/v1/models` dan Gemini `/models` mempublikasikan dua seri gambar Nano Banana 2.1 dan Nano Banana 2 Lite, total 30 varian rasio dan resolusi. Nama `gemini-3.1-flash-image-*` yang sudah ada tetap dipertahankan, memanggil Nano Banana 2.1 baru (`BELUGA`). Nama Pro lama `gemini-3.0-pro-image-*` tetap memanggil Nano Banana Pro (`GEM_PIX_2`), tetapi tidak tampil di daftar model. Model Imagen lama sudah tidak didukung; jika model tidak ada, tidak ada fallback ke field upstream lama.
 
-| 当前公开名称 | 分辨率 | 比例 |
+| Nama publik saat ini | Resolusi | Rasio |
 |---|---:|---:|
-| `gemini-3.1-flash-image-landscape` | 默认 | 横屏 |
-| `gemini-3.1-flash-image-portrait` | 默认 | 竖屏 |
-| `gemini-3.1-flash-image-square` | 默认 | 方图 |
-| `gemini-3.1-flash-image-four-three` | 默认 | 横屏 4:3 |
-| `gemini-3.1-flash-image-three-four` | 默认 | 竖屏 3:4 |
-| `gemini-3.1-flash-image-landscape-2k` | 2K | 横屏 |
-| `gemini-3.1-flash-image-portrait-2k` | 2K | 竖屏 |
-| `gemini-3.1-flash-image-square-2k` | 2K | 方图 |
-| `gemini-3.1-flash-image-four-three-2k` | 2K | 横屏 4:3 |
-| `gemini-3.1-flash-image-three-four-2k` | 2K | 竖屏 3:4 |
-| `gemini-3.1-flash-image-landscape-4k` | 4K | 横屏 |
-| `gemini-3.1-flash-image-portrait-4k` | 4K | 竖屏 |
-| `gemini-3.1-flash-image-square-4k` | 4K | 方图 |
-| `gemini-3.1-flash-image-four-three-4k` | 4K | 横屏 4:3 |
-| `gemini-3.1-flash-image-three-four-4k` | 4K | 竖屏 3:4 |
+| `gemini-3.1-flash-image-landscape` | Default | Landscape |
+| `gemini-3.1-flash-image-portrait` | Default | Portrait |
+| `gemini-3.1-flash-image-square` | Default | Square |
+| `gemini-3.1-flash-image-four-three` | Default | Landscape 4:3 |
+| `gemini-3.1-flash-image-three-four` | Default | Portrait 3:4 |
+| `gemini-3.1-flash-image-landscape-2k` | 2K | Landscape |
+| `gemini-3.1-flash-image-portrait-2k` | 2K | Portrait |
+| `gemini-3.1-flash-image-square-2k` | 2K | Square |
+| `gemini-3.1-flash-image-four-three-2k` | 2K | Landscape 4:3 |
+| `gemini-3.1-flash-image-three-four-2k` | 2K | Portrait 3:4 |
+| `gemini-3.1-flash-image-landscape-4k` | 4K | Landscape |
+| `gemini-3.1-flash-image-portrait-4k` | 4K | Portrait |
+| `gemini-3.1-flash-image-square-4k` | 4K | Square |
+| `gemini-3.1-flash-image-four-three-4k` | 4K | Landscape 4:3 |
+| `gemini-3.1-flash-image-three-four-4k` | 4K | Portrait 3:4 |
 
-Nano Banana 2 Lite 使用 `gemini-3.1-flash-lite-image-*`，比例及分辨率后缀与上表一致，例如 `gemini-3.1-flash-lite-image-landscape`、`gemini-3.1-flash-lite-image-portrait-2k`、`gemini-3.1-flash-lite-image-square-4k`。也支持简化名称 `gemini-3.1-flash-lite-image` 搭配 `aspectRatio` / `imageSize` 参数。
+Nano Banana 2 Lite memakai `gemini-3.1-flash-lite-image-*`, dengan sufiks rasio dan resolusi yang sama seperti tabel di atas, misalnya `gemini-3.1-flash-lite-image-landscape`, `gemini-3.1-flash-lite-image-portrait-2k`, `gemini-3.1-flash-lite-image-square-4k`. Nama sederhana `gemini-3.1-flash-lite-image` juga didukung, dikombinasikan dengan parameter `aspectRatio` / `imageSize`.
 
-2K/4K 变体通过生成后的高清放大实现，不代表 Lite 原生输出这些分辨率。主程序通过图片 RPC 明确提交模型、比例和参考图；浏览器打码与第三方打码均只提供验证码。`browser` / `personal` 模式不需要第三方打码密钥，图片、上传、放大及视频请求按所需 action 获取验证码。Lite 不会自动回退到其他图片模型。
+Varian 2K/4K diwujudkan lewat upscaling HD setelah pembuatan, bukan berarti Lite secara native mengeluarkan resolusi tersebut. Program utama mengirimkan model, rasio, dan gambar referensi secara eksplisit lewat RPC gambar; captcha browser maupun pihak ketiga hanya menyediakan token captcha. Mode `browser` / `personal` tidak membutuhkan kunci captcha pihak ketiga; request gambar, upload, upscaling, dan video memperoleh captcha sesuai action yang dibutuhkan. Lite tidak otomatis fallback ke model gambar lain.
 
-### 视频生成
+### Pembuatan Video
 
-当前 `/v1/models` 与 Gemini `/models` 只公开 Flow 现行模型族。旧下划线模型名继续兼容，但不再出现在模型列表中。
+Saat ini `/v1/models` dan Gemini `/models` hanya mempublikasikan keluarga model Flow yang aktif. Nama model lama bergaris bawah tetap kompatibel, tetapi tidak lagi tampil di daftar model.
 
-| 当前公开名称 | 上游模型族 | 能力 |
+| Nama publik saat ini | Keluarga model upstream | Kemampuan |
 |---|---|---|
-| `veo-3.1-lite` / `veo-3.1-fast` / `veo-3.1-quality` / `omni-1.1-flash` | 当前默认模型 | 8 秒横屏文生视频 |
-| `veo-3.1-lite-{4,6,8}s-{landscape,portrait}` | Veo 3.1 - Lite | 文生视频 |
-| `veo-3.1-fast-{4,6,8}s-{landscape,portrait}` | Veo 3.1 - Fast | 文生视频 |
-| `veo-3.1-quality-{4,6,8}s-{landscape,portrait}` | Veo 3.1 - Quality | 文生视频 |
-| `omni-1.1-flash-{4,6,8,10}s-{landscape,portrait}` | Omni 1.1 Flash (`abra`) | 文生/参考图视频 |
-| `veo-3.1-{lite,fast,quality}-i2v-{4,6}s-{landscape,portrait}` | Veo 3.1 | 首帧/首尾帧视频 |
-| `veo-3.1-{lite,fast}-r2v-8s-{landscape,portrait}` | Veo 3.1 | 多参考图视频 |
-| `veo-3.1-{lite,fast,quality}-extend-8s-{landscape,portrait}` | Veo 3.1 | 视频续写 |
+| `veo-3.1-lite` / `veo-3.1-fast` / `veo-3.1-quality` / `omni-1.1-flash` | Model default saat ini | Video text-to-video landscape 8 detik |
+| `veo-3.1-lite-{4,6,8}s-{landscape,portrait}` | Veo 3.1 - Lite | Text-to-video |
+| `veo-3.1-fast-{4,6,8}s-{landscape,portrait}` | Veo 3.1 - Fast | Text-to-video |
+| `veo-3.1-quality-{4,6,8}s-{landscape,portrait}` | Veo 3.1 - Quality | Text-to-video |
+| `omni-1.1-flash-{4,6,8,10}s-{landscape,portrait}` | Omni 1.1 Flash (`abra`) | Text-to-video / video gambar referensi |
+| `veo-3.1-{lite,fast,quality}-i2v-{4,6}s-{landscape,portrait}` | Veo 3.1 | Video frame awal / frame awal–akhir |
+| `veo-3.1-{lite,fast}-r2v-8s-{landscape,portrait}` | Veo 3.1 | Video multi gambar referensi |
+| `veo-3.1-{lite,fast,quality}-extend-8s-{landscape,portrait}` | Veo 3.1 | Lanjutan video |
 
-表格中的花括号表示任选其中一个值。例如 `veo-3.1-fast-{4,6,8}s-{landscape,portrait}` 包含 4/6/8 秒与横屏/竖屏组合。
+Kurung kurawal di tabel berarti pilih salah satu nilai. Misalnya `veo-3.1-fast-{4,6,8}s-{landscape,portrait}` mencakup kombinasi 4/6/8 detik dengan landscape/portrait.
 
 #### Omni 1.1 Flash
 
-`Omni 1.1 Flash` 同时支持文生视频和参考图视频。调用方使用同一组模型名，服务会根据请求中是否包含图片自动选择生成模式：
+`Omni 1.1 Flash` mendukung text-to-video maupun video gambar referensi. Caller memakai nama model yang sama, layanan otomatis memilih mode pembuatan berdasarkan apakah request memuat gambar:
 
-- `omni-1.1-flash` 是 `omni-1.1-flash-8s-landscape` 的默认别名。
-- 完整模型名为 `omni-1.1-flash-{4,6,8,10}s-{landscape,portrait}`，可选择 4、6、8、10 秒以及横屏或竖屏。
-- 仅传入文本时使用文生视频模式；传入 1–3 张 `image_url` 图片时使用参考图视频模式。
-- 时长和画面方向由模型名指定，无需额外传入同名参数。
+- `omni-1.1-flash` adalah alias default dari `omni-1.1-flash-8s-landscape`.
+- Nama model lengkapnya `omni-1.1-flash-{4,6,8,10}s-{landscape,portrait}`, bisa memilih 4, 6, 8, atau 10 detik serta landscape atau portrait.
+- Jika hanya teks yang dikirim, dipakai mode text-to-video; jika 1–3 gambar `image_url` dikirim, dipakai mode video gambar referensi.
+- Durasi dan orientasi frame ditentukan oleh nama model, tidak perlu mengirim parameter bernama sama secara terpisah.
 
-参考图视频请求示例：
+Contoh request video gambar referensi:
 
 ```json
 {
@@ -229,11 +229,11 @@ Nano Banana 2 Lite 使用 `gemini-3.1-flash-lite-image-*`，比例及分辨率�
     {
       "role": "user",
       "content": [
-        { "type": "text", "text": "让画面中的人物自然转身并看向镜头" },
+        { "type": "text", "text": "Biarkan orang di dalam frame berbalik dengan alami dan menatap kamera" },
         {
           "type": "image_url",
           "image_url": {
-            "url": "data:image/jpeg;base64,<参考图base64>"
+            "url": "data:image/jpeg;base64,<gambar_referensi_base64>"
           }
         }
       ]
@@ -243,157 +243,157 @@ Nano Banana 2 Lite 使用 `gemini-3.1-flash-lite-image-*`，比例及分辨率�
 }
 ```
 
-#### 兼容旧名：文生视频 (T2V - Text to Video)
-⚠️ **不支持上传图片**
+#### Nama lama (kompatibilitas): Text-to-video (T2V - Text to Video)
+⚠️ **Tidak mendukung upload gambar**
 
-| 模型名称 | 说明| 尺寸 |
+| Nama model | Keterangan| Ukuran |
 |---------|---------|--------|
-| `veo_3_1_t2v_fast_portrait` | 文生视频 | 竖屏 |
-| `veo_3_1_t2v_fast_landscape` | 文生视频 | 横屏 |
-| `veo_3_1_t2v_fast_portrait_ultra` | 文生视频 | 竖屏 |
-| `veo_3_1_t2v_fast_ultra` | 文生视频 | 横屏 |
-| `veo_3_1_t2v_fast_portrait_ultra_relaxed` | 文生视频 | 竖屏 |
-| `veo_3_1_t2v_fast_ultra_relaxed` | 文生视频 | 横屏 |
-| `veo_3_1_t2v_portrait` | 文生视频 | 竖屏 |
-| `veo_3_1_t2v_landscape` | 文生视频 | 横屏 |
-| `veo_3_1_t2v_landscape_4s` | 文生视频 4秒 | 横屏 |
-| `veo_3_1_t2v_portrait_4s` | 文生视频 4秒 | 竖屏 |
-| `veo_3_1_t2v_landscape_6s` | 文生视频 6秒 | 横屏 |
-| `veo_3_1_t2v_portrait_6s` | 文生视频 6秒 | 竖屏 |
-| `veo_3_1_t2v_fast_landscape_4s` | 文生视频 Fast 4秒 | 横屏 |
-| `veo_3_1_t2v_fast_portrait_4s` | 文生视频 Fast 4秒 | 竖屏 |
-| `veo_3_1_t2v_fast_landscape_6s` | 文生视频 Fast 6秒 | 横屏 |
-| `veo_3_1_t2v_fast_portrait_6s` | 文生视频 Fast 6秒 | 竖屏 |
-| `veo_3_1_t2v_lite_portrait` | 文生视频 Lite | 竖屏 |
-| `veo_3_1_t2v_lite_landscape` | 文生视频 Lite | 横屏 |
-| `veo_3_1_t2v_lite_4s_portrait` | 文生视频 Lite 4秒 | 竖屏 |
-| `veo_3_1_t2v_lite_4s_landscape` | 文生视频 Lite 4秒 | 横屏 |
-| `veo_3_1_t2v_lite_6s_portrait` | 文生视频 Lite 6秒 | 竖屏 |
-| `veo_3_1_t2v_lite_6s_landscape` | 文生视频 Lite 6秒 | 横屏 |
+| `veo_3_1_t2v_fast_portrait` | Text-to-video | Portrait |
+| `veo_3_1_t2v_fast_landscape` | Text-to-video | Landscape |
+| `veo_3_1_t2v_fast_portrait_ultra` | Text-to-video | Portrait |
+| `veo_3_1_t2v_fast_ultra` | Text-to-video | Landscape |
+| `veo_3_1_t2v_fast_portrait_ultra_relaxed` | Text-to-video | Portrait |
+| `veo_3_1_t2v_fast_ultra_relaxed` | Text-to-video | Landscape |
+| `veo_3_1_t2v_portrait` | Text-to-video | Portrait |
+| `veo_3_1_t2v_landscape` | Text-to-video | Landscape |
+| `veo_3_1_t2v_landscape_4s` | Text-to-video 4 detik | Landscape |
+| `veo_3_1_t2v_portrait_4s` | Text-to-video 4 detik | Portrait |
+| `veo_3_1_t2v_landscape_6s` | Text-to-video 6 detik | Landscape |
+| `veo_3_1_t2v_portrait_6s` | Text-to-video 6 detik | Portrait |
+| `veo_3_1_t2v_fast_landscape_4s` | Text-to-video Fast 4 detik | Landscape |
+| `veo_3_1_t2v_fast_portrait_4s` | Text-to-video Fast 4 detik | Portrait |
+| `veo_3_1_t2v_fast_landscape_6s` | Text-to-video Fast 6 detik | Landscape |
+| `veo_3_1_t2v_fast_portrait_6s` | Text-to-video Fast 6 detik | Portrait |
+| `veo_3_1_t2v_lite_portrait` | Text-to-video Lite | Portrait |
+| `veo_3_1_t2v_lite_landscape` | Text-to-video Lite | Landscape |
+| `veo_3_1_t2v_lite_4s_portrait` | Text-to-video Lite 4 detik | Portrait |
+| `veo_3_1_t2v_lite_4s_landscape` | Text-to-video Lite 4 detik | Landscape |
+| `veo_3_1_t2v_lite_6s_portrait` | Text-to-video Lite 6 detik | Portrait |
+| `veo_3_1_t2v_lite_6s_landscape` | Text-to-video Lite 6 detik | Landscape |
 
-#### 兼容旧名：首尾帧模型 (I2V - Image to Video)
-📸 **支持1-2张图片：1张作为首帧，2张作为首尾帧**
+#### Nama lama (kompatibilitas): Model frame awal–akhir (I2V - Image to Video)
+📸 **Mendukung 1–2 gambar: 1 gambar sebagai frame awal, 2 gambar sebagai frame awal dan akhir**
 
-> 💡 **自动适配**：系统会根据图片数量自动选择对应的 model_key
-> - **单帧模式**（1张图）：使用首帧生成视频
-> - **双帧模式**（2张图）：使用首帧+尾帧生成过渡视频
-> - `veo_3_1_i2v_lite_*` 仅支持 **1 张** 首帧图片
-> - `veo_3_1_interpolation_lite_*` 仅支持 **2 张** 首尾帧图片
+> 💡 **Adaptasi otomatis**: sistem otomatis memilih `model_key` yang sesuai berdasarkan jumlah gambar
+> - **Mode satu frame** (1 gambar): membuat video dari frame awal
+> - **Mode dua frame** (2 gambar): membuat video transisi dari frame awal + frame akhir
+> - `veo_3_1_i2v_lite_*` hanya mendukung **1** gambar frame awal
+> - `veo_3_1_interpolation_lite_*` hanya mendukung **2** gambar frame awal–akhir
 
-| 模型名称 | 说明| 尺寸 |
+| Nama model | Keterangan| Ukuran |
 |---------|---------|--------|
-| `veo_3_1_i2v_s_fast_portrait_fl` | 图生视频 | 竖屏 |
-| `veo_3_1_i2v_s_fast_fl` | 图生视频 | 横屏 |
-| `veo_3_1_i2v_s_fast_portrait_ultra_fl` | 图生视频 | 竖屏 |
-| `veo_3_1_i2v_s_fast_ultra_fl` | 图生视频 | 横屏 |
-| `veo_3_1_i2v_s_fast_portrait_ultra_relaxed` | 图生视频 | 竖屏 |
-| `veo_3_1_i2v_s_fast_ultra_relaxed` | 图生视频 | 横屏 |
-| `veo_3_1_i2v_s_portrait` | 图生视频 | 竖屏 |
-| `veo_3_1_i2v_s_landscape` | 图生视频 | 横屏 |
-| `veo_3_1_i2v_s_landscape_4s` | 图生视频 4秒 | 横屏 |
-| `veo_3_1_i2v_s_portrait_4s` | 图生视频 4秒 | 竖屏 |
-| `veo_3_1_i2v_s_landscape_6s` | 图生视频 6秒 | 横屏 |
-| `veo_3_1_i2v_s_portrait_6s` | 图生视频 6秒 | 竖屏 |
-| `veo_3_1_i2v_s_fast_landscape_4s_fl` | 图生视频 Fast 4秒 | 横屏 |
-| `veo_3_1_i2v_s_fast_portrait_4s_fl` | 图生视频 Fast 4秒 | 竖屏 |
-| `veo_3_1_i2v_s_fast_landscape_6s_fl` | 图生视频 Fast 6秒 | 横屏 |
-| `veo_3_1_i2v_s_fast_portrait_6s_fl` | 图生视频 Fast 6秒 | 竖屏 |
-| `veo_3_1_i2v_lite_portrait` | 图生视频 Lite（仅首帧） | 竖屏 |
-| `veo_3_1_i2v_lite_landscape` | 图生视频 Lite（仅首帧） | 横屏 |
-| `veo_3_1_i2v_lite_4s_portrait` | 图生视频 Lite 4秒（仅首帧） | 竖屏 |
-| `veo_3_1_i2v_lite_4s_landscape` | 图生视频 Lite 4秒（仅首帧） | 横屏 |
-| `veo_3_1_i2v_lite_6s_portrait` | 图生视频 Lite 6秒（仅首帧） | 竖屏 |
-| `veo_3_1_i2v_lite_6s_landscape` | 图生视频 Lite 6秒（仅首帧） | 横屏 |
-| `veo_3_1_interpolation_lite_portrait` | 图生视频 Lite（首尾帧过渡） | 竖屏 |
-| `veo_3_1_interpolation_lite_landscape` | 图生视频 Lite（首尾帧过渡） | 横屏 |
-| `veo_3_1_interpolation_lite_4s_portrait` | 图生视频 Lite 4秒（首尾帧过渡） | 竖屏 |
-| `veo_3_1_interpolation_lite_4s_landscape` | 图生视频 Lite 4秒（首尾帧过渡） | 横屏 |
-| `veo_3_1_interpolation_lite_6s_portrait` | 图生视频 Lite 6秒（首尾帧过渡） | 竖屏 |
-| `veo_3_1_interpolation_lite_6s_landscape` | 图生视频 Lite 6秒（首尾帧过渡） | 横屏 |
+| `veo_3_1_i2v_s_fast_portrait_fl` | Image-to-video | Portrait |
+| `veo_3_1_i2v_s_fast_fl` | Image-to-video | Landscape |
+| `veo_3_1_i2v_s_fast_portrait_ultra_fl` | Image-to-video | Portrait |
+| `veo_3_1_i2v_s_fast_ultra_fl` | Image-to-video | Landscape |
+| `veo_3_1_i2v_s_fast_portrait_ultra_relaxed` | Image-to-video | Portrait |
+| `veo_3_1_i2v_s_fast_ultra_relaxed` | Image-to-video | Landscape |
+| `veo_3_1_i2v_s_portrait` | Image-to-video | Portrait |
+| `veo_3_1_i2v_s_landscape` | Image-to-video | Landscape |
+| `veo_3_1_i2v_s_landscape_4s` | Image-to-video 4 detik | Landscape |
+| `veo_3_1_i2v_s_portrait_4s` | Image-to-video 4 detik | Portrait |
+| `veo_3_1_i2v_s_landscape_6s` | Image-to-video 6 detik | Landscape |
+| `veo_3_1_i2v_s_portrait_6s` | Image-to-video 6 detik | Portrait |
+| `veo_3_1_i2v_s_fast_landscape_4s_fl` | Image-to-video Fast 4 detik | Landscape |
+| `veo_3_1_i2v_s_fast_portrait_4s_fl` | Image-to-video Fast 4 detik | Portrait |
+| `veo_3_1_i2v_s_fast_landscape_6s_fl` | Image-to-video Fast 6 detik | Landscape |
+| `veo_3_1_i2v_s_fast_portrait_6s_fl` | Image-to-video Fast 6 detik | Portrait |
+| `veo_3_1_i2v_lite_portrait` | Image-to-video Lite (hanya frame awal) | Portrait |
+| `veo_3_1_i2v_lite_landscape` | Image-to-video Lite (hanya frame awal) | Landscape |
+| `veo_3_1_i2v_lite_4s_portrait` | Image-to-video Lite 4 detik (hanya frame awal) | Portrait |
+| `veo_3_1_i2v_lite_4s_landscape` | Image-to-video Lite 4 detik (hanya frame awal) | Landscape |
+| `veo_3_1_i2v_lite_6s_portrait` | Image-to-video Lite 6 detik (hanya frame awal) | Portrait |
+| `veo_3_1_i2v_lite_6s_landscape` | Image-to-video Lite 6 detik (hanya frame awal) | Landscape |
+| `veo_3_1_interpolation_lite_portrait` | Image-to-video Lite (transisi frame awal–akhir) | Portrait |
+| `veo_3_1_interpolation_lite_landscape` | Image-to-video Lite (transisi frame awal–akhir) | Landscape |
+| `veo_3_1_interpolation_lite_4s_portrait` | Image-to-video Lite 4 detik (transisi frame awal–akhir) | Portrait |
+| `veo_3_1_interpolation_lite_4s_landscape` | Image-to-video Lite 4 detik (transisi frame awal–akhir) | Landscape |
+| `veo_3_1_interpolation_lite_6s_portrait` | Image-to-video Lite 6 detik (transisi frame awal–akhir) | Portrait |
+| `veo_3_1_interpolation_lite_6s_landscape` | Image-to-video Lite 6 detik (transisi frame awal–akhir) | Landscape |
 
-#### 兼容旧名：多图生成 (R2V - Reference Images to Video)
-🖼️ **支持多张图片**
+#### Nama lama (kompatibilitas): Pembuatan multi-gambar (R2V - Reference Images to Video)
+🖼️ **Mendukung banyak gambar**
 
-> **2026-03-06 更新**
+> **Pembaruan 2026-03-06**
 >
-> - 已同步上游新版 `R2V` 视频请求体
-> - `textInput` 已切换为 `structuredPrompt.parts`
-> - 顶层新增 `mediaGenerationContext.batchId`
-> - 顶层新增 `useV2ModelConfig: true`
-> - 横屏 / 竖屏 `R2V` 模型共用同一套新版请求体
-> - 横屏 `R2V` 的上游 `videoModelKey` 已切换为 `*_landscape` 形式
-> - 根据当前上游协议，`referenceImages` 当前最多传 **3 张**
+> - Sudah disinkronkan dengan request body `R2V` versi terbaru dari upstream
+> - `textInput` sudah beralih ke `structuredPrompt.parts`
+> - Level teratas menambahkan `mediaGenerationContext.batchId`
+> - Level teratas menambahkan `useV2ModelConfig: true`
+> - Model `R2V` landscape / portrait berbagi satu request body versi baru yang sama
+> - `videoModelKey` upstream untuk `R2V` landscape sudah beralih ke bentuk `*_landscape`
+> - Sesuai protokol upstream saat ini, `referenceImages` maksimal **3** gambar
 
-| 模型名称 | 说明| 尺寸 |
+| Nama model | Keterangan| Ukuran |
 |---------|---------|--------|
-| `veo_3_1_r2v_fast_portrait` | 图生视频 | 竖屏 |
-| `veo_3_1_r2v_fast_landscape` | 图生视频 | 横屏 |
-| `veo_3_1_r2v_fast_portrait_ultra` | 图生视频 | 竖屏 |
-| `veo_3_1_r2v_fast_landscape_ultra` | 图生视频 | 横屏 |
-| `veo_3_1_r2v_fast_portrait_ultra_relaxed` | 图生视频 | 竖屏 |
-| `veo_3_1_r2v_fast_landscape_ultra_relaxed` | 图生视频 | 横屏 |
+| `veo_3_1_r2v_fast_portrait` | Image-to-video | Portrait |
+| `veo_3_1_r2v_fast_landscape` | Image-to-video | Landscape |
+| `veo_3_1_r2v_fast_portrait_ultra` | Image-to-video | Portrait |
+| `veo_3_1_r2v_fast_landscape_ultra` | Image-to-video | Landscape |
+| `veo_3_1_r2v_fast_portrait_ultra_relaxed` | Image-to-video | Portrait |
+| `veo_3_1_r2v_fast_landscape_ultra_relaxed` | Image-to-video | Landscape |
 
-#### 兼容旧名：视频放大模型 (Upsample)
+#### Nama lama (kompatibilitas): Model upscaling video (Upsample)
 
-这些模型不是直接调用上游 upsampler key，而是先用对应的 Veo 3.1 普通模型生成视频，再提交 1080P/4K 放大请求。
+Model-model ini tidak langsung memanggil kunci upsampler upstream, melainkan membuat video dulu dengan model Veo 3.1 biasa yang sesuai, lalu mengirim request upscaling 1080P/4K.
 
-| 模型名称 | 说明 | 输出 |
+| Nama model | Keterangan | Output |
 |---------|---------|--------|
-| `veo_3_1_t2v_landscape_4k` | 文生视频放大 | 4K |
-| `veo_3_1_t2v_portrait_4k` | 文生视频放大 | 4K |
-| `veo_3_1_t2v_landscape_1080p` | 文生视频放大 | 1080P |
-| `veo_3_1_t2v_portrait_1080p` | 文生视频放大 | 1080P |
-| `veo_3_1_t2v_landscape_4s_4k` | 文生视频 4秒放大 | 4K |
-| `veo_3_1_t2v_portrait_4s_4k` | 文生视频 4秒放大 | 4K |
-| `veo_3_1_t2v_landscape_4s_1080p` | 文生视频 4秒放大 | 1080P |
-| `veo_3_1_t2v_portrait_4s_1080p` | 文生视频 4秒放大 | 1080P |
-| `veo_3_1_t2v_landscape_6s_4k` | 文生视频 6秒放大 | 4K |
-| `veo_3_1_t2v_portrait_6s_4k` | 文生视频 6秒放大 | 4K |
-| `veo_3_1_t2v_landscape_6s_1080p` | 文生视频 6秒放大 | 1080P |
-| `veo_3_1_t2v_portrait_6s_1080p` | 文生视频 6秒放大 | 1080P |
-| `veo_3_1_t2v_fast_portrait_4k` | 文生视频放大 | 4K |
-| `veo_3_1_t2v_fast_4k` | 文生视频放大 | 4K |
-| `veo_3_1_t2v_fast_portrait_ultra_4k` | 文生视频放大 | 4K |
-| `veo_3_1_t2v_fast_ultra_4k` | 文生视频放大 | 4K |
-| `veo_3_1_t2v_fast_portrait_1080p` | 文生视频放大 | 1080P |
-| `veo_3_1_t2v_fast_1080p` | 文生视频放大 | 1080P |
-| `veo_3_1_t2v_fast_portrait_ultra_1080p` | 文生视频放大 | 1080P |
-| `veo_3_1_t2v_fast_ultra_1080p` | 文生视频放大 | 1080P |
-| `veo_3_1_i2v_s_fast_portrait_ultra_fl_4k` | 图生视频放大 | 4K |
-| `veo_3_1_i2v_s_fast_ultra_fl_4k` | 图生视频放大 | 4K |
-| `veo_3_1_i2v_s_fast_portrait_ultra_fl_1080p` | 图生视频放大 | 1080P |
-| `veo_3_1_i2v_s_fast_ultra_fl_1080p` | 图生视频放大 | 1080P |
-| `veo_3_1_i2v_s_landscape_4k` | 图生视频放大 | 4K |
-| `veo_3_1_i2v_s_portrait_4k` | 图生视频放大 | 4K |
-| `veo_3_1_i2v_s_landscape_1080p` | 图生视频放大 | 1080P |
-| `veo_3_1_i2v_s_portrait_1080p` | 图生视频放大 | 1080P |
-| `veo_3_1_i2v_s_landscape_4s_4k` | 图生视频 4秒放大 | 4K |
-| `veo_3_1_i2v_s_portrait_4s_4k` | 图生视频 4秒放大 | 4K |
-| `veo_3_1_i2v_s_landscape_4s_1080p` | 图生视频 4秒放大 | 1080P |
-| `veo_3_1_i2v_s_portrait_4s_1080p` | 图生视频 4秒放大 | 1080P |
-| `veo_3_1_i2v_s_landscape_6s_4k` | 图生视频 6秒放大 | 4K |
-| `veo_3_1_i2v_s_portrait_6s_4k` | 图生视频 6秒放大 | 4K |
-| `veo_3_1_i2v_s_landscape_6s_1080p` | 图生视频 6秒放大 | 1080P |
-| `veo_3_1_i2v_s_portrait_6s_1080p` | 图生视频 6秒放大 | 1080P |
-| `veo_3_1_r2v_fast_portrait_ultra_4k` | 多图视频放大 | 4K |
-| `veo_3_1_r2v_fast_landscape_ultra_4k` | 多图视频放大 | 4K |
-| `veo_3_1_r2v_fast_portrait_ultra_1080p` | 多图视频放大 | 1080P |
-| `veo_3_1_r2v_fast_landscape_ultra_1080p` | 多图视频放大 | 1080P |
+| `veo_3_1_t2v_landscape_4k` | Upscale text-to-video | 4K |
+| `veo_3_1_t2v_portrait_4k` | Upscale text-to-video | 4K |
+| `veo_3_1_t2v_landscape_1080p` | Upscale text-to-video | 1080P |
+| `veo_3_1_t2v_portrait_1080p` | Upscale text-to-video | 1080P |
+| `veo_3_1_t2v_landscape_4s_4k` | Upscale text-to-video 4 detik | 4K |
+| `veo_3_1_t2v_portrait_4s_4k` | Upscale text-to-video 4 detik | 4K |
+| `veo_3_1_t2v_landscape_4s_1080p` | Upscale text-to-video 4 detik | 1080P |
+| `veo_3_1_t2v_portrait_4s_1080p` | Upscale text-to-video 4 detik | 1080P |
+| `veo_3_1_t2v_landscape_6s_4k` | Upscale text-to-video 6 detik | 4K |
+| `veo_3_1_t2v_portrait_6s_4k` | Upscale text-to-video 6 detik | 4K |
+| `veo_3_1_t2v_landscape_6s_1080p` | Upscale text-to-video 6 detik | 1080P |
+| `veo_3_1_t2v_portrait_6s_1080p` | Upscale text-to-video 6 detik | 1080P |
+| `veo_3_1_t2v_fast_portrait_4k` | Upscale text-to-video | 4K |
+| `veo_3_1_t2v_fast_4k` | Upscale text-to-video | 4K |
+| `veo_3_1_t2v_fast_portrait_ultra_4k` | Upscale text-to-video | 4K |
+| `veo_3_1_t2v_fast_ultra_4k` | Upscale text-to-video | 4K |
+| `veo_3_1_t2v_fast_portrait_1080p` | Upscale text-to-video | 1080P |
+| `veo_3_1_t2v_fast_1080p` | Upscale text-to-video | 1080P |
+| `veo_3_1_t2v_fast_portrait_ultra_1080p` | Upscale text-to-video | 1080P |
+| `veo_3_1_t2v_fast_ultra_1080p` | Upscale text-to-video | 1080P |
+| `veo_3_1_i2v_s_fast_portrait_ultra_fl_4k` | Upscale image-to-video | 4K |
+| `veo_3_1_i2v_s_fast_ultra_fl_4k` | Upscale image-to-video | 4K |
+| `veo_3_1_i2v_s_fast_portrait_ultra_fl_1080p` | Upscale image-to-video | 1080P |
+| `veo_3_1_i2v_s_fast_ultra_fl_1080p` | Upscale image-to-video | 1080P |
+| `veo_3_1_i2v_s_landscape_4k` | Upscale image-to-video | 4K |
+| `veo_3_1_i2v_s_portrait_4k` | Upscale image-to-video | 4K |
+| `veo_3_1_i2v_s_landscape_1080p` | Upscale image-to-video | 1080P |
+| `veo_3_1_i2v_s_portrait_1080p` | Upscale image-to-video | 1080P |
+| `veo_3_1_i2v_s_landscape_4s_4k` | Upscale image-to-video 4 detik | 4K |
+| `veo_3_1_i2v_s_portrait_4s_4k` | Upscale image-to-video 4 detik | 4K |
+| `veo_3_1_i2v_s_landscape_4s_1080p` | Upscale image-to-video 4 detik | 1080P |
+| `veo_3_1_i2v_s_portrait_4s_1080p` | Upscale image-to-video 4 detik | 1080P |
+| `veo_3_1_i2v_s_landscape_6s_4k` | Upscale image-to-video 6 detik | 4K |
+| `veo_3_1_i2v_s_portrait_6s_4k` | Upscale image-to-video 6 detik | 4K |
+| `veo_3_1_i2v_s_landscape_6s_1080p` | Upscale image-to-video 6 detik | 1080P |
+| `veo_3_1_i2v_s_portrait_6s_1080p` | Upscale image-to-video 6 detik | 1080P |
+| `veo_3_1_r2v_fast_portrait_ultra_4k` | Upscale video multi-gambar | 4K |
+| `veo_3_1_r2v_fast_landscape_ultra_4k` | Upscale video multi-gambar | 4K |
+| `veo_3_1_r2v_fast_portrait_ultra_1080p` | Upscale video multi-gambar | 1080P |
+| `veo_3_1_r2v_fast_landscape_ultra_1080p` | Upscale video multi-gambar | 1080P |
 
-## 📡 API 使用示例（需要使用流式）
+## 📡 Contoh Penggunaan API (wajib pakai streaming)
 
-> 除了下方 `OpenAI-compatible` 示例，服务也支持 Gemini 官方格式：
+> Selain contoh `OpenAI-compatible` di bawah, layanan juga mendukung format resmi Gemini:
 > - `POST /v1beta/models/{model}:generateContent`
 > - `POST /models/{model}:generateContent`
 > - `POST /v1beta/models/{model}:streamGenerateContent`
 > - `POST /models/{model}:streamGenerateContent`
 >
-> Gemini 官方格式支持以下认证方式：
+> Format resmi Gemini mendukung metode autentikasi berikut:
 > - `Authorization: Bearer <api_key>`
 > - `x-goog-api-key: <api_key>`
 > - `?key=<api_key>`
 >
-> Gemini 官方图片请求体已兼容：
+> Request body gambar resmi Gemini sudah kompatibel:
 > - `systemInstruction`
 > - `contents[].parts[].text`
 > - `contents[].parts[].inlineData`
@@ -402,10 +402,10 @@ Nano Banana 2 Lite 使用 `gemini-3.1-flash-lite-image-*`，比例及分辨率�
 > - `generationConfig.imageConfig.aspectRatio`
 > - `generationConfig.imageConfig.imageSize`
 
-### Gemini 官方 generateContent（文生图）
+### generateContent resmi Gemini (text-to-image)
 
-> 已使用真实 Token 实测通过。
-> 如需流式返回，可将路径替换为 `:streamGenerateContent?alt=sse`。
+> Sudah diuji langsung dengan Token asli dan lolos.
+> Untuk respons streaming, ganti path dengan `:streamGenerateContent?alt=sse`.
 
 ```bash
 curl -X POST "http://localhost:8000/models/gemini-3.1-flash-image:generateContent" \
@@ -424,7 +424,7 @@ curl -X POST "http://localhost:8000/models/gemini-3.1-flash-image:generateConten
         "role": "user",
         "parts": [
           {
-            "text": "一颗放在木桌上的红苹果，棚拍光线，极简背景"
+            "text": "Sebuah apel merah di atas meja kayu, pencahayaan studio, latar minimalis"
           }
         ]
       }
@@ -439,7 +439,7 @@ curl -X POST "http://localhost:8000/models/gemini-3.1-flash-image:generateConten
   }'
 ```
 
-### 文生图
+### Text-to-image
 
 ```bash
 curl -X POST "http://localhost:8000/v1/chat/completions" \
@@ -450,14 +450,14 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
     "messages": [
       {
         "role": "user",
-        "content": "一只可爱的猫咪在花园里玩耍"
+        "content": "Seekor kucing lucu bermain di taman"
       }
     ],
     "stream": true
   }'
 ```
 
-### 图生图
+### Image-to-image
 
 ```bash
 curl -X POST "http://localhost:8000/v1/chat/completions" \
@@ -471,7 +471,7 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
         "content": [
           {
             "type": "text",
-            "text": "将这张图片变成水彩画风格"
+            "text": "Ubah gambar ini menjadi gaya cat air"
           },
           {
             "type": "image_url",
@@ -486,7 +486,7 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
   }'
 ```
 
-### 文生视频
+### Text-to-video
 
 ```bash
 curl -X POST "http://localhost:8000/v1/chat/completions" \
@@ -497,14 +497,14 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
     "messages": [
       {
         "role": "user",
-        "content": "一只小猫在草地上追逐蝴蝶"
+        "content": "Seekor anak kucing mengejar kupu-kupu di rumput"
       }
     ],
     "stream": true
   }'
 ```
 
-### 首尾帧生成视频
+### Membuat video dari frame awal–akhir
 
 ```bash
 curl -X POST "http://localhost:8000/v1/chat/completions" \
@@ -518,18 +518,18 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
         "content": [
           {
             "type": "text",
-            "text": "从第一张图过渡到第二张图"
+            "text": "Transisi dari gambar pertama ke gambar kedua"
           },
           {
             "type": "image_url",
             "image_url": {
-              "url": "data:image/jpeg;base64,<首帧base64>"
+              "url": "data:image/jpeg;base64,<frame_awal_base64>"
             }
           },
           {
             "type": "image_url",
             "image_url": {
-              "url": "data:image/jpeg;base64,<尾帧base64>"
+              "url": "data:image/jpeg;base64,<frame_akhir_base64>"
             }
           }
         ]
@@ -539,11 +539,11 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
   }'
 ```
 
-### 多图生成视频
+### Membuat video multi-gambar
 
-> `R2V` 会由服务端自动组装新版视频请求体，调用方仍然使用 OpenAI 兼容输入即可。
-> 服务端会将横屏 `R2V` 自动映射到最新的 `*_landscape` 上游模型键。
-> 当前最多传 **3 张参考图**。
+> `R2V` dirakit otomatis oleh server menjadi request body video versi baru, caller cukup memakai input OpenAI-compatible.
+> Server otomatis memetakan `R2V` landscape ke kunci model upstream `*_landscape` terbaru.
+> Maksimal **3** gambar referensi saat ini.
 
 ```bash
 curl -X POST "http://localhost:8000/v1/chat/completions" \
@@ -557,24 +557,24 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
         "content": [
           {
             "type": "text",
-            "text": "以三张参考图的人物和场景为基础，生成一段镜头平滑推进的竖屏视频"
+            "text": "Berdasarkan karakter dan adegan dari tiga gambar referensi, buat video portrait dengan gerakan kamera push-in yang mulus"
           },
           {
             "type": "image_url",
             "image_url": {
-              "url": "data:image/jpeg;base64/<参考图1base64>"
+              "url": "data:image/jpeg;base64/<gambar_referensi1_base64>"
             }
           },
           {
             "type": "image_url",
             "image_url": {
-              "url": "data:image/jpeg;base64/<参考图2base64>"
+              "url": "data:image/jpeg;base64/<gambar_referensi2_base64>"
             }
           },
           {
             "type": "image_url",
             "image_url": {
-              "url": "data:image/jpeg;base64/<参考图3base64>"
+              "url": "data:image/jpeg;base64/<gambar_referensi3_base64>"
             }
           }
         ]
@@ -586,27 +586,27 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
 
 ---
 
-## 📄 许可证
+## 📄 Lisensi
 
-本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
-
----
-
-## 🙏 致谢
-
-- [PearNoDec](https://github.com/PearNoDec) 提供的YesCaptcha打码方案
-- [raomaiping](https://github.com/raomaiping) 提供的无头打码方案
-感谢所有贡献者和使用者的支持！
+Proyek ini memakai lisensi MIT. Lihat file [LICENSE](LICENSE) untuk detail.
 
 ---
 
-## 📞 联系方式
+## 🙏 Ucapan Terima Kasih
 
-- 提交 Issue：[GitHub Issues](https://github.com/TheSmallHanCat/flow2api/issues)
+- [PearNoDec](https://github.com/PearNoDec) atas solusi captcha YesCaptcha
+- [raomaiping](https://github.com/raomaiping) atas solusi captcha headless
+Terima kasih atas dukungan semua kontributor dan pengguna!
 
 ---
 
-**⭐ 如果这个项目对你有帮助，请给个 Star！**
+## 📞 Kontak
+
+- Laporkan Issue: [GitHub Issues](https://github.com/TheSmallHanCat/flow2api/issues)
+
+---
+
+**⭐ Jika proyek ini membantumu, beri Star!**
 
 ## Star History
 

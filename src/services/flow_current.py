@@ -565,7 +565,7 @@ class CurrentFlowClientMixin:
                 )
             except Exception as error:
                 last_error = error
-                # MODEL_ACCESS_DENIED 为账号权限拒绝，重试不会改变结果
+                # MODEL_ACCESS_DENIED = akun ditolak akses, retry tidak akan mengubah hasil
                 if "MODEL_ACCESS_DENIED" in str(error):
                     raise
                 if retry_attempt >= max_retries - 1:
@@ -778,7 +778,7 @@ class CurrentFlowClientMixin:
             if operation_id and operation_id not in operation_ids:
                 operation_ids.append(operation_id)
         if not operation_ids:
-            raise ValueError("视频状态查询缺少 Flow frontend operation ID")
+            raise ValueError("Query status video kekurangan Flow frontend operation ID")
         first_operation = operations[0] if operations else {}
         project_id = str((first_operation or {}).get("projectId") or "").strip()
         payload = await self._current_rpc(

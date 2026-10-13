@@ -79,11 +79,11 @@ class LoadBalancer:
     async def _get_token_load(
         self, token_id: int, for_image_generation: bool, for_video_generation: bool
     ) -> tuple[int, Optional[int]]:
-        """获取 token 当前负载。
+        """Ambil load token saat ini.
 
         Returns:
             (inflight, remaining)
-            remaining 为 None 表示无限制
+            remaining None berarti tanpa batas
         """
         if not self.concurrency_manager:
             return 0, None
@@ -111,7 +111,7 @@ class LoadBalancer:
     async def _reserve_slot(
         self, token_id: int, for_image_generation: bool, for_video_generation: bool
     ) -> bool:
-        """尝试为当前 token 预占一个生成槽位。"""
+        """Coba reserve satu slot generate untuk token saat ini."""
         if not self.concurrency_manager:
             return True
 
@@ -160,10 +160,10 @@ class LoadBalancer:
 
             available = service.describe_routes() or "none"
             if route_key:
-                return False, f"扩展路由 {route_key} 未连接（可用路由: {available}）"
-            return False, f"扩展路由未配置或匿名插件未连接（可用路由: {available}）"
+                return False, f"Route ekstensi {route_key} belum terhubung (route tersedia: {available})"
+            return False, f"Route ekstensi belum dikonfigurasi atau plugin anonim belum terhubung (route tersedia: {available})"
         except Exception as exc:
-            return False, f"扩展路由检查失败: {exc}"
+            return False, f"Pemeriksaan route ekstensi gagal: {exc}"
 
     async def select_token(
         self,
@@ -194,17 +194,17 @@ class LoadBalancer:
             Selected token or None if no available tokens
         """
         debug_logger.log_info(
-            f"[LOAD_BALANCER] 开始选择Token (图片生成={for_image_generation}, "
-            f"视频生成={for_video_generation}, 模型={model}, 预占槽位={reserve})"
+            f"[LOAD_BALANCER] Mulai pilih Token (generate_gambar={for_image_generation}, "
+            f"generate_video={for_video_generation}, model={model}, reserve_slot={reserve})"
         )
 
         active_tokens = await self.token_manager.get_active_tokens()
         debug_logger.log_info(
-            f"[LOAD_BALANCER] 获取到 {len(active_tokens)} 个活跃Token"
+            f"[LOAD_BALANCER] Dapat {len(active_tokens)} Token aktif"
         )
 
         if not active_tokens:
-            debug_logger.log_info(f"[LOAD_BALANCER] ❌ 没有活跃的Token")
+            debug_logger.log_info(f"[LOAD_BALANCER] ❌ Tidak ada Token aktif")
             return None
 
         available_tokens = []
@@ -270,17 +270,17 @@ class LoadBalancer:
             )
 
         if filtered_reasons:
-            debug_logger.log_info(f"[LOAD_BALANCER] 已过滤Token:")
+            debug_logger.log_info(f"[LOAD_BALANCER] Token terfilter:")
             for token_id, reason in filtered_reasons.items():
                 debug_logger.log_info(f"[LOAD_BALANCER]   - Token {token_id}: {reason}")
 
         if not available_tokens:
             debug_logger.log_info(
-                f"[LOAD_BALANCER] ❌ 没有可用的Token (图片生成={for_image_generation}, 视频生成={for_video_generation})"
+                f"[LOAD_BALANCER] ❌ Tidak ada Token tersedia (generate_gambar={for_image_generation}, generate_video={for_video_generation})"
             )
             return None
 
-        # 最低 in-flight 优先；有并发上限时，剩余槽位更多的 token 优先；最后随机打散
+        # Prioritaskan in-flight terendah; jika ada batas concurrency, token dengan slot sisa terbanyak dulu; terakhir acak
         call_mode = config.call_logic_mode
         if call_mode == "polling":
             scenario = "default"
@@ -321,7 +321,7 @@ class LoadBalancer:
         if ready_candidates and refresh_candidates:
             available_tokens = ready_candidates + refresh_candidates
 
-        debug_logger.log_info("[LOAD_BALANCER] 候选Token负载:")
+        debug_logger.log_info("[LOAD_BALANCER] Load Token kandidat:")
         for item in available_tokens:
             token = item["token"]
             remaining = "unlimited" if item["remaining"] is None else item["remaining"]
@@ -331,7 +331,7 @@ class LoadBalancer:
                 f"needs_refresh={item['needs_refresh']}, credits={token.credits}"
             )
 
-        # 只为候选列表中真正尝试到的 token 做 AT 校验，避免每次请求把所有 token 全扫一遍
+        # Hanya lakukan validasi AT untuk token yang benar-benar dicoba di daftar kandidat, agar tidak memindai semua token tiap request
         for item in available_tokens:
             token = item["token"]
             token_id = token.id
@@ -339,7 +339,7 @@ class LoadBalancer:
             token = await self.token_manager.ensure_valid_token(token)
             if not token:
                 debug_logger.log_info(
-                    f"[LOAD_BALANCER] 跳过 Token {token_id}: AT无效或已过期"
+                    f"[LOAD_BALANCER] Lewati Token {token_id}: AT tidak valid atau kedaluwarsa"
                 )
                 continue
 
@@ -347,7 +347,7 @@ class LoadBalancer:
                 token.id, for_image_generation, for_video_generation
             ):
                 debug_logger.log_info(
-                    f"[LOAD_BALANCER] 跳过 Token {token.id}: 预占槽位失败"
+                    f"[LOAD_BALANCER] Lewati Token {token.id}: gagal reserve slot"
                 )
                 continue
 
@@ -357,13 +357,13 @@ class LoadBalancer:
                 )
 
             debug_logger.log_info(
-                f"[LOAD_BALANCER] ✅ 已选择Token {token.id} ({token.email}) - "
-                f"余额: {token.credits}, inflight={item['inflight']}"
+                f"[LOAD_BALANCER] ✅ Token terpilih {token.id} ({token.email}) - "
+                f"saldo: {token.credits}, inflight={item['inflight']}"
             )
             return token
 
         debug_logger.log_info(
-            f"[LOAD_BALANCER] ❌ 候选Token均不可用 (图片生成={for_image_generation}, 视频生成={for_video_generation})"
+            f"[LOAD_BALANCER] ❌ Semua Token kandidat tidak tersedia (generate_gambar={for_image_generation}, generate_video={for_video_generation})"
         )
         return None
 
@@ -374,7 +374,7 @@ class LoadBalancer:
         for_video_generation: bool = False,
         model: Optional[str] = None,
     ) -> Optional[str]:
-        """给出更明确的“无可用账号”原因，优先用于分辨率/tier 档位提示。"""
+        """Berikan alasan “tidak ada akun tersedia” yang lebih jelas, diprioritaskan untuk hint tier resolusi."""
         active_tokens = await self.token_manager.get_active_tokens()
         if not active_tokens:
             return None
@@ -389,7 +389,7 @@ class LoadBalancer:
 
         if model and not supported_tokens:
             tier_label = get_paygate_tier_label(required_tier)
-            return f"当前模型需要 {tier_label} 账号，但没有可用的 {tier_label} 账号: {model}"
+            return f"Model saat ini butuh akun {tier_label}, tapi tidak ada akun {tier_label} yang tersedia: {model}"
 
         capability_tokens = []
         for token in supported_tokens:
@@ -401,8 +401,8 @@ class LoadBalancer:
 
         if supported_tokens and not capability_tokens:
             if for_image_generation:
-                return "当前有符合档位的账号，但图片生成功能已全部禁用。"
+                return "Saat ini ada akun yang sesuai tier, tapi fitur generate gambar sudah dinonaktifkan semua."
             if for_video_generation:
-                return "当前有符合档位的账号，但视频生成功能已全部禁用。"
+                return "Saat ini ada akun yang sesuai tier, tapi fitur generate video sudah dinonaktifkan semua."
 
         return None

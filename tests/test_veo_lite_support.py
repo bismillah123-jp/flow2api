@@ -273,7 +273,7 @@ class VeoLiteFlowClientTests(unittest.IsolatedAsyncioTestCase):
         await self.client.generate_video_text(
             at="at-token",
             project_id=project_id,
-            prompt="猫猫",
+            prompt="kucing",
             model_key="veo_3_1_t2v_lite",
             aspect_ratio="VIDEO_ASPECT_RATIO_LANDSCAPE",
             use_v2_model_config=True,
@@ -283,7 +283,7 @@ class VeoLiteFlowClientTests(unittest.IsolatedAsyncioTestCase):
         rpc = self.client._call_flow_frontend_rpc.await_args.kwargs
         self.assertEqual(rpc["rpc_id"], "YhhmEf")
         request_data = rpc["argument"][0][0]
-        self.assertEqual(request_data[0], [None, None, [[["猫猫"]]]])
+        self.assertEqual(request_data[0], [None, None, [[["kucing"]]]])
         self.assertEqual(request_data[1], "veo_3_1_t2v_lite")
         self.assertEqual(request_data[2], 2)
         self.assertTrue(rpc["argument"][2][0])
@@ -291,7 +291,7 @@ class VeoLiteFlowClientTests(unittest.IsolatedAsyncioTestCase):
     def test_reference_video_uses_current_prompt_and_media_envelopes(self):
         rpc_id, argument = self.client._build_frontend_video_generation_argument(
             project_id="22222222-2222-2222-2222-222222222222",
-            prompt="参考图视频",
+            prompt="video gambar referensi",
             model_key="abra_r2v_10s",
             aspect_ratio="VIDEO_ASPECT_RATIO_LANDSCAPE",
             recaptcha_token="recaptcha-token",
@@ -302,7 +302,7 @@ class VeoLiteFlowClientTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(rpc_id, "MZZa6b")
         request_data = argument[0][0]
-        self.assertEqual(request_data[0], [None, None, [[["参考图视频"]]]])
+        self.assertEqual(request_data[0], [None, None, [[["video gambar referensi"]]]])
         self.assertEqual(request_data[1], [[None, "reference-media"]])
 
     async def test_generate_video_text_normalizes_media_only_create_response(self):
@@ -316,7 +316,7 @@ class VeoLiteFlowClientTests(unittest.IsolatedAsyncioTestCase):
         result = await self.client.generate_video_text(
             at="at-token",
             project_id=project_id,
-            prompt="猫猫",
+            prompt="kucing",
             model_key="veo_3_1_t2v_lite",
             aspect_ratio="VIDEO_ASPECT_RATIO_LANDSCAPE",
             use_v2_model_config=True,
@@ -348,12 +348,12 @@ class RouteNormalizationTests(unittest.IsolatedAsyncioTestCase):
         request = ChatCompletionRequest(
             model="gemini-3.0-pro-image",
             messages=[
-                ChatMessage(role="user", content="先生成一张图"),
+                ChatMessage(role="user", content="buat gambar dulu"),
                 ChatMessage(
                     role="assistant",
                     content="![cat](https://example.com/cat.png)",
                 ),
-                ChatMessage(role="user", content="基于上一张图继续编辑"),
+                ChatMessage(role="user", content="lanjutkan edit berdasarkan gambar sebelumnya"),
             ],
         )
 
@@ -432,7 +432,7 @@ class RouteNormalizationTests(unittest.IsolatedAsyncioTestCase):
             operation["operation"]["error"]["code"],
             "PUBLIC_ERROR_PROMINENT_PEOPLE_FILTER_FAILED",
         )
-        self.assertIn("人物安全过滤", operation["operation"]["error"]["message"])
+        self.assertIn("filter keamanan orang", operation["operation"]["error"]["message"])
 
     async def test_generate_video_start_end_uses_v2_payload_for_interpolation_lite(
         self,
@@ -447,7 +447,7 @@ class RouteNormalizationTests(unittest.IsolatedAsyncioTestCase):
         await self.client.generate_video_start_end(
             at="at-token",
             project_id=project_id,
-            prompt="变身猫猫",
+            prompt="kucing bertransformasi",
             model_key="veo_3_1_interpolation_lite",
             aspect_ratio="VIDEO_ASPECT_RATIO_PORTRAIT",
             start_media_id="start-media",
@@ -459,7 +459,7 @@ class RouteNormalizationTests(unittest.IsolatedAsyncioTestCase):
         rpc = self.client._call_flow_frontend_rpc.await_args.kwargs
         self.assertEqual(rpc["rpc_id"], "nprQif")
         request_data = rpc["argument"][0][0]
-        self.assertEqual(request_data[0], [None, None, [[["变身猫猫"]]]])
+        self.assertEqual(request_data[0], [None, None, [[["kucing bertransformasi"]]]])
         self.assertEqual(request_data[1], "veo_3_1_interpolation_lite")
         self.assertEqual(request_data[2], 1)
         self.assertEqual(request_data[4][1], "start-media")

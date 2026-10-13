@@ -1,7 +1,7 @@
 """
-浏览器自动化获取 reCAPTCHA token
-使用 nodriver (undetected-chromedriver 继任者) 实现反检测浏览器
-支持常驻模式：维护全局共享的常驻标签页池，即时生成 token
+Otomatisasi browser untuk mengambil reCAPTCHA token
+Menggunakan nodriver (penerus undetected-chromedriver) untuk browser anti-deteksi
+Mendukung mode resident: memelihara pool tab resident global yang dibagikan, menghasilkan token secara instan
 """
 
 import asyncio
@@ -46,7 +46,7 @@ from .browser_cookie_utils import (
     normalize_cookie_storage_text,
 )
 
-# flow2api 缺少的配置常量和函数，内联定义
+# Konstanta dan fungsi konfigurasi flow2api yang hilang, definisi inline
 TOKEN_POOL_SIZE_MAX = 500
 PERSONAL_POOL_MAX_TOTAL_RESIDENT_TABS = 50
 
@@ -91,12 +91,12 @@ PERSONAL_GOOGLE_FAMILY_COOKIE_MIRROR_URLS = (
 _recaptcha_session_cookies: Optional[Dict[str, str]] = None
 _recaptcha_session_cookies_fetched_at: float = 0.0
 _RECAPTCHA_SESSION_COOKIES_TTL: float = (
-    3600.0  # 1h 缓存周期，避免频繁导航打断 resident tab
+    3600.0  # Siklus cache 1 jam, menghindari navigasi berulang yang mengganggu resident tab
 )
 
 
 def get_cached_session_cookies() -> Optional[Dict[str, str]]:
-    """读取缓存的 Google session cookies。"""
+    """Membaca cache Google session cookies."""
     global _recaptcha_session_cookies, _recaptcha_session_cookies_fetched_at
     if not _recaptcha_session_cookies:
         return None
@@ -109,18 +109,18 @@ def get_cached_session_cookies() -> Optional[Dict[str, str]]:
 
 
 def set_cached_session_cookies(cookies: Dict[str, str]):
-    """写入 session cookie 缓存。"""
+    """Menulis cache session cookie."""
     global _recaptcha_session_cookies, _recaptcha_session_cookies_fetched_at
     _recaptcha_session_cookies = dict(cookies)
     _recaptcha_session_cookies_fetched_at = time.time()
     if cookies:
         debug_logger.log_info(
-            "[BrowserCaptcha] session cookie 缓存已更新: %d cookies", len(cookies)
+            "[BrowserCaptcha] Cache session cookie diperbarui: %d cookies", len(cookies)
         )
 
 
 def clear_cached_session_cookies():
-    """清空 runtime 级 Google session cookie 缓存。"""
+    """Mengosongkan cache Google session cookie level runtime."""
     global _recaptcha_session_cookies, _recaptcha_session_cookies_fetched_at
     _recaptcha_session_cookies = None
     _recaptcha_session_cookies_fetched_at = 0.0
@@ -175,13 +175,13 @@ PERSONAL_RUNTIME_TMP_DIR = PERSONAL_RUNTIME_ROOT / "tmp"
 PERSONAL_RUNTIME_DATA_DIR = PERSONAL_RUNTIME_ROOT / "data"
 
 
-# ==================== Docker 环境检测 ====================
+# ==================== Deteksi Lingkungan Docker ====================
 def _is_running_in_docker() -> bool:
-    """检测是否在 Docker 容器中运行"""
-    # 方法1: 检查 /.dockerenv 文件
+    """Mendeteksi apakah berjalan di dalam container Docker"""
+    # Metode 1: cek file /.dockerenv
     if os.path.exists("/.dockerenv"):
         return True
-    # 方法2: 检查 cgroup
+    # Metode 2: cek cgroup
     try:
         with open("/proc/1/cgroup", "r") as f:
             content = f.read()
@@ -189,7 +189,7 @@ def _is_running_in_docker() -> bool:
                 return True
     except:
         pass
-    # 方法3: 检查环境变量
+    # Metode 3: cek environment variable
     if os.environ.get("DOCKER_CONTAINER") or os.environ.get("KUBERNETES_SERVICE_HOST"):
         return True
     return False
@@ -199,7 +199,7 @@ IS_DOCKER = _is_running_in_docker()
 
 
 def _is_truthy_env(name: str) -> bool:
-    """判断环境变量是否为 true。"""
+    """Menentukan apakah environment variable bernilai true."""
     value = os.environ.get(name, "")
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
@@ -347,75 +347,75 @@ def _cleanup_runtime_artifacts_sync(
     return stats
 
 
-# ==================== nodriver 自动安装 ====================
+# ==================== Instalasi Otomatis nodriver ====================
 def _run_pip_install(package: str, use_mirror: bool = False) -> bool:
-    """运行 pip install 命令
+    """Menjalankan perintah pip install
     
     Args:
-        package: 包名
-        use_mirror: 是否使用国内镜像
+        package: nama paket
+        use_mirror: apakah pakai mirror China
     
     Returns:
-        是否安装成功
+        apakah instalasi berhasil
     """
     cmd = [sys.executable, "-m", "pip", "install", package]
     if use_mirror:
         cmd.extend(["-i", "https://pypi.tuna.tsinghua.edu.cn/simple"])
     
     try:
-        debug_logger.log_info(f"[BrowserCaptcha] 正在安装 {package}...")
-        print(f"[BrowserCaptcha] 正在安装 {package}...")
+        debug_logger.log_info(f"[BrowserCaptcha] Sedang menginstal {package}...")
+        print(f"[BrowserCaptcha] Sedang menginstal {package}...")
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
         if result.returncode == 0:
-            debug_logger.log_info(f"[BrowserCaptcha] ✅ {package} 安装成功")
-            print(f"[BrowserCaptcha] ✅ {package} 安装成功")
+            debug_logger.log_info(f"[BrowserCaptcha] ✅ {package} berhasil diinstal")
+            print(f"[BrowserCaptcha] ✅ {package} berhasil diinstal")
             return True
         else:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] {package} 安装失败: {result.stderr[:200]}"
+                f"[BrowserCaptcha] {package} gagal diinstal: {result.stderr[:200]}"
             )
             return False
     except Exception as e:
-        debug_logger.log_warning(f"[BrowserCaptcha] {package} 安装异常: {e}")
+        debug_logger.log_warning(f"[BrowserCaptcha] {package} error saat instalasi: {e}")
         return False
 
 
 def _ensure_nodriver_installed() -> bool:
-    """确保 nodriver 已安装
+    """Memastikan nodriver sudah terinstal
     
     Returns:
-        是否安装成功/已安装
+        apakah berhasil diinstal/sudah terinstal
     """
     try:
         import nodriver
 
-        debug_logger.log_info("[BrowserCaptcha] nodriver 已安装")
+        debug_logger.log_info("[BrowserCaptcha] nodriver sudah terinstal")
         return True
     except ImportError:
         pass
     
-    debug_logger.log_info("[BrowserCaptcha] nodriver 未安装，开始自动安装...")
-    print("[BrowserCaptcha] nodriver 未安装，开始自动安装...")
+    debug_logger.log_info("[BrowserCaptcha] nodriver belum terinstal, memulai instalasi otomatis...")
+    print("[BrowserCaptcha] nodriver belum terinstal, memulai instalasi otomatis...")
     
-    # 先尝试官方源
+    # Coba sumber resmi dulu
     if _run_pip_install("nodriver", use_mirror=False):
         return True
     
-    # 官方源失败，尝试国内镜像
-    debug_logger.log_info("[BrowserCaptcha] 官方源安装失败，尝试国内镜像...")
-    print("[BrowserCaptcha] 官方源安装失败，尝试国内镜像...")
+    # Sumber resmi gagal, coba mirror China
+    debug_logger.log_info("[BrowserCaptcha] Instalasi via sumber resmi gagal, mencoba mirror China...")
+    print("[BrowserCaptcha] Instalasi via sumber resmi gagal, mencoba mirror China...")
     if _run_pip_install("nodriver", use_mirror=True):
         return True
     
     debug_logger.log_error(
-        "[BrowserCaptcha] ❌ nodriver 自动安装失败，请手动安装: pip install nodriver"
+        "[BrowserCaptcha] ❌ Instalasi otomatis nodriver gagal, instal manual: pip install nodriver"
     )
-    print("[BrowserCaptcha] ❌ nodriver 自动安装失败，请手动安装: pip install nodriver")
+    print("[BrowserCaptcha] ❌ Instalasi otomatis nodriver gagal, instal manual: pip install nodriver")
     return False
 
 
 def _read_windows_app_path(executable_name: str) -> Optional[str]:
-    """读取 Windows App Paths 中注册的浏览器路径。"""
+    """Membaca path browser yang terdaftar di Windows App Paths."""
     if os.name != "nt":
         return None
 
@@ -443,7 +443,7 @@ def _read_windows_app_path(executable_name: str) -> Optional[str]:
 
 
 def _detect_real_browser_executable_path() -> Optional[str]:
-    """尽量探测本机已安装的真实 Chromium 浏览器，避免交给 nodriver 自行弹选择。"""
+    """Berusaha mendeteksi browser Chromium asli yang terinstal di mesin ini, biar nodriver nggak memunculkan pilihan sendiri."""
     if os.name != "nt":
         linux_browser_candidates = [
             (
@@ -490,7 +490,7 @@ def _detect_real_browser_executable_path() -> Optional[str]:
                     continue
                 normalized = os.path.normpath(resolved)
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 自动检测到真实浏览器 {browser_name}: {normalized}"
+                    f"[BrowserCaptcha] Terdeteksi otomatis browser asli {browser_name}: {normalized}"
                 )
                 return normalized
         return None
@@ -615,7 +615,7 @@ def _detect_real_browser_executable_path() -> Optional[str]:
                 continue
             normalized = os.path.normpath(resolved)
             debug_logger.log_info(
-                f"[BrowserCaptcha] 自动检测到真实浏览器 {browser_name}: {normalized}"
+                f"[BrowserCaptcha] Terdeteksi otomatis browser asli {browser_name}: {normalized}"
             )
             return normalized
 
@@ -623,19 +623,19 @@ def _detect_real_browser_executable_path() -> Optional[str]:
 
 
 def _resolve_browser_executable_path() -> tuple[Optional[str], str]:
-    """解析浏览器优先级：环境变量 > auto。"""
+    """Resolusi prioritas browser: environment variable > auto."""
     browser_executable_path = (
         os.environ.get("BROWSER_EXECUTABLE_PATH", "").strip() or None
     )
     if browser_executable_path and not os.path.exists(browser_executable_path):
         debug_logger.log_warning(
-            f"[BrowserCaptcha] 指定浏览器不存在，改回 nodriver 默认浏览器解析: {browser_executable_path}"
+            f"[BrowserCaptcha] Browser yang ditentukan tidak ada, kembali ke resolusi browser default nodriver: {browser_executable_path}"
         )
         browser_executable_path = None
 
     if browser_executable_path:
         normalized = os.path.normpath(browser_executable_path)
-        debug_logger.log_info(f"[BrowserCaptcha] 使用环境变量指定浏览器: {normalized}")
+        debug_logger.log_info(f"[BrowserCaptcha] Memakai browser dari environment variable: {normalized}")
         return normalized, "configured"
 
     return None, "auto"
@@ -657,13 +657,13 @@ def _build_personal_browser_args(
     proxy_server_arg: Optional[str] = None,
     proxy_extension_dir: Optional[str] = None,
 ) -> list[str]:
-    """构建 personal 模式浏览器启动参数。
+    """Membangun argumen launch browser mode personal.
 
-    说明：
-    - 始终依赖独立临时 user-data-dir，避免污染系统真实资料。
-    - 显式去掉 `--profile-directory=Default` 这种容易误导的配置。
-    - 显式加 `--no-startup-window`，避免 Chrome 先弹一个默认普通窗口。
-    - 不使用无痕/BWSI 会话；独立临时 profile 已保证账号隔离。
+    Catatan:
+    - Selalu pakai user-data-dir temporer yang independen, biar nggak mengotori profil asli sistem.
+    - Secara eksplisit menghapus konfigurasi `--profile-directory=Default` yang gampang menyesatkan.
+    - Secara eksplisit menambahkan `--no-startup-window`, biar Chrome nggak memunculkan jendela normal default dulu.
+    - Nggak pakai sesi incognito/BWSI; profil temporer independen sudah menjamin isolasi akun.
     """
     if _personal_bare_mode_enabled():
         browser_args = []
@@ -709,7 +709,7 @@ def _build_personal_browser_args(
         browser_args.append(proxy_server_arg)
 
     if proxy_extension_dir:
-        # 代理认证扩展在 bwsi/incognito 风格会话下容易失效，保持临时 profile 即可满足隔离需求。
+        # Ekstensi auth proxy gampang gagal di sesi gaya bwsi/incognito, mempertahankan profil temporer sudah cukup untuk kebutuhan isolasi.
         browser_args.append(f"--load-extension={proxy_extension_dir}")
     else:
         # The isolated temporary profile already prevents cross-account leakage.
@@ -734,7 +734,7 @@ def _resolve_browser_launch_parallelism_limit() -> int:
 
 
 def _resolve_personal_browser_sandbox_enabled() -> bool:
-    """尽量沿用真实浏览器默认沙箱；仅在 root/显式禁用时关闭。"""
+    """Sebisa mungkin pakai sandbox default browser asli; hanya dimatikan saat root/dinonaktifkan eksplisit."""
     if _env_truthy("PERSONAL_BROWSER_DISABLE_SANDBOX"):
         return False
     if _env_truthy("PERSONAL_BROWSER_FORCE_SANDBOX"):
@@ -811,33 +811,33 @@ def _tune_personal_browser_args_for_docker_headed(
     return tuned_args
 
 
-# 尝试导入 nodriver
+# Mencoba mengimpor nodriver
 uc = None
 NODRIVER_AVAILABLE = False
 _NODRIVER_RUNTIME_PATCHED = False
 
 if DOCKER_HEADED_BLOCKED:
     debug_logger.log_warning(
-        "[BrowserCaptcha] 检测到 Docker 环境，默认禁用内置浏览器打码。"
-        "如需启用请设置 ALLOW_DOCKER_HEADED_CAPTCHA=true。"
-        "personal 模式默认支持无头，不强制依赖 DISPLAY/虚拟显示。"
+        "[BrowserCaptcha] Terdeteksi lingkungan Docker, captcha browser builtin dinonaktifkan secara default."
+        "Untuk mengaktifkan, set ALLOW_DOCKER_HEADED_CAPTCHA=true."
+        "Mode personal mendukung headless secara default, tidak wajib bergantung pada DISPLAY/tampilan virtual."
     )
-    print("[BrowserCaptcha] ⚠️ 检测到 Docker 环境，默认禁用内置浏览器打码")
-    print("[BrowserCaptcha] 如需启用请设置 ALLOW_DOCKER_HEADED_CAPTCHA=true")
+    print("[BrowserCaptcha] ⚠️ Terdeteksi lingkungan Docker, captcha browser builtin dinonaktifkan secara default")
+    print("[BrowserCaptcha] Untuk mengaktifkan, set ALLOW_DOCKER_HEADED_CAPTCHA=true")
 else:
     if IS_DOCKER and ALLOW_DOCKER_HEADED:
         debug_logger.log_warning(
-            "[BrowserCaptcha] Docker 内置浏览器打码白名单已启用，personal 模式将按 headless 配置决定是否需要 DISPLAY/虚拟显示"
+            "[BrowserCaptcha] Whitelist captcha browser builtin Docker sudah diaktifkan, mode personal akan menentukan perlu tidaknya DISPLAY/tampilan virtual berdasarkan konfigurasi headless"
         )
-        print("[BrowserCaptcha] ✅ Docker 内置浏览器打码白名单已启用")
+        print("[BrowserCaptcha] ✅ Whitelist captcha browser builtin Docker sudah diaktifkan")
     if _ensure_nodriver_installed():
         try:
             import nodriver as uc
 
             NODRIVER_AVAILABLE = True
         except ImportError as e:
-            debug_logger.log_error(f"[BrowserCaptcha] nodriver 导入失败: {e}")
-            print(f"[BrowserCaptcha] ❌ nodriver 导入失败: {e}")
+            debug_logger.log_error(f"[BrowserCaptcha] Gagal mengimpor nodriver: {e}")
+            print(f"[BrowserCaptcha] ❌ Gagal mengimpor nodriver: {e}")
 
 
 _RUNTIME_ERROR_KEYWORDS = (
@@ -880,7 +880,7 @@ _NORMAL_CLOSE_KEYWORDS = (
 
 
 def _flatten_exception_text(error: Any) -> str:
-    """拼接异常链文本，便于统一识别 nodriver 运行态断连。"""
+    """Menggabungkan teks exception chain, biar gampang mengenali diskoneksi nodriver saat runtime."""
     visited: set[int] = set()
     pending = [error]
     parts: list[str] = []
@@ -915,7 +915,7 @@ def _flatten_exception_text(error: Any) -> str:
 
 
 def _is_runtime_disconnect_error(error: Any) -> bool:
-    """识别浏览器 / websocket 运行态断连。"""
+    """Mengenali diskoneksi browser / websocket saat runtime."""
     error_text = _flatten_exception_text(error)
     if not error_text:
         return False
@@ -925,7 +925,7 @@ def _is_runtime_disconnect_error(error: Any) -> bool:
 
 
 def _is_runtime_normal_close_error(error: Any) -> bool:
-    """识别 websocket 正常关闭（1000）这类预期退场。"""
+    """Mengenali penutupan normal websocket (1000) seperti exit yang diharapkan."""
     error_text = _flatten_exception_text(error)
     if not error_text:
         return False
@@ -935,7 +935,7 @@ def _is_runtime_normal_close_error(error: Any) -> bool:
 def _finalize_nodriver_send_task(
     connection, transaction, tx_id: int, task: asyncio.Task
 ):
-    """回收 nodriver websocket.send 的后台异常，避免事件循环打印未检索 task 错误。"""
+    """Menampung exception background dari nodriver websocket.send, biar event loop nggak mencetak error task yang tidak ter-retrieve."""
     try:
         task.result()
     except asyncio.CancelledError:
@@ -952,20 +952,20 @@ def _finalize_nodriver_send_task(
 
         if _is_runtime_normal_close_error(e):
             debug_logger.log_info(
-                f"[BrowserCaptcha] nodriver websocket 在正常关闭后退出: {type(e).__name__}: {e}"
+                f"[BrowserCaptcha] nodriver websocket keluar setelah penutupan normal: {type(e).__name__}: {e}"
             )
         elif _is_runtime_disconnect_error(e):
             debug_logger.log_warning(
-                f"[BrowserCaptcha] nodriver websocket 发送在断连后退出: {type(e).__name__}: {e}"
+                f"[BrowserCaptcha] Pengiriman nodriver websocket keluar setelah diskoneksi: {type(e).__name__}: {e}"
             )
         else:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] nodriver websocket 发送异常: {type(e).__name__}: {e}"
+                f"[BrowserCaptcha] Exception pengiriman nodriver websocket: {type(e).__name__}: {e}"
             )
 
 
 def _is_nodriver_connection_closed(connection_instance) -> bool:
-    """兼容不同 nodriver 版本的连接状态判断。"""
+    """Kompatibel dengan pengecekan status koneksi berbagai versi nodriver."""
     try:
         return bool(getattr(connection_instance, "closed"))
     except AttributeError:
@@ -984,7 +984,7 @@ def _is_nodriver_connection_closed(connection_instance) -> bool:
 
 
 def _patch_nodriver_connection_instance(connection_instance):
-    """在连接实例级别收口 websocket.send 的后台异常。"""
+    """Menampung exception background websocket.send di level instance koneksi."""
     if not connection_instance or getattr(
         connection_instance, "_flow2api_send_patched", False
     ):
@@ -1002,7 +1002,7 @@ def _patch_nodriver_connection_instance(connection_instance):
         from nodriver.core import connection as nodriver_connection_module
     except Exception as e:
         debug_logger.log_warning(
-            f"[BrowserCaptcha] 加载 nodriver.connection 失败，跳过连接补丁: {e}"
+            f"[BrowserCaptcha] Gagal memuat nodriver.connection, melewatkan patch koneksi: {e}"
         )
         return
 
@@ -1074,7 +1074,7 @@ def _patch_nodriver_connection_instance(connection_instance):
 
 
 def _patch_nodriver_browser_instance(browser_instance):
-    """在浏览器实例级别收口 update_targets，并补齐新 target 的连接补丁。"""
+    """Menampung update_targets di level instance browser, dan melengkapi patch koneksi untuk target baru."""
     if not browser_instance:
         return
 
@@ -1103,7 +1103,7 @@ def _patch_nodriver_browser_instance(browser_instance):
                     except Exception:
                         pass
                     log_message = (
-                        f"[BrowserCaptcha] nodriver.update_targets 在浏览器断连后退出: "
+                        f"[BrowserCaptcha] nodriver.update_targets keluar setelah browser diskoneksi: "
                         f"{type(e).__name__}: {e}"
                     )
                     if _is_runtime_normal_close_error(e):
@@ -1129,7 +1129,7 @@ def _patch_nodriver_browser_instance(browser_instance):
 
 
 def _patch_nodriver_runtime(browser_instance=None):
-    """给 nodriver 当前浏览器实例补一层断连降噪与异常透传。"""
+    """Menambahkan lapisan peredam noise diskoneksi dan penerus exception untuk instance browser nodriver saat ini."""
     global _NODRIVER_RUNTIME_PATCHED
 
     if not NODRIVER_AVAILABLE or uc is None:
@@ -1140,7 +1140,7 @@ def _patch_nodriver_runtime(browser_instance=None):
 
     if not _NODRIVER_RUNTIME_PATCHED:
         _NODRIVER_RUNTIME_PATCHED = True
-        debug_logger.log_info("[BrowserCaptcha] 已启用 nodriver 运行态安全补丁")
+        debug_logger.log_info("[BrowserCaptcha] Patch keamanan runtime nodriver sudah diaktifkan")
 
 
 def _parse_proxy_url(proxy_url: str):
@@ -1540,7 +1540,7 @@ def _create_proxy_auth_extension(
 
 
 class ResidentTabInfo:
-    """常驻标签页信息结构"""
+    """Struktur info tab resident"""
 
     def __init__(
         self,
@@ -1558,8 +1558,8 @@ class ResidentTabInfo:
         self.browser_context_id = browser_context_id
         self.recaptcha_ready = False
         self.created_at = time.time()
-        self.last_used_at = time.time()  # 最后使用时间
-        self.use_count = 0  # 使用次数
+        self.last_used_at = time.time()  # Waktu terakhir dipakai
+        self.use_count = 0  # Jumlah pemakaian
         self.fingerprint: Optional[Dict[str, Any]] = None
         self.cookie_signature: Optional[str] = None
         self.session_cookies: Optional[Dict[str, str]] = None
@@ -1567,8 +1567,8 @@ class ResidentTabInfo:
         self.last_harvest_session_id: Optional[str] = None
         self.last_solve_used_native_harvest = False
         self.prefer_native_harvest = False
-        self.solve_lock = asyncio.Lock()  # 串行化同一标签页上的执行，降低并发冲突
-        self.pending_assignment_count = 0  # 选中但尚未真正进入 solve_lock 的请求数
+        self.solve_lock = asyncio.Lock()  # Serialisasi eksekusi di tab yang sama, mengurangi konflik konkurensi
+        self.pending_assignment_count = 0  # Jumlah request terpilih tapi belum masuk solve_lock
 
 
 @dataclass
@@ -1586,7 +1586,7 @@ class TokenPoolLease:
 
 
 class TokenPoolTimeoutError(TimeoutError):
-    """严格 token 池模式下，请求在等待可用 token 时超时。"""
+    """Timeout saat request menunggu token yang tersedia dalam mode token pool ketat."""
 
 
 class NativeGenerationOutcomeUnknownError(RuntimeError):
@@ -1596,11 +1596,11 @@ class NativeGenerationOutcomeUnknownError(RuntimeError):
 
 
 class BrowserCaptchaService:
-    """浏览器自动化获取 reCAPTCHA token（nodriver 有头模式）
+    """Otomatisasi browser untuk mengambil reCAPTCHA token (mode headed nodriver)
     
-    支持两种模式：
-    1. 常驻模式 (Resident Mode): 维护全局共享常驻标签页池，谁抢到空闲页谁执行
-    2. 传统模式 (Legacy Mode): 每次请求创建新标签页 (fallback)
+    Mendukung dua mode:
+    1. Mode resident (Resident Mode): memelihara pool tab resident global yang dibagikan, siapa dapat tab idle dia yang eksekusi
+    2. Mode legacy (Legacy Mode): setiap request bikin tab baru (fallback)
     """
 
     _instance: Optional["BrowserCaptchaService"] = None
@@ -1631,7 +1631,7 @@ class BrowserCaptchaService:
         browser_instance_id: int = 0,
         max_resident_tabs_override: Optional[int] = None,
     ):
-        """初始化服务"""
+        """Inisialisasi service"""
         self.headless = bool(getattr(config, "personal_headless", False))
         self.browser = None
         self._initialized = False
@@ -1655,29 +1655,29 @@ class BrowserCaptchaService:
         self._runtime_surface_profile: Dict[str, Any] = {}
         self._refresh_runtime_fingerprint_spoof_seed()
 
-        # 常驻模式相关属性
+        # Atribut terkait mode resident
         self._resident_tabs: dict[
             str, "ResidentTabInfo"
-        ] = {}  # slot_id -> 常驻标签页信息
+        ] = {}  # slot_id -> info tab resident
         self._token_resident_affinity: dict[
             str, str
-        ] = {}  # token_id -> slot_id（优先保证 token 独占 context）
+        ] = {}  # token_id -> slot_id (prioritaskan token eksklusif context)
         self._project_resident_affinity: dict[
             str, str
-        ] = {}  # project_id -> slot_id（最近一次使用）
+        ] = {}  # project_id -> slot_id (terakhir dipakai)
         self._resident_slot_seq = 0
         self._resident_pick_index = 0
-        self._resident_lock = asyncio.Lock()  # 保护常驻标签页操作
+        self._resident_lock = asyncio.Lock()  # Melindungi operasi tab resident
         self._browser_lock = (
             asyncio.Lock()
-        )  # 保护浏览器初始化/关闭/重启，避免重复拉起实例
+        )  # Melindungi init/close/restart browser, menghindari instance ganda
         self._runtime_recover_lock = (
             asyncio.Lock()
-        )  # 串行化浏览器级恢复，避免并发重启风暴
-        self._tab_build_lock = asyncio.Lock()  # 串行化冷启动/重建，降低 nodriver 抖动
+        )  # Serialisasi recovery level browser, menghindari badai restart konkuren
+        self._tab_build_lock = asyncio.Lock()  # Serialisasi cold start/rebuild, mengurangi jitter nodriver
         self._legacy_lock = (
             asyncio.Lock()
-        )  # 避免 legacy fallback 并发失控创建临时标签页
+        )  # Mencegah legacy fallback konkuren yang tak terkendali bikin tab temporer
         configured_total_tabs = getattr(config, "personal_max_resident_tabs", 5)
         self._max_resident_tabs = self._resolve_personal_max_resident_tabs(
             configured_total_tabs
@@ -1686,7 +1686,7 @@ class BrowserCaptchaService:
             60,
             int(getattr(config, "personal_idle_tab_ttl_seconds", 600) or 600),
         )
-        self._idle_reaper_task: Optional[asyncio.Task] = None  # 空闲回收任务
+        self._idle_reaper_task: Optional[asyncio.Task] = None  # Task reklamasi idle
         self._command_timeout_seconds = 8.0
         self._navigation_timeout_seconds = 20.0
         self._solve_timeout_seconds = 45.0
@@ -1709,11 +1709,11 @@ class BrowserCaptchaService:
         )
         self._last_fingerprint_at = 0.0
 
-        # 兼容旧 API（保留 single resident 属性作为别名）
-        self.resident_project_id: Optional[str] = None  # 向后兼容
-        self.resident_tab = None                         # 向后兼容
-        self._running = False                            # 向后兼容
-        self._recaptcha_ready = False                    # 向后兼容
+        # Kompatibel dengan API lama (pertahankan atribut single resident sebagai alias)
+        self.resident_project_id: Optional[str] = None  # Backward compatible
+        self.resident_tab = None                         # Backward compatible
+        self._running = False                            # Backward compatible
+        self._recaptcha_ready = False                    # Backward compatible
         self._last_fingerprint: Optional[Dict[str, Any]] = None
         self._solve_bundle_snapshots: Dict[str, Dict[str, Any]] = {}
         self._resident_error_streaks: dict[str, int] = {}
@@ -1742,7 +1742,7 @@ class BrowserCaptchaService:
         self._recaptcha_asset_bundle_signature: Optional[str] = None
         self._recaptcha_asset_bundle: Optional[Dict[str, Any]] = None
         self._recaptcha_asset_hook_source: Optional[str] = None
-        # 自定义站点打码常驻页（用于 score-test）
+        # Tab resident captcha situs kustom (untuk score-test)
         self._custom_tabs: dict[str, Dict[str, Any]] = {}
         self._custom_lock = asyncio.Lock()
         self._refresh_runtime_tunables()
@@ -1770,9 +1770,9 @@ class BrowserCaptchaService:
                 1, min(50, int(max_resident_tabs_override))
             )
 
-        # pool 调整分片配额时，worker 需要立即更新本地有效 resident 上限；
-        # 否则新创建的 worker 会沿用旧值，导致明明配置了多浏览器/多标签，
-        # 实际每个实例仍只跑 1 个 resident slot。
+        # Saat pool menyesuaikan kuota shard, worker harus segera update batas resident lokal yang valid;
+        # kalau tidak, worker baru akan pakai nilai lama, padahal sudah dikonfigurasi multi-browser/multi-tab,
+        # tapi tiap instance tetap cuma jalan 1 resident slot.
         configured_total_tabs = getattr(config, "personal_max_resident_tabs", 5)
         self._max_resident_tabs = self._resolve_personal_max_resident_tabs(
             configured_total_tabs
@@ -1863,16 +1863,16 @@ class BrowserCaptchaService:
         ):
             next_profile_dir = self._create_fresh_runtime_profile_dir()
             debug_logger.log_warning(
-                "[BrowserCaptcha] 当前 user_data_dir 不在运行时目录下，"
-                f"本次恢复改用全新临时 profile: {next_profile_dir} (reason={reason})"
+                "[BrowserCaptcha] user_data_dir saat ini tidak di direktori runtime,"
+                f"Recovery kali ini pakai profil temporer baru: {next_profile_dir} (reason={reason})"
             )
             return
 
         if not cleanup_targets:
             next_profile_dir = self._create_fresh_runtime_profile_dir()
             debug_logger.log_warning(
-                "[BrowserCaptcha] 未找到可清理的运行时 profile，"
-                f"改用新的临时无状态 profile: {next_profile_dir} (reason={reason})"
+                "[BrowserCaptcha] Tidak ditemukan profil runtime yang bisa dibersihkan,"
+                f"pakai profil temporer stateless baru: {next_profile_dir} (reason={reason})"
             )
             return
 
@@ -1881,16 +1881,16 @@ class BrowserCaptchaService:
                 if target_dir.exists():
                     await asyncio.to_thread(shutil.rmtree, str(target_dir), True)
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 已删除浏览器 profile 目录以执行全新冷启动: {target_dir}"
+                        f"[BrowserCaptcha] Direktori profil browser sudah dihapus untuk cold start baru: {target_dir}"
                     )
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 删除浏览器 profile 目录失败 (reason={reason}, path={target_dir}): {e}"
+                    f"[BrowserCaptcha] Gagal menghapus direktori profil browser (reason={reason}, path={target_dir}): {e}"
                 )
 
         next_profile_dir = self._create_fresh_runtime_profile_dir()
         debug_logger.log_warning(
-            f"[BrowserCaptcha] profile 清理完成，下一次启动将使用全新临时 profile: {next_profile_dir} (reason={reason})"
+            f"[BrowserCaptcha] Pembersihan profil selesai, startup berikutnya akan pakai profil temporer baru: {next_profile_dir} (reason={reason})"
         )
 
     async def _cleanup_runtime_profile_dirs_after_shutdown(
@@ -1903,15 +1903,15 @@ class BrowserCaptchaService:
         ):
             next_profile_dir = self._create_fresh_runtime_profile_dir()
             debug_logger.log_info(
-                "[BrowserCaptcha] 关闭后检测到自定义 profile 路径，"
-                f"下一次启动改用全新临时 profile: {next_profile_dir} (reason={reason})"
+                "[BrowserCaptcha] Terdeteksi path profil kustom setelah penutupan,"
+                f"startup berikutnya pakai profil temporer baru: {next_profile_dir} (reason={reason})"
             )
             return False
 
         if not cleanup_targets:
             next_profile_dir = self._create_fresh_runtime_profile_dir()
             debug_logger.log_info(
-                f"[BrowserCaptcha] 关闭后未发现可复用 profile，已准备新的临时 profile: {next_profile_dir} (reason={reason})"
+                f"[BrowserCaptcha] Tidak ditemukan profil yang bisa dipakai ulang setelah penutupan, profil temporer baru sudah disiapkan: {next_profile_dir} (reason={reason})"
             )
             return False
 
@@ -1920,23 +1920,23 @@ class BrowserCaptchaService:
                 if target_dir.exists():
                     await asyncio.to_thread(shutil.rmtree, str(target_dir), True)
                     debug_logger.log_info(
-                        f"[BrowserCaptcha] 已清理关闭后的运行时 profile 目录: {target_dir} (reason={reason})"
+                        f"[BrowserCaptcha] Direktori profil runtime setelah penutupan sudah dibersihkan: {target_dir} (reason={reason})"
                     )
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 清理关闭后的运行时 profile 目录失败 (reason={reason}, path={target_dir}): {e}"
+                    f"[BrowserCaptcha] Gagal membersihkan direktori profil runtime setelah penutupan (reason={reason}, path={target_dir}): {e}"
                 )
 
         next_profile_dir = self._create_fresh_runtime_profile_dir()
         debug_logger.log_info(
-            f"[BrowserCaptcha] 关闭后已切换到新的临时 profile: {next_profile_dir} (reason={reason})"
+            f"[BrowserCaptcha] Setelah penutupan sudah beralih ke profil temporer baru: {next_profile_dir} (reason={reason})"
         )
         return True
 
     def _resolve_personal_max_resident_tabs(
         self, configured_tabs: Optional[int] = None
     ) -> int:
-        """计算当前模式下的有效 resident tab 上限。"""
+        """Menghitung batas tab resident yang valid untuk mode saat ini."""
         try:
             resolved_tabs = (
                 self._max_resident_tabs_override
@@ -1950,7 +1950,7 @@ class BrowserCaptchaService:
             return 5
 
     def _reset_local_recaptcha_asset_caches(self, *, purge_disk: bool = False) -> None:
-        """重置本地 reCAPTCHA 资源缓存，必要时删除磁盘缓存以强制刷新。"""
+        """Mereset cache resource reCAPTCHA lokal, hapus cache disk bila perlu untuk memaksa refresh."""
         self._recaptcha_asset_data_url_cache.clear()
         self._recaptcha_asset_bundle_signature = None
         self._recaptcha_asset_bundle = None
@@ -1971,7 +1971,7 @@ class BrowserCaptchaService:
                         cache_file.unlink(missing_ok=True)
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 清理本地 reCAPTCHA 资源缓存失败: dir={cache_dir}, error={e}"
+                    f"[BrowserCaptcha] Gagal membersihkan cache resource reCAPTCHA lokal: dir={cache_dir}, error={e}"
                 )
 
     @classmethod
@@ -1989,7 +1989,7 @@ class BrowserCaptchaService:
 
     @classmethod
     async def get_instance(cls, db=None):
-        """获取单例实例"""
+        """Mengambil instance singleton"""
         close_single_instance = None
         close_pool_instance = None
         async with cls._lock:
@@ -2072,7 +2072,7 @@ class BrowserCaptchaService:
         )
         if any(int(value or 0) > 0 for value in stats.values()):
             debug_logger.log_info(
-                f"[BrowserCaptcha] 运行时临时文件清理完成 ({reason}): {stats}"
+                f"[BrowserCaptcha] Pembersihan file temporer runtime selesai ({reason}): {stats}"
             )
         return stats
 
@@ -2098,7 +2098,7 @@ class BrowserCaptchaService:
                 pass
 
     async def reload_config(self):
-        """热更新配置（从数据库重新加载）"""
+        """Hot-update konfigurasi (reload dari database)"""
         old_headless = self.headless
         old_max_tabs = self._max_resident_tabs
         old_idle_ttl = self._idle_tab_ttl_seconds
@@ -2122,7 +2122,7 @@ class BrowserCaptchaService:
         )
 
         debug_logger.log_info(
-            f"[BrowserCaptcha] Personal 配置已热更新: "
+            f"[BrowserCaptcha] Konfigurasi Personal sudah di-hot-update: "
             f"headless {old_headless}->{self.headless}, "
             f"max_tabs {old_max_tabs}->{self._max_resident_tabs}, "
             f"idle_ttl {old_idle_ttl}s->{self._idle_tab_ttl_seconds}s, "
@@ -2142,13 +2142,13 @@ class BrowserCaptchaService:
                     reason="reload_config_runtime_changed"
                 )
             debug_logger.log_info(
-                "[BrowserCaptcha] personal 运行参数发生变化，已重置浏览器运行态，后续请求将按新 profile/代理/模式重启"
+                "[BrowserCaptcha] Parameter runtime personal berubah, state browser sudah direset, request berikutnya akan restart dengan profile/proxy/mode baru"
             )
         elif old_max_tabs > self._max_resident_tabs:
             await self._trim_resident_tabs_to_limit()
 
     async def _trim_resident_tabs_to_limit(self) -> None:
-        """在配额缩小时立即裁掉多余的空闲 resident tab，避免内存长期不回落。"""
+        """Saat kuota menyusut, langsung pangkas tab resident idle yang berlebih, biar memori nggak lama nggak turun."""
         while True:
             async with self._resident_lock:
                 overflow = len(self._resident_tabs) - max(
@@ -2173,15 +2173,15 @@ class BrowserCaptchaService:
 
             if not lru_slot_id:
                 debug_logger.log_warning(
-                    "[BrowserCaptcha] max_tabs 已缩小，但当前没有可安全裁剪的空闲 resident tab，"
-                    f"当前数量={len(self._resident_tabs)}, target={self._max_resident_tabs}"
+                    "[BrowserCaptcha] max_tabs sudah menyusut, tapi tidak ada tab resident idle yang aman dipangkas,"
+                    f"jumlah saat ini={len(self._resident_tabs)}, target={self._max_resident_tabs}"
                 )
                 return
 
             await self._close_resident_tab(lru_slot_id)
 
     async def _build_proxy_config_signature(self) -> str:
-        """基于当前数据库配置构建稳定签名，用于判断是否需要重启浏览器 runtime。"""
+        """Membangun signature stabil dari konfigurasi database saat ini, untuk menentukan perlu tidaknya restart browser runtime."""
         if not self.db:
             return ""
 
@@ -2237,7 +2237,7 @@ class BrowserCaptchaService:
         )
 
     def _refresh_runtime_tunables(self):
-        """刷新运行时调优参数，缺省时使用保守的低开销默认值。"""
+        """Me-refresh parameter tuning runtime, pakai default konservatif ber-overhead rendah bila tidak diset."""
         try:
             self._health_probe_ttl_seconds = max(
                 0.2,
@@ -2267,7 +2267,7 @@ class BrowserCaptchaService:
         )
 
     def _resolve_fresh_profile_restart_every_n_solves(self) -> int:
-        """解析浏览器 fresh profile 轮换阈值，0 表示禁用。"""
+        """Mengurai threshold rotasi fresh profile browser, 0 berarti dinonaktifkan."""
         raw_value: Any = None
         env_value = os.environ.get(
             "PERSONAL_BROWSER_FRESH_RESTART_EVERY_N_SOLVES", ""
@@ -2330,8 +2330,8 @@ class BrowserCaptchaService:
                 f"{source}:{project_id or 'global'}:{current_count}/{threshold}"
             )
             debug_logger.log_warning(
-                "[BrowserCaptcha] 浏览器成功打码次数达到 fresh profile 轮换阈值，"
-                f"后续新取码会先等待当前并发清空并完成全新无状态浏览器重启 "
+                "[BrowserCaptcha] Jumlah solve captcha browser mencapai threshold rotasi fresh profile,"
+                f"pengambilan token berikutnya akan menunggu konkurensi saat ini habis dan restart browser stateless baru selesai "
                 f"(count={current_count}, threshold={threshold}, reason={self._fresh_profile_restart_pending_reason})"
             )
         return current_count
@@ -2347,8 +2347,8 @@ class BrowserCaptchaService:
         self._fresh_profile_restart_pending_reason = normalized_reason
         if not already_pending:
             debug_logger.log_warning(
-                "[BrowserCaptcha] 已请求 fresh profile 轮换，"
-                f"后续新取码会等待当前并发清空并完成重启 (force={force}, reason={normalized_reason})"
+                "[BrowserCaptcha] Rotasi fresh profile sudah diminta,"
+                f"pengambilan token berikutnya akan menunggu konkurensi habis dan restart selesai (force={force}, reason={normalized_reason})"
             )
 
     async def _has_active_browser_work(self) -> bool:
@@ -2374,7 +2374,7 @@ class BrowserCaptchaService:
             if not warned:
                 warned = True
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] fresh profile 轮换等待当前浏览器任务 drain 完成 (source={source})"
+                    f"[BrowserCaptcha] Rotasi fresh profile menunggu drain task browser saat ini selesai (source={source})"
                 )
             await asyncio.sleep(0.2)
 
@@ -2411,13 +2411,13 @@ class BrowserCaptchaService:
                         return False
                     if await self._has_active_browser_work():
                         debug_logger.log_info(
-                            "[BrowserCaptcha] fresh profile 后台轮换发现新任务活跃，延后到下一轮 "
+                            "[BrowserCaptcha] Rotasi background fresh profile menemukan task baru yang aktif, ditunda ke ronde berikutnya "
                             f"(project_id={project_id}, source={source})"
                         )
                         return False
 
                     debug_logger.log_warning(
-                        "[BrowserCaptcha] 执行计划中的 fresh profile 轮换重启 "
+                        "[BrowserCaptcha] Menjalankan restart rotasi fresh profile yang terjadwal "
                         f"(project_id={project_id}, source={source}, reason={self._fresh_profile_restart_pending_reason})"
                     )
                     restarted = await self._restart_browser_for_project_unlocked(
@@ -2432,7 +2432,7 @@ class BrowserCaptchaService:
                 raise
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] fresh profile 后台轮换失败 (project_id={project_id}, source={source}): {e}"
+                    f"[BrowserCaptcha] Rotasi background fresh profile gagal (project_id={project_id}, source={source}): {e}"
                 )
                 return False
             finally:
@@ -2441,7 +2441,7 @@ class BrowserCaptchaService:
 
         self._fresh_profile_restart_task = asyncio.create_task(_runner())
         debug_logger.log_info(
-            f"[BrowserCaptcha] fresh profile 轮换已计划执行 (project_id={project_id}, source={source})"
+            f"[BrowserCaptcha] Rotasi fresh profile sudah dijadwalkan (project_id={project_id}, source={source})"
         )
         return False
 
@@ -2452,7 +2452,7 @@ class BrowserCaptchaService:
         *,
         source: str,
     ) -> bool:
-        """达到 fresh 轮换阈值后，阻止新取码继续复用旧 resident tab。"""
+        """Setelah mencapai threshold rotasi fresh, cegah pengambilan token baru memakai ulang tab resident lama."""
         waited = False
         current_task = asyncio.current_task()
 
@@ -2466,8 +2466,8 @@ class BrowserCaptchaService:
                 if not waited:
                     waited = True
                     debug_logger.log_warning(
-                        "[BrowserCaptcha] fresh profile 轮换正在执行/等待，"
-                        f"当前取码先等待重启完成再分配标签页 (project_id={project_id}, source={source})"
+                        "[BrowserCaptcha] Rotasi fresh profile sedang berjalan/menunggu,"
+                        f"pengambilan token saat ini menunggu restart selesai dulu baru dapat tab (project_id={project_id}, source={source})"
                     )
                 try:
                     await asyncio.shield(existing_task)
@@ -2475,7 +2475,7 @@ class BrowserCaptchaService:
                     raise
                 except Exception as e:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 等待 fresh profile 轮换任务异常 (project_id={project_id}, source={source}): {e}"
+                        f"[BrowserCaptcha] Menunggu task rotasi fresh profile error (project_id={project_id}, source={source}): {e}"
                     )
                 if not self._fresh_profile_restart_pending:
                     return True
@@ -2498,8 +2498,8 @@ class BrowserCaptchaService:
             if not waited:
                 waited = True
                 debug_logger.log_warning(
-                    "[BrowserCaptcha] fresh profile 轮换已到阈值，"
-                    f"当前取码先触发并等待重启完成 (project_id={project_id}, source={source}, "
+                    "[BrowserCaptcha] Rotasi fresh profile sudah mencapai threshold,"
+                    f"pengambilan token saat ini memicu dan menunggu restart selesai dulu (project_id={project_id}, source={source}, "
                     f"reason={self._fresh_profile_restart_pending_reason})"
                 )
 
@@ -2524,7 +2524,7 @@ class BrowserCaptchaService:
                 raise
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] fresh profile 轮换任务执行异常 (project_id={project_id}, source={source}): {e}"
+                    f"[BrowserCaptcha] Task rotasi fresh profile error saat eksekusi (project_id={project_id}, source={source}): {e}"
                 )
 
             if not self._fresh_profile_restart_pending:
@@ -2532,38 +2532,38 @@ class BrowserCaptchaService:
             await asyncio.sleep(0)
 
     def _requires_virtual_display(self) -> bool:
-        """仅在显式有头模式下要求 Docker/Linux 提供 DISPLAY/虚拟显示。"""
+        """Hanya meminta DISPLAY/tampilan virtual di Docker/Linux dalam mode headed eksplisit."""
         return bool(IS_DOCKER and os.name == "posix" and not self.headless)
 
     def _check_available(self):
-        """检查服务是否可用"""
+        """Mengecek apakah service tersedia"""
         if DOCKER_HEADED_BLOCKED:
             raise RuntimeError(
-                "检测到 Docker 环境，默认禁用内置浏览器打码。"
-                "如需启用请设置环境变量 ALLOW_DOCKER_HEADED_CAPTCHA=true。"
+                "Terdeteksi lingkungan Docker, captcha browser builtin dinonaktifkan secara default."
+                "Untuk mengaktifkan, set environment variable ALLOW_DOCKER_HEADED_CAPTCHA=true."
             )
         if self._requires_virtual_display() and not os.environ.get("DISPLAY"):
             raise RuntimeError(
-                "Docker 内置浏览器打码已启用，但 DISPLAY 未设置。"
-                "请设置 DISPLAY（例如 :99）并启动 Xorg/Xdummy 等虚拟显示。"
+                "Captcha browser builtin Docker sudah diaktifkan, tapi DISPLAY belum diset."
+                "Set DISPLAY (misalnya :99) dan jalankan Xorg/Xdummy atau tampilan virtual lainnya."
             )
         if not NODRIVER_AVAILABLE or uc is None:
             raise RuntimeError(
-                "nodriver 未安装或不可用。请手动安装: pip install nodriver"
+                "nodriver belum terinstal atau tidak tersedia. Instal manual: pip install nodriver"
             )
 
     async def _run_with_timeout(self, awaitable, timeout_seconds: float, label: str):
-        """统一收口 nodriver 操作超时，避免单次卡死拖住整条请求链路。"""
+        """Menampung timeout operasi nodriver secara terpusat, menghindari satu hang menyeret seluruh rantai request."""
         effective_timeout = max(0.5, float(timeout_seconds or 0))
         try:
             return await asyncio.wait_for(awaitable, timeout=effective_timeout)
         except asyncio.TimeoutError as e:
-            raise TimeoutError(f"{label} 超时 ({effective_timeout:.1f}s)") from e
+            raise TimeoutError(f"{label} timeout ({effective_timeout:.1f}s)") from e
 
     async def _wait_for_display_ready(
         self, display_value: str, timeout_seconds: float = 5.0
     ):
-        """Docker 有头模式下等待 X display socket 就绪，避免容器重启后立刻拉起浏览器失败。"""
+        """Menunggu X display socket siap dalam mode headed Docker, menghindari kegagalan launch browser tepat setelah container restart."""
         if not (
             IS_DOCKER
             and display_value
@@ -2584,7 +2584,7 @@ class BrowserCaptchaService:
             await asyncio.sleep(0.1)
 
         raise RuntimeError(
-            f"DISPLAY={display_value} 对应的 X display socket 未就绪: {socket_path}"
+            f"X display socket untuk DISPLAY={display_value} belum siap: {socket_path}"
         )
 
     def _mark_browser_health(self, healthy: bool):
@@ -2675,7 +2675,7 @@ class BrowserCaptchaService:
             else ""
         )
         raise RuntimeError(
-            f"浏览器启动冷却中，请 {remaining_seconds:.1f}s 后重试{suffix}"
+            f"Browser sedang cooldown startup, coba lagi {remaining_seconds:.1f}s lagi{suffix}"
         )
 
     @staticmethod
@@ -2834,7 +2834,7 @@ class BrowserCaptchaService:
                 stats["resident_tabs_closed"] += 1
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 关闭可回收 resident 失败 (slot={slot_id}, reason={reason}): {e}"
+                    f"[BrowserCaptcha] Gagal menutup resident yang bisa di-reclaim (slot={slot_id}, reason={reason}): {e}"
                 )
 
         should_shutdown_runtime = False
@@ -2875,11 +2875,11 @@ class BrowserCaptchaService:
             stats["python_gc_collected"] = 0
 
         if any(int(value or 0) > 0 for value in stats.values()):
-            debug_logger.log_info(f"[BrowserCaptcha] 内存回收完成 ({reason}): {stats}")
+            debug_logger.log_info(f"[BrowserCaptcha] Reclaim memori selesai ({reason}): {stats}")
         return stats
 
     def _is_browser_runtime_error(self, error: Any) -> bool:
-        """识别浏览器运行态已损坏/已关闭的典型异常。"""
+        """Mengenali exception tipikal saat state runtime browser rusak/sudah ditutup."""
         return _is_runtime_disconnect_error(error) or self._is_no_browser_window_error(
             error
         )
@@ -2950,7 +2950,7 @@ class BrowserCaptchaService:
         return value
 
     async def _probe_browser_runtime(self) -> bool:
-        """轻量探测当前 nodriver 连接是否仍可用。"""
+        """Probe ringan apakah koneksi nodriver saat ini masih bisa dipakai."""
         if not self.browser:
             self._invalidate_browser_health()
             return False
@@ -2980,13 +2980,13 @@ class BrowserCaptchaService:
             return True
         except Exception as e:
             self._mark_browser_health(False)
-            debug_logger.log_warning(f"[BrowserCaptcha] 浏览器健康检查失败: {e}")
+            debug_logger.log_warning(f"[BrowserCaptcha] Health check browser gagal: {e}")
             return False
 
     async def _recover_browser_runtime(
         self, project_id: Optional[str] = None, reason: str = "runtime_error"
     ) -> bool:
-        """浏览器运行态损坏时，优先整颗浏览器重启并恢复 resident 池。"""
+        """Saat state runtime browser rusak, prioritaskan restart seluruh browser dan pulihkan pool resident."""
         normalized_project_id = str(project_id or "").strip()
         async with self._runtime_recover_lock:
             if (
@@ -2997,7 +2997,7 @@ class BrowserCaptchaService:
                 try:
                     if await self._probe_browser_runtime():
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] 浏览器运行态已被并发协程恢复，直接复用 (project_id={normalized_project_id or '<empty>'}, reason={reason})"
+                            f"[BrowserCaptcha] State runtime browser sudah dipulihkan coroutine konkuren, langsung pakai ulang (project_id={normalized_project_id or '<empty>'}, reason={reason})"
                         )
                         return True
                 except Exception:
@@ -3014,7 +3014,7 @@ class BrowserCaptchaService:
                         return True
                 except Exception as e:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 浏览器重启恢复失败 (project_id={normalized_project_id}, reason={reason}): {e}"
+                        f"[BrowserCaptcha] Gagal memulihkan restart browser (project_id={normalized_project_id}, reason={reason}): {e}"
                     )
 
             try:
@@ -3026,7 +3026,7 @@ class BrowserCaptchaService:
                 return True
             except Exception as e:
                 debug_logger.log_error(
-                    f"[BrowserCaptcha] 浏览器运行态恢复失败 ({reason}): {e}"
+                    f"[BrowserCaptcha] Gagal memulihkan state runtime browser ({reason}): {e}"
                 )
                 return False
 
@@ -3128,7 +3128,7 @@ class BrowserCaptchaService:
             )
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 读取浏览器运行态版本失败，回退默认 runtime profile: {e}"
+                f"[BrowserCaptcha] Gagal membaca versi state runtime browser, fallback ke runtime profile default: {e}"
             )
             return None, None
 
@@ -3249,7 +3249,7 @@ class BrowserCaptchaService:
             )
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 构建 UserAgentMetadata 失败，将跳过 UA-CH runtime 注入: {e}"
+                f"[BrowserCaptcha] Gagal membangun UserAgentMetadata, akan melewatkan injeksi runtime UA-CH: {e}"
             )
             return None
 
@@ -3371,7 +3371,7 @@ class BrowserCaptchaService:
             return applied
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 应用 runtime 权限画像失败 ({label}): {e}"
+                f"[BrowserCaptcha] Gagal menerapkan permission profile runtime ({label}): {e}"
             )
             return False
 
@@ -3521,7 +3521,7 @@ class BrowserCaptchaService:
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 应用 runtime profile 失败 ({label}): {e}"
+                f"[BrowserCaptcha] Gagal menerapkan runtime profile ({label}): {e}"
             )
             return False
 
@@ -5867,7 +5867,7 @@ class BrowserCaptchaService:
                 label=f"page.add_script_to_evaluate_on_new_document:fingerprint:{label}",
             )
             debug_logger.log_info(
-                f"[BrowserCaptcha] 已注入 Canvas/WebGL/Audio 与浏览器环境补齐脚本 "
+                f"[BrowserCaptcha] Sudah menginjeksi skrip pelengkap environment browser Canvas/WebGL/Audio "
                 f"(label={label}, target={getattr(tab, 'target_id', None) or '<none>'})"
             )
             try:
@@ -5877,7 +5877,7 @@ class BrowserCaptchaService:
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 注入浏览器环境补齐脚本失败 ({label}): {e}"
+                f"[BrowserCaptcha] Gagal menginjeksi skrip pelengkap environment browser ({label}): {e}"
             )
             return False
 
@@ -5891,7 +5891,7 @@ class BrowserCaptchaService:
     ) -> None:
         if _personal_startup_injection_disabled():
             debug_logger.log_info(
-                f"[BrowserCaptcha] 已禁用 personal 启动注入 (label={label})"
+                f"[BrowserCaptcha] Injeksi startup personal sudah dinonaktifkan (label={label})"
             )
             return
         await self._apply_trusted_recaptcha_hook(tab, label=f"{label}:trusted_recaptcha")
@@ -5925,7 +5925,7 @@ class BrowserCaptchaService:
                 label=f"page.add_script_to_evaluate_on_new_document:{label}",
             )
             debug_logger.log_info(
-                f"[BrowserCaptcha] 已注入无头可见态伪装脚本 (label={label}, target={getattr(tab, 'target_id', None) or '<none>'})"
+                f"[BrowserCaptcha] Sudah menginjeksi skrip kamuflase visibilitas headless (label={label}, target={getattr(tab, 'target_id', None) or '<none>'})"
             )
             try:
                 tab._personal_headless_visibility_spoof_applied = True
@@ -5934,7 +5934,7 @@ class BrowserCaptchaService:
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 注入无头可见态伪装脚本失败 ({label}): {e}"
+                f"[BrowserCaptcha] Gagal menginjeksi skrip kamuflase visibilitas headless ({label}): {e}"
             )
             return False
 
@@ -6061,7 +6061,7 @@ class BrowserCaptchaService:
             )
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 启动预热读取 viewport 失败 ({label}): {e}"
+                f"[BrowserCaptcha] Gagal membaca viewport saat pemanasan startup ({label}): {e}"
             )
             metrics = {}
 
@@ -6235,13 +6235,13 @@ class BrowserCaptchaService:
                 await asyncio.sleep(min(remaining, 0.08))
 
             debug_logger.log_info(
-                "[BrowserCaptcha] 已完成 fresh browser 启动人类化预热 "
+                "[BrowserCaptcha] Pemanasan humanisasi startup fresh browser selesai "
                 f"(label={label}, duration_ms={int(max(0.0, duration_seconds) * 1000)})"
             )
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] fresh browser 启动人类化预热失败 ({label}): {e}"
+                f"[BrowserCaptcha] Gagal memanaskan humanisasi startup fresh browser ({label}): {e}"
             )
             return False
 
@@ -6272,7 +6272,7 @@ class BrowserCaptchaService:
         }
 
     async def _capture_visible_startup_page(self):
-        """记录浏览器启动后自带的首个 page target，避免后续先关空页再开业务页。"""
+        """Mencatat page target pertama bawaan browser setelah startup, biar nggak perlu tutup halaman kosong dulu baru buka halaman bisnis."""
         browser = self.browser
         self._visible_startup_target_id = None
         if browser is None or getattr(browser, "stopped", False):
@@ -6356,7 +6356,7 @@ class BrowserCaptchaService:
             current_url = str(getattr(item, "url", "") or "").strip()
             if not self._is_reusable_startup_page_url(current_url):
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 启动页已被其他逻辑占用，放弃复用 (target={target_id}, url={current_url or '<empty>'})"
+                    f"[BrowserCaptcha] Halaman startup sudah dipakai logika lain, batal pakai ulang (target={target_id}, url={current_url or '<empty>'})"
                 )
                 self._visible_startup_target_id = None
                 return None
@@ -6376,7 +6376,7 @@ class BrowserCaptchaService:
         label: str,
         timeout_seconds: Optional[float] = None,
     ):
-        """确保当前浏览器存在至少一个可复用的 page target。"""
+        """Memastikan browser saat ini punya minimal satu page target yang bisa dipakai ulang."""
         browser = self.browser
         if browser is None or getattr(browser, "stopped", False):
             raise RuntimeError("browser runtime unavailable")
@@ -6418,7 +6418,7 @@ class BrowserCaptchaService:
                 return item
 
         debug_logger.log_info(
-            f"[BrowserCaptcha] 当前无可用 page target，创建宿主页 ({label})"
+            f"[BrowserCaptcha] Tidak ada page target yang tersedia, bikin halaman host ({label})"
         )
         tab = await self._browser_get(
             PERSONAL_COOKIE_PREBIND_URL,
@@ -6479,7 +6479,7 @@ class BrowserCaptchaService:
                 last_error = create_error
                 if self._is_no_browser_window_error(create_error) and not new_window:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] CDP 新标签创建提示无宿主窗口，改用新窗口重试 ({label}): {create_error}"
+                        f"[BrowserCaptcha] Pembuatan tab baru CDP menunjukkan tidak ada jendela host, coba lagi pakai jendela baru ({label}): {create_error}"
                     )
                     continue
                 raise
@@ -6534,16 +6534,16 @@ class BrowserCaptchaService:
         label: str,
         timeout_seconds: Optional[float] = None,
     ):
-        """有头模式下复用唯一浏览器窗口。
+        """Pakai ulang satu-satunya jendela browser dalam mode headed.
 
-        规则：
-        - 当前没有任何 page target 时，先新建一个窗口；
-        - 一旦已有窗口，后续统一只开新标签页，避免继续弹第二个浏览器窗口。
+        Aturan:
+        - Kalau belum ada page target sama sekali, bikin jendela baru dulu;
+        - Begitu sudah ada jendela, selanjutnya cukup buka tab baru, jangan memunculkan jendela browser kedua.
         """
         reusable_startup_tab = await self._take_visible_startup_page()
         if reusable_startup_tab is not None:
             debug_logger.log_info(
-                f"[BrowserCaptcha] 复用浏览器启动页打开目标标签 ({label})"
+                f"[BrowserCaptcha] Pakai ulang halaman startup browser untuk membuka tab target ({label})"
             )
             await self._apply_tab_startup_spoofs(
                 reusable_startup_tab,
@@ -6568,7 +6568,7 @@ class BrowserCaptchaService:
                 has_page_targets = await self._browser_has_page_targets()
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 创建有头宿主窗口失败，将直接尝试打开目标标签页 ({label}): {e}"
+                    f"[BrowserCaptcha] Gagal membuat jendela host headed, langsung coba buka tab target ({label}): {e}"
                 )
         return await self._create_default_context_target_tab(
             url,
@@ -6578,7 +6578,7 @@ class BrowserCaptchaService:
         )
 
     async def _cleanup_startup_browser_pages(self):
-        """关闭浏览器启动时自动弹出的默认页面，避免有头模式出现额外普通窗口。"""
+        """Menutup halaman default yang otomatis muncul saat browser startup, biar mode headed nggak memunculkan jendela normal tambahan."""
         browser = self.browser
         if browser is None or getattr(browser, "stopped", False):
             return
@@ -6601,12 +6601,12 @@ class BrowserCaptchaService:
                 target_id = getattr(tab, "target_id", None)
                 tab_url = str(getattr(tab, "url", "") or "")
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 清理浏览器启动残留页 "
+                    f"[BrowserCaptcha] Membersihkan halaman sisa startup browser "
                     f"(target={target_id}, url={tab_url or '<empty>'})"
                 )
                 await self._close_tab_quietly(tab)
             except Exception as e:
-                debug_logger.log_warning(f"[BrowserCaptcha] 清理启动残留页失败: {e}")
+                debug_logger.log_warning(f"[BrowserCaptcha] Gagal membersihkan halaman sisa startup: {e}")
 
     async def _tab_reload(
         self, tab, label: str, timeout_seconds: Optional[float] = None
@@ -6624,7 +6624,7 @@ class BrowserCaptchaService:
         label: str,
         create_timeout_seconds: Optional[float] = None,
     ) -> tuple[Any, Any]:
-        """通过 CDP 手动创建独立 browser context 与 target，绕过 nodriver.create_context 的 StopIteration 缺陷。"""
+        """Membuat browser context dan target independen manual via CDP, mengakali bug StopIteration di nodriver.create_context."""
         browser = self.browser
         if browser is None or getattr(browser, "stopped", False):
             raise RuntimeError("browser runtime unavailable")
@@ -6637,8 +6637,8 @@ class BrowserCaptchaService:
             else target_url
         )
         if not self.headless:
-            # 有头模式下不再为内部打码页创建独立可见 browser context 窗口。
-            # 直接复用默认 context 的单一浏览器窗口，通过新标签页承载 resident/legacy 页面。
+            # Dalam mode headed, tidak lagi membuat jendela browser context visibel independen untuk halaman captcha internal.
+            # Langsung pakai ulang satu jendela browser dari context default, menampung halaman resident/legacy via tab baru.
             tab = await self._open_visible_browser_tab(
                 target_url,
                 label=f"{label}:headed_tab",
@@ -6660,7 +6660,7 @@ class BrowserCaptchaService:
                 )
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 创建独立 context 前补宿主页失败 ({label}): {e}"
+                    f"[BrowserCaptcha] Gagal melengkapi halaman host sebelum membuat context independen ({label}): {e}"
                 )
 
         browser_context_id = await self._run_with_timeout(
@@ -6696,7 +6696,7 @@ class BrowserCaptchaService:
                     raise
 
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] create_target 命中无宿主窗口错误，补宿主页后重试 ({label}): {create_target_error}"
+                    f"[BrowserCaptcha] create_target kena error tidak ada jendela host, coba lagi setelah melengkapi halaman host ({label}): {create_target_error}"
                 )
                 await self._ensure_browser_host_page(
                     label=f"{label}:recover_host_page",
@@ -6773,7 +6773,7 @@ class BrowserCaptchaService:
                 )
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 按 context 读取 cookies 失败，回退全局 cookie jar ({label}): {e}"
+                    f"[BrowserCaptcha] Gagal membaca cookies per context, fallback ke global cookie jar ({label}): {e}"
                 )
 
         return await self._run_with_timeout(
@@ -6795,10 +6795,10 @@ class BrowserCaptchaService:
         )
 
     async def _idle_tab_reaper_loop(self):
-        """空闲标签页回收循环"""
+        """Loop reklamasi tab idle"""
         while True:
             try:
-                await asyncio.sleep(30)  # 每30秒检查一次
+                await asyncio.sleep(30)  # Cek tiap 30 detik
                 current_time = time.time()
                 tabs_to_close = []
 
@@ -6810,7 +6810,7 @@ class BrowserCaptchaService:
                         if idle_seconds >= self._idle_tab_ttl_seconds:
                             tabs_to_close.append(slot_id)
                             debug_logger.log_info(
-                                f"[BrowserCaptcha] slot={slot_id} 空闲 {idle_seconds:.0f}s，准备回收"
+                                f"[BrowserCaptcha] slot={slot_id} idle {idle_seconds:.0f}s, siap direklamasi"
                             )
 
                 for slot_id in tabs_to_close:
@@ -6819,10 +6819,10 @@ class BrowserCaptchaService:
             except asyncio.CancelledError:
                 return
             except Exception as e:
-                debug_logger.log_warning(f"[BrowserCaptcha] 空闲标签页回收异常: {e}")
+                debug_logger.log_warning(f"[BrowserCaptcha] Exception reklamasi tab idle: {e}")
 
     async def _evict_lru_tab_if_needed(self) -> bool:
-        """如果达到共享池上限，使用 LRU 策略淘汰最久未使用的空闲标签页。"""
+        """Jika mencapai batas pool bersama, pakai strategi LRU untuk mengeliminasi tab idle yang paling lama tidak dipakai."""
         async with self._resident_lock:
             if len(self._resident_tabs) < self._max_resident_tabs:
                 return True
@@ -6841,20 +6841,20 @@ class BrowserCaptchaService:
 
         if lru_slot_id:
             debug_logger.log_info(
-                f"[BrowserCaptcha] 标签页数量达到上限({self._max_resident_tabs})，"
-                f"淘汰最久未使用的 slot={lru_slot_id}, project_hint={lru_project_hint}"
+                f"[BrowserCaptcha] Jumlah tab mencapai batas ({self._max_resident_tabs}),"
+                f"eliminasi slot yang paling lama tidak dipakai={lru_slot_id}, project_hint={lru_project_hint}"
             )
             await self._close_resident_tab(lru_slot_id)
             return True
 
         debug_logger.log_warning(
-            f"[BrowserCaptcha] 标签页数量达到上限({self._max_resident_tabs})，"
-            "但当前没有可安全淘汰的空闲标签页"
+            f"[BrowserCaptcha] Jumlah tab mencapai batas ({self._max_resident_tabs}),"
+            "tapi tidak ada tab idle yang aman dieliminasi saat ini"
         )
         return False
 
     async def _get_reserved_tab_ids(self) -> set[int]:
-        """收集当前被 resident/custom 池占用的标签页，legacy 模式不得复用。"""
+        """Mengumpulkan tab yang sedang dipakai pool resident/custom, mode legacy tidak boleh pakai ulang."""
         reserved_tab_ids: set[int] = set()
 
         async with self._resident_lock:
@@ -6889,7 +6889,7 @@ class BrowserCaptchaService:
 
     @staticmethod
     def _extract_cookie_name_domain(cookie: Any) -> tuple[str, str]:
-        """兼容 nodriver cookie 对象与 dict 结构，提取 name/domain 用于日志。"""
+        """Kompatibel dengan objek cookie nodriver dan struktur dict, ekstrak name/domain untuk log."""
         if isinstance(cookie, dict):
             return (
                 str(cookie.get("name") or "").strip(),
@@ -6929,14 +6929,14 @@ class BrowserCaptchaService:
     def _build_personal_cookie_targets(
         cls, raw_cookie: Optional[str]
     ) -> list[Dict[str, Any]]:
-        """为 personal 内置浏览器构建 cookie 注入列表。
+        """Membangun daftar injeksi cookie untuk browser builtin personal.
 
-        说明：
-        - 原始 Cookie 头没有 domain 元数据时，直接扩展到 labs/google/recaptcha 三个目标。
-        - 即使 token.google_cookies 已经带有显式的 google.com 域，也额外镜像一份到
-          `www.recaptcha.net`，保证 enterprise reload 首轮请求也能命中 cookie。
-        - 对 Google/reCAPTCHA Cookie 强制使用 `SameSite=None`
-          场景下第三方 anchor/reload 请求继续丢 cookie。
+        Catatan:
+        - Bila header Cookie asli tidak punya metadata domain, langsung expand ke tiga target labs/google/recaptcha.
+        - Walau token.google_cookies sudah punya domain google.com eksplisit, tetap mirror satu salinan ke
+           `www.recaptcha.net`, biar request ronde pertama enterprise reload juga kena cookie.
+        - Paksa `SameSite=None` untuk Cookie Google/reCAPTCHA
+           agar request anchor/reload pihak ketiga tetap membawa cookie.
         """
         browser_cookies = build_browser_cookie_targets(
             raw_cookie,
@@ -6994,7 +6994,7 @@ class BrowserCaptchaService:
     def _build_configured_browser_cookie_targets(
         cls, raw_cookie: Optional[str]
     ) -> list[Dict[str, Any]]:
-        """构建系统级浏览器启动 cookie，确保 Google / reCAPTCHA 首跳都能命中。"""
+        """Membangun cookie startup browser level sistem, memastikan lompatan pertama Google / reCAPTCHA kena."""
         browser_cookies = build_browser_cookie_targets(
             raw_cookie,
             fallback_urls=list(PERSONAL_GOOGLE_FAMILY_COOKIE_MIRROR_URLS),
@@ -7286,7 +7286,7 @@ class BrowserCaptchaService:
                 normalized_slot_id, resident_info=resident_info
             )
         debug_logger.log_warning(
-            f"[BrowserCaptcha] slot={normalized_slot_id} 已标记为不可复用，等待恢复或重建 (reason={reason})"
+            f"[BrowserCaptcha] slot={normalized_slot_id} sudah ditandai tidak bisa dipakai ulang, menunggu pemulihan atau rebuild (reason={reason})"
         )
 
     async def _wait_for_active_resident_rebuild(
@@ -7320,7 +7320,7 @@ class BrowserCaptchaService:
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 等待共享标签页重建完成失败 (slot={normalized_slot_id or 'any'}): {e}"
+                f"[BrowserCaptcha] Gagal menunggu rebuild tab bersama selesai (slot={normalized_slot_id or 'any'}): {e}"
             )
             return False
 
@@ -7356,7 +7356,7 @@ class BrowserCaptchaService:
             token = await self.db.get_token(int(token_key))
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 读取 token cookie 失败 (token_id={token_key}): {e}"
+                f"[BrowserCaptcha] Gagal membaca cookie token (token_id={token_key}): {e}"
             )
             return None
         cookie_text = (
@@ -7484,7 +7484,7 @@ class BrowserCaptchaService:
 
         target_id = getattr(tab, "target_id", None)
         debug_logger.log_info(
-            "[BrowserCaptcha] 已注入系统浏览器启动 Cookie "
+            "[BrowserCaptcha] Cookie startup browser sistem sudah diinjeksi "
             f"(label={label}, context={browser_context_id is not None}, target={target_id or '<none>'}, "
             f"cookies={cookie_count})"
         )
@@ -7667,12 +7667,12 @@ class BrowserCaptchaService:
                     int(token_key), google_cookies=merged_cookie_text
                 )
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 已回填 context cookies 到 token.google_cookies "
+                    f"[BrowserCaptcha] Context cookies sudah di-backfill ke token.google_cookies "
                     f"(slot={resident_info.slot_id}, token_id={token_key}, cookies={len(serialized_cookies)})"
                 )
             else:
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] context cookies 与 token.google_cookies 一致，跳过写回 "
+                    f"[BrowserCaptcha] Context cookies sama dengan token.google_cookies, lewatkan write-back "
                     f"(slot={resident_info.slot_id}, token_id={token_key}, cookies={len(serialized_cookies)})"
                 )
 
@@ -7682,7 +7682,7 @@ class BrowserCaptchaService:
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 回填 context cookies 到 token.google_cookies 失败 "
+                f"[BrowserCaptcha] Gagal mem-backfill context cookies ke token.google_cookies "
                 f"(slot={resident_info.slot_id}, token_id={token_key}): {e}"
             )
             return False
@@ -7767,12 +7767,12 @@ class BrowserCaptchaService:
                 int(token_key), resident_info.slot_id, resident_info
             )
             debug_logger.log_info(
-                f"[BrowserCaptcha] 已向 context 注入 cookie (slot={resident_info.slot_id}, token_id={token_key}, cookies={cookie_count})"
+                f"[BrowserCaptcha] Sudah menginjeksi cookie ke context (slot={resident_info.slot_id}, token_id={token_key}, cookies={cookie_count})"
             )
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 注入 token cookie 失败 (slot={resident_info.slot_id}, token_id={token_key}): {e}"
+                f"[BrowserCaptcha] Gagal menginjeksi cookie token (slot={resident_info.slot_id}, token_id={token_key}): {e}"
             )
             return False
 
@@ -7794,7 +7794,7 @@ class BrowserCaptchaService:
         )
 
     async def _open_labs_bootstrap_page(self, tab, *, label: str) -> bool:
-        """在 Cookie 绑定之后打开当前 Flow 页面。"""
+        """Membuka halaman Flow saat ini setelah cookie binding."""
 
         async def _describe_surface(stage: str) -> tuple[str, str]:
             current_url = ""
@@ -7839,14 +7839,14 @@ class BrowserCaptchaService:
                 "complete",
             }:
                 debug_logger.log_warning(
-                    "[BrowserCaptcha] labs 引导页命令超时，但页面已落到目标地址 "
+                    "[BrowserCaptcha] Perintah halaman panduan labs timeout, tapi halaman sudah sampai di alamat target "
                     f"(label={label}, reason={reason}, url={current_url}, "
                     f"ready_state={ready_state or '<empty>'})"
                 )
                 return True
 
             debug_logger.log_warning(
-                "[BrowserCaptcha] labs 引导页失败，页面未落到目标地址 "
+                "[BrowserCaptcha] Halaman panduan labs gagal, halaman tidak sampai di alamat target "
                 f"(label={label}, reason={reason}, url={current_url or '<empty>'}, "
                 f"ready_state={ready_state or '<empty>'})"
             )
@@ -7863,11 +7863,11 @@ class BrowserCaptchaService:
             if self._is_browser_runtime_error(e):
                 self._mark_browser_health(False)
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 打开 labs 引导页时浏览器运行态断开 ({label}): {e}"
+                    f"[BrowserCaptcha] State runtime browser diskoneksi saat membuka halaman panduan labs ({label}): {e}"
                 )
                 raise
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 打开 labs 引导页失败 ({label}): {e}"
+                f"[BrowserCaptcha] Gagal membuka halaman panduan labs ({label}): {e}"
             )
             return await _confirm_labs_surface(str(e), stage="navigate_timeout")
 
@@ -7875,7 +7875,7 @@ class BrowserCaptchaService:
             tab, retries=20, interval_seconds=0.5
         ):
             debug_logger.log_warning(
-                f"[BrowserCaptcha] labs 引导页未按时 ready ({label})"
+                f"[BrowserCaptcha] Halaman panduan labs tidak ready tepat waktu ({label})"
             )
             return await _confirm_labs_surface(
                 "document_not_ready", stage="document_not_ready"
@@ -7884,13 +7884,13 @@ class BrowserCaptchaService:
         current_url, ready_state = await _describe_surface("document_ready")
         if self._is_labs_bootstrap_url(current_url):
             debug_logger.log_info(
-                "[BrowserCaptcha] 已进入 labs 引导页 "
+                "[BrowserCaptcha] Sudah masuk halaman panduan labs "
                 f"(label={label}, url={current_url}, ready_state={ready_state or '<empty>'})"
             )
             return True
 
         debug_logger.log_warning(
-            "[BrowserCaptcha] labs 引导页 ready 后落点异常 "
+            "[BrowserCaptcha] Landing abnormal setelah halaman panduan labs ready "
             f"(label={label}, url={current_url or '<empty>'}, ready_state={ready_state or '<empty>'})"
         )
         return False
@@ -7901,7 +7901,7 @@ class BrowserCaptchaService:
         *,
         label: str,
     ) -> bool:
-        """访问一次 Google 首页，让当前 browser context 自行拿到额外站点 cookie。"""
+        """Kunjungi homepage Google sekali, biar browser context saat ini mendapatkan cookie situs tambahan sendiri."""
         if resident_info is None or not resident_info.tab:
             return False
 
@@ -7938,7 +7938,7 @@ class BrowserCaptchaService:
                 interval_seconds=0.5,
             ):
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] Google 预热页面未按时 ready (slot={resident_info.slot_id}, label={label})"
+                    f"[BrowserCaptcha] Halaman pemanasan Google tidak ready tepat waktu (slot={resident_info.slot_id}, label={label})"
                 )
             await resident_info.tab.sleep(1.0)
 
@@ -7971,7 +7971,7 @@ class BrowserCaptchaService:
                 interval_seconds=0.5,
             ):
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] Google 预热返回 labs 页面未按时 ready (slot={resident_info.slot_id}, label={label})"
+                    f"[BrowserCaptcha] Halaman labs dari pemanasan Google tidak ready tepat waktu (slot={resident_info.slot_id}, label={label})"
                 )
 
             await self._persist_context_cookies_to_token(
@@ -7981,14 +7981,14 @@ class BrowserCaptchaService:
             )
 
             debug_logger.log_info(
-                f"[BrowserCaptcha] Google 预热完成 "
+                f"[BrowserCaptcha] Pemanasan Google selesai "
                 f"(slot={resident_info.slot_id}, label={label}, cookies_before={len(before_pairs)}, "
                 f"cookies_after={len(after_pairs)}, added={len(added_pairs)}, preview={added_preview or '<none>'})"
             )
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] Google 预热失败 (slot={resident_info.slot_id}, label={label}): {e}"
+                f"[BrowserCaptcha] Pemanasan Google gagal (slot={resident_info.slot_id}, label={label}): {e}"
             )
             try:
                 await self._tab_get(
@@ -8073,7 +8073,7 @@ class BrowserCaptchaService:
                         interval_seconds=0.5,
                     ):
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] token_id={token_key} 清空 context cookies 后页面未能按时 ready (slot={resident_info.slot_id})"
+                            f"[BrowserCaptcha] token_id={token_key} halaman tidak ready tepat waktu setelah context cookies dikosongkan (slot={resident_info.slot_id})"
                         )
                         return False
 
@@ -8082,13 +8082,13 @@ class BrowserCaptchaService:
                     )
                     if not resident_info.recaptcha_ready:
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] token_id={token_key} 清空 context cookies 后 reCAPTCHA 未恢复就绪 (slot={resident_info.slot_id})"
+                            f"[BrowserCaptcha] token_id={token_key} reCAPTCHA tidak pulih ready setelah context cookies dikosongkan (slot={resident_info.slot_id})"
                         )
                         return False
             except Exception as e:
                 resident_info.recaptcha_ready = False
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] token_id={token_key} 清空 context cookies 失败 (slot={resident_info.slot_id}): {e}"
+                    f"[BrowserCaptcha] token_id={token_key} gagal mengosongkan context cookies (slot={resident_info.slot_id}): {e}"
                 )
                 return False
 
@@ -8119,7 +8119,7 @@ class BrowserCaptchaService:
                 interval_seconds=0.5,
             ):
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] token_id={token_key} cookie 注入后页面未能按时 ready (slot={resident_info.slot_id})"
+                    f"[BrowserCaptcha] token_id={token_key} halaman tidak ready tepat waktu setelah injeksi cookie (slot={resident_info.slot_id})"
                 )
                 return False
 
@@ -8129,7 +8129,7 @@ class BrowserCaptchaService:
             )
             if not warmup_ok:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] token_id={token_key} cookie 注入后 Google 预热未完成 "
+                    f"[BrowserCaptcha] token_id={token_key} pemanasan Google belum selesai setelah injeksi cookie "
                     f"(slot={resident_info.slot_id})"
                 )
 
@@ -8138,7 +8138,7 @@ class BrowserCaptchaService:
             )
             if not resident_info.recaptcha_ready:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] token_id={token_key} cookie 注入后 reCAPTCHA 未恢复就绪 (slot={resident_info.slot_id})"
+                    f"[BrowserCaptcha] token_id={token_key} reCAPTCHA tidak pulih ready setelah injeksi cookie (slot={resident_info.slot_id})"
                 )
                 return False
 
@@ -8154,7 +8154,7 @@ class BrowserCaptchaService:
         *,
         available_only: bool = False,
     ) -> tuple[Optional[str], Optional[ResidentTabInfo]]:
-        """优先走 token 级映射，其次 project 级映射；没有映射时退化到共享池全局挑选。"""
+        """Prioritaskan mapping level token, lalu mapping level project; bila tidak ada mapping, fallback ke pemilihan global pool bersama."""
         slot_id = self._resolve_token_affinity_slot_locked(
             token_id,
             available_only=available_only,
@@ -8276,8 +8276,8 @@ class BrowserCaptchaService:
                 )
                 return token_candidates[pick_index]
 
-        # 共享打码池不再按 project_id 绑定；这里只根据“是否就绪 / 是否空闲 / 使用历史”
-        # 做全局选择，避免 4 token/4 project 时把请求硬绑定到固定 tab。
+        # Pool captcha bersama tidak lagi di-bind per project_id; di sini hanya berdasarkan "apakah ready / apakah idle / riwayat pemakaian"
+        # untuk pemilihan global, menghindari request ter-bind keras ke tab tetap saat 4 token/4 project.
         ready_idle = [
             (slot_id, resident_info)
             for slot_id, resident_info in candidates
@@ -8333,12 +8333,12 @@ class BrowserCaptchaService:
         reserve_for_solve: bool = False,
         return_slot_key: bool = False,
     ):
-        """确保共享打码标签页池中有可用 tab。
+        """Memastikan ada tab yang tersedia di pool tab captcha bersama.
 
-        逻辑：
-        - 优先复用空闲 tab
-        - 如果所有 tab 都忙且未到上限，继续扩容
-        - 到达上限后允许请求排队等待已有 tab
+        Logika:
+        - Prioritaskan pakai ulang tab idle
+        - Jika semua tab sibuk dan belum mencapai batas, lanjutkan scale-up
+        - Setelah mencapai batas, request boleh antre menunggu tab yang ada
         """
 
         def wrap(slot_id: Optional[str], resident_info: Optional[ResidentTabInfo]):
@@ -8434,7 +8434,7 @@ class BrowserCaptchaService:
                     )
                     if slot_id and resident_info:
                         debug_logger.log_info(
-                            "[BrowserCaptcha] affinity slot 短等待命中，跳过扩容新 tab "
+                            "[BrowserCaptcha] Affinity slot kena short-wait, lewatkan scale-up tab baru "
                             f"(project_id={project_id or '<empty>'}, token_id={token_id}, slot={slot_id})"
                         )
                         return wrap(slot_id, resident_info)
@@ -8534,7 +8534,7 @@ class BrowserCaptchaService:
                     )
                     if slot_id and resident_info:
                         debug_logger.log_info(
-                            "[BrowserCaptcha] 热 slot 长等待命中，避免新增 resident tab "
+                            "[BrowserCaptcha] Slot panas kena long-wait, hindari penambahan tab resident "
                             f"(project_id={project_id or '<empty>'}, token_id={token_id}, slot={slot_id})"
                         )
                         return wrap_with_state(
@@ -8587,7 +8587,7 @@ class BrowserCaptchaService:
         reserve_for_solve: bool = False,
         return_slot_key: bool = False,
     ):
-        """重建共享池中的一个标签页。优先重建当前项目最近使用的 slot。"""
+        """Membangun ulang satu tab di pool bersama. Prioritaskan rebuild slot yang terakhir dipakai proyek saat ini."""
 
         def wrap(
             actual_slot_id: Optional[str], resident_info: Optional[ResidentTabInfo]
@@ -8630,7 +8630,7 @@ class BrowserCaptchaService:
 
         if pending_task is not None:
             debug_logger.log_info(
-                f"[BrowserCaptcha] slot={actual_slot_id} 已有重建任务，等待复用其结果"
+                f"[BrowserCaptcha] slot={actual_slot_id} sudah ada task rebuild, menunggu pakai ulang hasilnya"
             )
             result = await asyncio.shield(pending_task)
             return await finalize(*result)
@@ -8665,7 +8665,7 @@ class BrowserCaptchaService:
                 )
                 if resident_info is None:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] slot={next_slot_id}, project_id={project_id}, token_id={token_id} 重建共享标签页失败"
+                        f"[BrowserCaptcha] slot={next_slot_id}, project_id={project_id}, token_id={token_id} gagal me-rebuild tab bersama"
                     )
                     return next_slot_id, None
 
@@ -8691,17 +8691,17 @@ class BrowserCaptchaService:
                     created_task = True
             if created_task:
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 开始重建共享标签页 (slot={actual_slot_id}, project={project_id}, token_id={token_id})"
+                    f"[BrowserCaptcha] Mulai me-rebuild tab bersama (slot={actual_slot_id}, project={project_id}, token_id={token_id})"
                 )
             else:
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] slot={actual_slot_id} 已在重建中，等待复用现有结果"
+                    f"[BrowserCaptcha] slot={actual_slot_id} sedang di-rebuild, menunggu pakai ulang hasil yang ada"
                 )
             try:
                 result = await asyncio.shield(rebuild_task)
                 if created_task:
                     debug_logger.log_info(
-                        f"[BrowserCaptcha] 共享标签页重建结束 (slot={actual_slot_id}, project={project_id}, token_id={token_id})"
+                        f"[BrowserCaptcha] Rebuild tab bersama selesai (slot={actual_slot_id}, project={project_id}, token_id={token_id})"
                     )
             finally:
                 if created_task:
@@ -8724,7 +8724,7 @@ class BrowserCaptchaService:
         project_id: str,
         error_reason: str,
     ):
-        """同一 slot 的上游异常恢复任务去重，避免并发重复清缓存/重建。"""
+        """Deduplikasi task recovery exception upstream untuk slot yang sama, menghindari pembersihan cache/rebuild ganda secara konkuren."""
         normalized_slot_id = str(slot_id or "").strip()
         if not normalized_slot_id:
             return await task_factory()
@@ -8742,7 +8742,7 @@ class BrowserCaptchaService:
         if not created_task:
             debug_logger.log_info(
                 f"[BrowserCaptcha] project_id={project_id}, slot={normalized_slot_id} "
-                f"检测到并发恢复任务，等待复用已有恢复结果: {error_reason}"
+                f"Terdeteksi task recovery konkuren, menunggu pakai ulang hasil recovery yang ada: {error_reason}"
             )
 
         try:
@@ -8757,7 +8757,7 @@ class BrowserCaptchaService:
                         self._resident_recovery_tasks.pop(normalized_slot_id, None)
 
     def _sync_compat_resident_state(self):
-        """同步旧版单 resident 兼容属性。"""
+        """Sinkronisasi atribut kompatibel single resident versi lama."""
         first_resident = next(iter(self._resident_tabs.values()), None)
         if first_resident:
             self.resident_project_id = first_resident.project_id
@@ -8784,7 +8784,7 @@ class BrowserCaptchaService:
         await self._disconnect_connection_quietly(tab, reason="tab_close")
 
     async def _disconnect_connection_quietly(self, connection, *, reason: str):
-        """尽量关闭任意 nodriver 连接对象，回收 listener task 与未完成 transaction。"""
+        """Berusaha menutup objek koneksi nodriver apa pun, mereklamasi listener task dan transaksi yang belum selesai."""
         disconnect_method = (
             getattr(connection, "disconnect", None) if connection else None
         )
@@ -8803,11 +8803,11 @@ class BrowserCaptchaService:
         except Exception as e:
             if self._is_browser_runtime_error(e):
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 浏览器连接关闭时检测到已断连状态 ({reason}): {e}"
+                    f"[BrowserCaptcha] Terdeteksi status sudah diskoneksi saat koneksi browser ditutup ({reason}): {e}"
                 )
             else:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 浏览器连接关闭异常 ({reason}): {type(e).__name__}: {e}"
+                    f"[BrowserCaptcha] Exception penutupan koneksi browser ({reason}): {type(e).__name__}: {e}"
                 )
         finally:
             mapper = getattr(connection, "mapper", None)
@@ -8861,7 +8861,7 @@ class BrowserCaptchaService:
                             or self._is_browser_runtime_error(e)
                         ):
                             debug_logger.log_warning(
-                                f"[BrowserCaptcha] 浏览器监听任务收尾异常 ({reason}): "
+                                f"[BrowserCaptcha] Exception finalisasi task listen browser ({reason}): "
                                 f"{type(e).__name__}: {e}"
                             )
 
@@ -8875,7 +8875,7 @@ class BrowserCaptchaService:
     async def _disconnect_browser_connection_quietly(
         self, browser_instance, reason: str
     ):
-        """尽量先关闭 DevTools websocket，减少 nodriver 后台任务在浏览器退场时炸栈。"""
+        """Berusaha menutup DevTools websocket dulu, mengurangi stack trace task background nodriver saat browser exit."""
         if not browser_instance:
             return
 
@@ -8919,7 +8919,7 @@ class BrowserCaptchaService:
             return False
         try:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 浏览器进程仍未退出，强制回收进程树 PID={pid} ({reason})"
+                f"[BrowserCaptcha] Proses browser belum keluar juga, paksa reclaim process tree PID={pid} ({reason})"
             )
             if sys.platform.startswith("win"):
                 result = subprocess.run(
@@ -8943,7 +8943,7 @@ class BrowserCaptchaService:
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 强制回收浏览器进程失败 PID={pid} ({reason}): {e}"
+                f"[BrowserCaptcha] Gagal memaksa reclaim proses browser PID={pid} ({reason}): {e}"
             )
             return False
 
@@ -9034,7 +9034,7 @@ class BrowserCaptchaService:
                         found_pids.add(pid)
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 扫描浏览器残留进程失败: {e}"
+                    f"[BrowserCaptcha] Gagal memindai proses browser yang tersisa: {e}"
                 )
             return sorted(found_pids)
 
@@ -9084,14 +9084,14 @@ class BrowserCaptchaService:
                 killed_count += 1
         if killed_count > 0:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 已按 profile 路径兜底回收浏览器进程 ({reason}): {killed_count}/{len(pids)}"
+                f"[BrowserCaptcha] Proses browser sudah di-reclaim fallback berdasarkan path profil ({reason}): {killed_count}/{len(pids)}"
             )
         return killed_count
 
     async def _stop_browser_process(
         self, browser_instance, reason: str = "browser_stop"
     ):
-        """兼容 nodriver 同步 stop API，安全停止浏览器进程。"""
+        """Kompatibel dengan API stop sinkron nodriver, menghentikan proses browser dengan aman."""
         if not browser_instance:
             return
 
@@ -9131,7 +9131,7 @@ class BrowserCaptchaService:
                     )
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] browser.stop 异常 ({reason}): {e}"
+                    f"[BrowserCaptcha] Exception browser.stop ({reason}): {e}"
                 )
 
         if process is not None:
@@ -9196,11 +9196,11 @@ class BrowserCaptchaService:
                 pass
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 取消后台任务异常 ({reason}): {type(e).__name__}: {e}"
+                    f"[BrowserCaptcha] Exception pembatalan task background ({reason}): {type(e).__name__}: {e}"
                 )
 
     async def _shutdown_browser_runtime_locked(self, reason: str):
-        """在持有 _browser_lock 的前提下，彻底清理当前浏览器运行态。"""
+        """Dengan memegang _browser_lock, membersihkan tuntas state runtime browser saat ini."""
         browser_instance = self.browser
         self.browser = None
         self._initialized = False
@@ -9263,7 +9263,7 @@ class BrowserCaptchaService:
                 await self._stop_browser_process(browser_instance, reason=reason)
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 停止浏览器实例失败 ({reason}): {e}"
+                    f"[BrowserCaptcha] Gagal menghentikan instance browser ({reason}): {e}"
                 )
         await self._cleanup_runtime_profile_dirs_after_shutdown(reason=reason)
 
@@ -9281,7 +9281,7 @@ class BrowserCaptchaService:
                 pooled_proxy = await self.db.pick_browser_proxy_from_pool()
                 if pooled_proxy:
                     debug_logger.log_info(
-                        "[BrowserCaptcha] Personal 使用验证码代理池: "
+                        "[BrowserCaptcha] Personal memakai pool proxy captcha: "
                         f"{_redact_proxy_url(pooled_proxy)}"
                     )
                     return _parse_proxy_url(pooled_proxy)
@@ -9291,12 +9291,12 @@ class BrowserCaptchaService:
                 url = str(getattr(captcha_cfg, "browser_proxy_url", "") or "").strip()
                 if url:
                     debug_logger.log_info(
-                        "[BrowserCaptcha] Personal 使用验证码代理: "
+                        "[BrowserCaptcha] Personal memakai proxy captcha: "
                         f"{_redact_proxy_url(url)}"
                     )
                     return _parse_proxy_url(url)
         except Exception as e:
-            debug_logger.log_warning(f"[BrowserCaptcha] 读取验证码代理配置失败: {e}")
+            debug_logger.log_warning(f"[BrowserCaptcha] Gagal membaca konfigurasi proxy captcha: {e}")
         try:
             proxy_cfg = await self.db.get_proxy_config()
             proxy_pool_text = str(getattr(proxy_cfg, "proxy_pool", "") or "")
@@ -9308,7 +9308,7 @@ class BrowserCaptchaService:
             if proxy_cfg and proxy_cfg.enabled and proxy_pool_candidates:
                 pooled_proxy = proxy_pool_candidates[0]
                 debug_logger.log_info(
-                    "[BrowserCaptcha] Personal 回退使用请求代理池: "
+                    "[BrowserCaptcha] Personal fallback memakai pool proxy request: "
                     f"{_redact_proxy_url(pooled_proxy)}"
                 )
                 return _parse_proxy_url(pooled_proxy)
@@ -9316,12 +9316,12 @@ class BrowserCaptchaService:
                 url = proxy_cfg.proxy_url.strip()
                 if url:
                     debug_logger.log_info(
-                        "[BrowserCaptcha] Personal 回退使用请求代理: "
+                        "[BrowserCaptcha] Personal fallback memakai proxy request: "
                         f"{_redact_proxy_url(url)}"
                     )
                     return _parse_proxy_url(url)
         except Exception as e:
-            debug_logger.log_warning(f"[BrowserCaptcha] 读取请求代理配置失败: {e}")
+            debug_logger.log_warning(f"[BrowserCaptcha] Gagal membaca konfigurasi proxy request: {e}")
 
         for candidate_url in _read_windows_internet_settings_proxy_candidates():
             protocol, host, port, username, password = _parse_proxy_url(candidate_url)
@@ -9334,7 +9334,7 @@ class BrowserCaptchaService:
             ):
                 continue
             debug_logger.log_info(
-                "[BrowserCaptcha] Personal 自动接管本机可用代理: "
+                "[BrowserCaptcha] Personal otomatis mengambil alih proxy lokal yang tersedia: "
                 f"{_redact_proxy_url(candidate_url)}"
             )
             return protocol, host, port, username, password
@@ -9380,7 +9380,7 @@ class BrowserCaptchaService:
     ) -> list[str]:
         """Build the candidate bootstrap URLs for the requested reCAPTCHA script."""
         normalized_path = script_path.lstrip("/")
-        # 默认优先 google.com；recaptcha.net 仅作为回退。
+        # Default prioritaskan google.com; recaptcha.net hanya sebagai fallback.
         hosts = ["https://www.google.com", "https://www.recaptcha.net"]
         suffix = f"?render={website_key}" if website_key else ""
         return [f"{host}/{normalized_path}{suffix}" for host in hosts]
@@ -9434,7 +9434,7 @@ class BrowserCaptchaService:
                         )
                 except Exception as e:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 读取本地静态资源缓存失败: path={cache_path.name}, error={e}"
+                        f"[BrowserCaptcha] Gagal membaca cache resource statis lokal: path={cache_path.name}, error={e}"
                     )
 
             try:
@@ -9449,7 +9449,7 @@ class BrowserCaptchaService:
                         cached_content = cache_path.read_bytes()
                         if cached_content:
                             debug_logger.log_warning(
-                                f"[BrowserCaptcha] 静态资源下载失败，回退使用本地缓存: url={remote_url}, error={e}"
+                                f"[BrowserCaptcha] Download resource statis gagal, fallback pakai cache lokal: url={remote_url}, error={e}"
                             )
                             return cached_content, _guess_recaptcha_asset_mime_type(
                                 remote_url
@@ -9492,7 +9492,7 @@ class BrowserCaptchaService:
                 content, mime_type = await self._load_recaptcha_asset_bytes(remote_url)
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 动态发现静态资源失败: url={remote_url}, error={e}"
+                    f"[BrowserCaptcha] Gagal menemukan resource statis secara dinamis: url={remote_url}, error={e}"
                 )
                 continue
 
@@ -9837,11 +9837,11 @@ class BrowserCaptchaService:
                 label="inject_recaptcha_local_assets",
                 timeout_seconds=12.0,
             )
-            debug_logger.log_info("[BrowserCaptcha] 已注入本地 reCAPTCHA 静态资源映射")
+            debug_logger.log_info("[BrowserCaptcha] Mapping resource statis reCAPTCHA lokal sudah diinjeksi")
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 注入本地 reCAPTCHA 静态资源映射失败: {e}"
+                f"[BrowserCaptcha] Gagal menginjeksi mapping resource statis reCAPTCHA lokal: {e}"
             )
             return False
 
@@ -9863,7 +9863,7 @@ class BrowserCaptchaService:
 
         source = response.content.decode("utf-8", errors="ignore").strip()
         if not source or "grecaptcha" not in source or "gstatic" not in source:
-            raise RuntimeError("bootstrap 内容校验失败")
+            raise RuntimeError("Validasi konten bootstrap gagal")
         return source
 
     async def _load_recaptcha_bootstrap_source(
@@ -9892,13 +9892,13 @@ class BrowserCaptchaService:
                     cache_age = max(0.0, time.time() - cache_path.stat().st_mtime)
                 except Exception as e:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 读取本地 reCAPTCHA 缓存失败: path={cache_path.name}, error={e}"
+                        f"[BrowserCaptcha] Gagal membaca cache reCAPTCHA lokal: path={cache_path.name}, error={e}"
                     )
                     continue
 
                 if cache_age <= RECAPTCHA_SCRIPT_CACHE_TTL_SECONDS:
                     debug_logger.log_info(
-                        f"[BrowserCaptcha] 使用本地缓存的 reCAPTCHA bootstrap: {cache_path.name}"
+                        f"[BrowserCaptcha] Memakai bootstrap reCAPTCHA dari cache lokal: {cache_path.name}"
                     )
                     return cached_source
 
@@ -9913,13 +9913,13 @@ class BrowserCaptchaService:
                     )
                     _write_text_cache(cache_path, source)
                     debug_logger.log_info(
-                        f"[BrowserCaptcha] 已刷新 reCAPTCHA bootstrap 本地缓存: {cache_path.name}"
+                        f"[BrowserCaptcha] Cache bootstrap reCAPTCHA lokal sudah di-refresh: {cache_path.name}"
                     )
                     return source
                 except Exception as e:
                     last_error = e
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 下载 reCAPTCHA bootstrap 失败: url={remote_url}, error={e}"
+                        f"[BrowserCaptcha] Gagal mendownload bootstrap reCAPTCHA: url={remote_url}, error={e}"
                     )
 
             for remote_url, cache_path in stale_cache_candidates:
@@ -9927,13 +9927,13 @@ class BrowserCaptchaService:
                     cached_source = cache_path.read_text(encoding="utf-8").strip()
                     if cached_source:
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] 远程刷新失败，回退使用过期缓存: url={remote_url}, path={cache_path.name}"
+                            f"[BrowserCaptcha] Refresh remote gagal, fallback pakai cache kedaluwarsa: url={remote_url}, path={cache_path.name}"
                         )
                         return cached_source
                 except Exception:
                     continue
 
-        raise RuntimeError(f"无法加载 reCAPTCHA bootstrap: {last_error or '未知错误'}")
+        raise RuntimeError(f"Tidak bisa memuat reCAPTCHA bootstrap: {last_error or 'error tidak dikenal'}")
 
     async def _inject_recaptcha_bootstrap_script(
         self,
@@ -9944,7 +9944,7 @@ class BrowserCaptchaService:
         *,
         force_remote: bool = False,
     ) -> str:
-        """直接注入远程 reCAPTCHA bootstrap 脚本。"""
+        """Menginjeksi langsung skrip bootstrap reCAPTCHA remote."""
         candidate_urls = self._get_recaptcha_bootstrap_candidate_urls(
             script_path,
             website_key=website_key,
@@ -10074,12 +10074,12 @@ class BrowserCaptchaService:
             timeout_seconds=5.0,
         )
         debug_logger.log_info(
-            f"[BrowserCaptcha] 已注入远程 reCAPTCHA bootstrap ({script_path})"
+            f"[BrowserCaptcha] Bootstrap reCAPTCHA remote sudah diinjeksi ({script_path})"
         )
         return "remote"
 
     async def initialize(self):
-        """初始化 nodriver 浏览器"""
+        """Inisialisasi browser nodriver"""
         self._check_available()
 
         if (
@@ -10109,13 +10109,13 @@ class BrowserCaptchaService:
                 try:
                     if self.browser.stopped:
                         debug_logger.log_warning(
-                            "[BrowserCaptcha] 浏览器已停止，准备重新初始化..."
+                            "[BrowserCaptcha] Browser sudah berhenti, siap inisialisasi ulang..."
                         )
                         self._mark_browser_health(False)
                         browser_needs_restart = True
                     elif getattr(self.browser, "_flow2api_runtime_disconnected", False):
                         debug_logger.log_warning(
-                            "[BrowserCaptcha] 浏览器连接已标记断开，准备重新初始化..."
+                            "[BrowserCaptcha] Koneksi browser sudah ditandai diskoneksi, siap inisialisasi ulang..."
                         )
                         self._mark_browser_health(False)
                         browser_needs_restart = True
@@ -10131,7 +10131,7 @@ class BrowserCaptchaService:
                         return
                     elif not await self._probe_browser_runtime():
                         debug_logger.log_warning(
-                            "[BrowserCaptcha] 浏览器连接已失活，准备重新初始化..."
+                            "[BrowserCaptcha] Koneksi browser sudah tidak aktif, siap inisialisasi ulang..."
                         )
                         browser_needs_restart = True
                     else:
@@ -10147,7 +10147,7 @@ class BrowserCaptchaService:
                         return
                 except Exception as e:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 浏览器状态检查异常，准备重新初始化: {e}"
+                        f"[BrowserCaptcha] Exception pengecekan status browser, siap inisialisasi ulang: {e}"
                     )
                     browser_needs_restart = True
             elif self.browser is not None or self._initialized:
@@ -10161,20 +10161,20 @@ class BrowserCaptchaService:
             launch_gate = self._get_global_browser_launch_gate()
             if launch_gate.locked():
                 debug_logger.log_info(
-                    "[BrowserCaptcha] 浏览器启动排队中，等待全局启动配额以降低 Windows 启动尖峰内存"
+                    "[BrowserCaptcha] Startup browser sedang antre, menunggu kuota startup global untuk menurunkan spike memori saat startup Windows"
                 )
 
             async with launch_gate:
                 try:
                     if self.user_data_dir:
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] 正在启动 nodriver 浏览器 (用户数据目录: {self.user_data_dir})..."
+                            f"[BrowserCaptcha] Sedang me-launch browser nodriver (direktori data user: {self.user_data_dir})..."
                         )
                         os.makedirs(self.user_data_dir, exist_ok=True)
                     else:
                         debug_logger.log_info(
-                            "[BrowserCaptcha] 正在启动 nodriver 浏览器 "
-                            "(使用独立临时目录，隔离真实资料)..."
+                            "[BrowserCaptcha] Sedang me-launch browser nodriver "
+                            "(pakai direktori temporer independen, isolasi data asli)..."
                         )
 
                     browser_executable_path, browser_source = (
@@ -10182,14 +10182,14 @@ class BrowserCaptchaService:
                     )
                     if browser_executable_path and browser_source == "configured":
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] 使用显式配置的浏览器作为 nodriver 浏览器: {browser_executable_path}"
+                            f"[BrowserCaptcha] Memakai browser dari konfigurasi eksplisit sebagai browser nodriver: {browser_executable_path}"
                         )
                     if browser_executable_path:
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] 使用指定浏览器可执行文件: {browser_executable_path}"
+                            f"[BrowserCaptcha] Memakai file executable browser yang ditentukan: {browser_executable_path}"
                         )
 
-                    # 解析代理配置
+                    # Mengurai konfigurasi proxy
                     self._cleanup_proxy_extension()
                     self._proxy_url = None
                     (
@@ -10209,10 +10209,10 @@ class BrowserCaptchaService:
                                 protocol, host, port, username, password
                             )
                             debug_logger.log_info(
-                                f"[BrowserCaptcha] Personal 代理需要认证，已创建扩展: {self._proxy_ext_dir}"
+                                f"[BrowserCaptcha] Proxy Personal butuh autentikasi, ekstensi sudah dibuat: {self._proxy_ext_dir}"
                             )
                             debug_logger.log_info(
-                                "[BrowserCaptcha] Personal 认证代理改由扩展接管，跳过命令行 --proxy-server，避免浏览器原生认证弹窗"
+                                "[BrowserCaptcha] Proxy auth Personal dialihkan ke ekstensi, lewatkan --proxy-server via command line, hindari popup auth bawaan browser"
                             )
                         else:
                             proxy_server_arg = (
@@ -10224,7 +10224,7 @@ class BrowserCaptchaService:
                             protocol, host, port, username, password
                         )
                         debug_logger.log_info(
-                            "[BrowserCaptcha] Personal 浏览器代理: "
+                            "[BrowserCaptcha] Proxy browser Personal: "
                             f"{_redact_proxy_url(self._proxy_url)}"
                         )
 
@@ -10238,7 +10238,7 @@ class BrowserCaptchaService:
                             browser_args
                         )
                         debug_logger.log_info(
-                            "[BrowserCaptcha] Docker headed 指纹优化已启用，已收敛明显的容器化启动参数"
+                            "[BrowserCaptcha] Optimasi fingerprint headed Docker sudah diaktifkan, argumen startup kontainerisasi yang mencolok sudah dirapikan"
                         )
                     if (
                         self._requires_virtual_display()
@@ -10248,7 +10248,7 @@ class BrowserCaptchaService:
                             arg for arg in browser_args if arg != "--no-startup-window"
                         ]
                         debug_logger.log_info(
-                            "[BrowserCaptcha] Docker 有头虚拟显示模式已禁用 --no-startup-window，保留宿主窗口"
+                            "[BrowserCaptcha] Mode tampilan virtual headed Docker sudah menonaktifkan --no-startup-window, jendela host dipertahankan"
                         )
                     browser_args = _normalize_personal_browser_args_for_launch(
                         browser_args,
@@ -10276,14 +10276,14 @@ class BrowserCaptchaService:
                     launch_config = uc.Config(**launch_kwargs)
                     effective_launch_args = launch_config()
                     debug_logger.log_info(
-                        "[BrowserCaptcha] nodriver 启动上下文: "
+                        "[BrowserCaptcha] Konteks startup nodriver: "
                         f"docker={IS_DOCKER}, display={display_value or '<empty>'}, "
                         f"uid={effective_uid}, headless={self.headless}, sandbox={sandbox_enabled}, "
                         f"executable={browser_executable_path or '<auto>'}, "
                         f"args={' '.join(effective_launch_args)}"
                     )
 
-                    # 启动 nodriver 浏览器（后台启动，不占用前台）
+                    # Launch browser nodriver (startup background, tidak memakai foreground)
                     launch_plan: list[tuple[str, Dict[str, Any], Optional[str]]] = [
                         ("nodriver.start", dict(launch_kwargs), None),
                     ]
@@ -10300,7 +10300,7 @@ class BrowserCaptchaService:
                         effective_launch_args = current_config()
                         if retry_reason:
                             debug_logger.log_warning(
-                                f"[BrowserCaptcha] 浏览器启动重试 ({retry_reason}): "
+                                f"[BrowserCaptcha] Retry startup browser ({retry_reason}): "
                                 f"label={launch_label}, profile={current_launch_kwargs.get('user_data_dir') or '<isolated-temp>'}"
                             )
                         try:
@@ -10312,8 +10312,8 @@ class BrowserCaptchaService:
                             self._browser_process_pid = self._get_browser_process_pid(
                                 self.browser
                             )
-                            # uc.start() 成功后 CDP 连接已就绪（start() 内部已执行 update_targets 和 websocket 握手）
-                            # 短暂等待确保事件循环有机会处理已注册的回调
+                            # Setelah uc.start() sukses, koneksi CDP sudah siap (di dalam start() sudah menjalankan update_targets dan handshake websocket)
+                            # Tunggu sebentar memastikan event loop sempat memproses callback yang terdaftar
                             await asyncio.sleep(0.1)
                             break
                         except Exception as start_error:
@@ -10416,7 +10416,7 @@ class BrowserCaptchaService:
                             )
                         except Exception as e:
                             debug_logger.log_warning(
-                                f"[BrowserCaptcha] 创建无头启动预热页失败，跳过启动人类化预热: {e}"
+                                f"[BrowserCaptcha] Gagal membuat halaman pemanasan startup headless, lewatkan pemanasan humanisasi startup: {e}"
                             )
                         else:
                             await self._simulate_startup_human_warmup(
@@ -10426,7 +10426,7 @@ class BrowserCaptchaService:
                             )
                     if self._proxy_ext_dir:
                         debug_logger.log_info(
-                            "[BrowserCaptcha] 等待代理认证扩展完成初始化..."
+                            "[BrowserCaptcha] Menunggu ekstensi auth proxy selesai inisialisasi..."
                         )
                         await asyncio.sleep(1.5)
                     if not self.headless:
@@ -10447,7 +10447,7 @@ class BrowserCaptchaService:
                         )
                     profile_label = self.user_data_dir or "<isolated-temp>"
                     debug_logger.log_info(
-                        f"[BrowserCaptcha] ✅ nodriver 浏览器已启动 (Profile: {profile_label})"
+                        f"[BrowserCaptcha] ✅ Browser nodriver sudah di-launch (Profile: {profile_label})"
                     )
 
                 except Exception as e:
@@ -10461,7 +10461,7 @@ class BrowserCaptchaService:
                         )
                     self._mark_browser_launch_failure(e)
                     debug_logger.log_error(
-                        "[BrowserCaptcha] ❌ 浏览器启动失败: "
+                        "[BrowserCaptcha] ❌ Gagal me-launch browser: "
                         f"{type(e).__name__}: {str(e)} | "
                         f"display={display_value or '<empty>'} | "
                         f"executable={browser_executable_path or '<auto>'} | "
@@ -10470,24 +10470,24 @@ class BrowserCaptchaService:
                     )
                     raise
 
-    # ========== 常驻模式 API ==========
+    # ========== API Mode Resident ==========
 
     async def start_resident_mode(self, project_id: str):
-        """启动常驻模式（初始化浏览器，get_token 会自动创建标签页）"""
+        """Menjalankan mode resident (inisialisasi browser, get_token akan otomatis membuat tab)"""
         if not str(project_id or "").strip():
             debug_logger.log_warning(
-                "[BrowserCaptcha] 启动常驻模式失败：project_id 为空"
+                "[BrowserCaptcha] Gagal menjalankan mode resident: project_id kosong"
             )
             return
         self._mark_runtime_active()
         await self.initialize()
-        debug_logger.log_info(f"[BrowserCaptcha] 浏览器已就绪 (project: {project_id})")
+        debug_logger.log_info(f"[BrowserCaptcha] Browser sudah ready (project: {project_id})")
 
     async def stop_resident_mode(self, project_id: Optional[str] = None):
-        """停止常驻模式
+        """Menghentikan mode resident
         
         Args:
-            project_id: 指定 project_id 或 slot_id；如果为 None 则关闭所有常驻标签页
+            project_id: tentukan project_id atau slot_id; bila None maka tutup semua tab resident
         """
         target_slot_id = None
         if project_id:
@@ -10502,7 +10502,7 @@ class BrowserCaptchaService:
             await self._close_resident_tab(target_slot_id)
             self._resident_error_streaks.pop(target_slot_id, None)
             debug_logger.log_info(
-                f"[BrowserCaptcha] 已关闭共享标签页 slot={target_slot_id} (request={project_id})"
+                f"[BrowserCaptcha] Tab bersama slot={target_slot_id} sudah ditutup (request={project_id})"
             )
             return
 
@@ -10525,13 +10525,13 @@ class BrowserCaptchaService:
                 )
                 await self._close_tab_quietly(resident_info.tab)
         debug_logger.log_info(
-            f"[BrowserCaptcha] 已关闭所有共享常驻标签页 (共 {len(slot_ids)} 个)"
+            f"[BrowserCaptcha] Semua tab resident bersama sudah ditutup (total {len(slot_ids)})"
         )
 
     async def _wait_for_document_ready(
         self, tab, retries: int = 30, interval_seconds: float = 1.0
     ) -> bool:
-        """等待页面文档加载完成。"""
+        """Menunggu dokumen halaman selesai dimuat."""
         for _ in range(retries):
             try:
                 ready_state = await self._tab_evaluate(
@@ -10622,7 +10622,7 @@ class BrowserCaptchaService:
         )
 
     def _is_force_fresh_browser_restart_error(self, error_text: str) -> bool:
-        """命中特定 Flow 风控错误时，直接重启为全新无状态浏览器。"""
+        """Saat kena error risk-control Flow tertentu, langsung restart menjadi browser stateless baru."""
         error_lower = (error_text or "").lower()
         if "recaptcha evaluation failed" not in error_lower:
             return False
@@ -10637,7 +10637,7 @@ class BrowserCaptchaService:
         )
 
     async def _clear_tab_site_storage(self, tab) -> Dict[str, Any]:
-        """清理当前站点的本地存储状态，但保留 cookies 登录态。"""
+        """Membersihkan state local storage situs saat ini, tapi mempertahankan status login cookies."""
         result = await self._tab_evaluate(
             tab,
             """
@@ -10738,7 +10738,7 @@ class BrowserCaptchaService:
         clear_browser_cache: bool = False,
         refresh_local_assets: bool = False,
     ) -> bool:
-        """清理常驻标签页的站点数据并刷新，尝试原地自愈。"""
+        """Membersihkan data situs tab resident dan me-refresh, mencoba self-healing di tempat."""
         async with self._resident_lock:
             resolved_slot_id = str(slot_id or "").strip()
             if resolved_slot_id:
@@ -10752,7 +10752,7 @@ class BrowserCaptchaService:
 
         if not resident_info or not resident_info.tab:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id or 'unknown'} 没有可清理的共享标签页"
+                f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id or 'unknown'} tidak ada tab bersama yang bisa dibersihkan"
             )
             return False
 
@@ -10764,7 +10764,7 @@ class BrowserCaptchaService:
                     self._reset_local_recaptcha_asset_caches(purge_disk=True)
                 cleanup_summary = await self._clear_tab_site_storage(resident_info.tab)
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 已清理站点存储，准备刷新恢复: {cleanup_summary}"
+                    f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} storage situs sudah dibersihkan, siap refresh recovery: {cleanup_summary}"
                 )
 
                 resident_info.recaptcha_ready = False
@@ -10777,7 +10777,7 @@ class BrowserCaptchaService:
                     resident_info.tab, retries=30, interval_seconds=1.0
                 ):
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 清理后页面加载超时"
+                        f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} timeout loading halaman setelah pembersihan"
                     )
                     return False
 
@@ -10796,17 +10796,17 @@ class BrowserCaptchaService:
                     )
                     self._resident_error_streaks.pop(resolved_slot_id, None)
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 清理后已恢复 reCAPTCHA"
+                        f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} reCAPTCHA sudah pulih setelah pembersihan"
                     )
                     return True
 
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 清理后仍无法恢复 reCAPTCHA"
+                    f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} reCAPTCHA tetap tidak pulih setelah pembersihan"
                 )
                 return False
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 清理或刷新失败: {e}"
+                f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} gagal membersihkan atau me-refresh: {e}"
             )
             return False
 
@@ -10816,7 +10816,7 @@ class BrowserCaptchaService:
         token_id: Optional[int] = None,
         slot_id: Optional[str] = None,
     ) -> bool:
-        """关闭并重建常驻标签页。"""
+        """Menutup dan membangun ulang tab resident."""
         resolved_slot_id, resident_info = await self._rebuild_resident_tab(
             project_id,
             token_id=token_id,
@@ -10825,11 +10825,11 @@ class BrowserCaptchaService:
         )
         if resident_info is None:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id}, slot={slot_id or 'unknown'} 重建共享标签页失败"
+                f"[BrowserCaptcha] project_id={project_id}, slot={slot_id or 'unknown'} gagal me-rebuild tab bersama"
             )
             return False
         debug_logger.log_warning(
-            f"[BrowserCaptcha] project_id={project_id} 已重建共享标签页 slot={resolved_slot_id}"
+            f"[BrowserCaptcha] project_id={project_id} tab bersama slot={resolved_slot_id} sudah di-rebuild"
         )
         return True
 
@@ -10852,7 +10852,7 @@ class BrowserCaptchaService:
                     source="fresh_restart_deferred_active_work",
                 )
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] project_id={project_id} fresh profile 重启已延后到当前并发 drain 后立即执行"
+                    f"[BrowserCaptcha] project_id={project_id} restart fresh profile ditunda sampai drain konkurensi saat ini lalu langsung eksekusi"
                 )
                 return True
             if not fresh_profile and self._was_runtime_restarted_recently():
@@ -10872,12 +10872,12 @@ class BrowserCaptchaService:
                             )
                             self._resident_error_streaks.pop(slot_id, None)
                             debug_logger.log_warning(
-                                f"[BrowserCaptcha] project_id={project_id} 检测到最近已完成浏览器恢复，复用当前运行态 (slot={slot_id})"
+                                f"[BrowserCaptcha] project_id={project_id} terdeteksi baru saja selesai recovery browser, pakai ulang state runtime saat ini (slot={slot_id})"
                             )
                             return True
                 except Exception as e:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] project_id={project_id} 复用最近恢复运行态失败，继续执行整浏览器重启: {e}"
+                        f"[BrowserCaptcha] project_id={project_id} gagal pakai ulang state runtime hasil recovery terakhir, lanjutkan restart seluruh browser: {e}"
                     )
 
             restarted = await self._restart_browser_for_project_unlocked(
@@ -10896,16 +10896,16 @@ class BrowserCaptchaService:
         *,
         fresh_profile: bool = False,
     ) -> bool:
-        """重启整个 nodriver 浏览器，仅恢复当前请求所需标签页。"""
+        """Me-restart seluruh browser nodriver, hanya memulihkan tab yang dibutuhkan request saat ini."""
         restart_reason = f"restart_project:{project_id}"
         if fresh_profile:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id} 准备执行 fresh profile 浏览器冷启动"
+                f"[BrowserCaptcha] project_id={project_id} siap menjalankan cold start browser fresh profile"
             )
             restart_reason = f"fresh_restart_project:{project_id}"
         else:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id} 准备重启 nodriver 浏览器以恢复"
+                f"[BrowserCaptcha] project_id={project_id} siap me-restart browser nodriver untuk recovery"
             )
 
         await self._shutdown_browser_runtime(
@@ -10923,7 +10923,7 @@ class BrowserCaptchaService:
         )
         if resident_info is None or not slot_id:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id} 浏览器重启后无法定位可用共享标签页"
+                f"[BrowserCaptcha] project_id={project_id} tidak bisa menemukan tab bersama yang tersedia setelah restart browser"
             )
             return False
 
@@ -10932,12 +10932,12 @@ class BrowserCaptchaService:
         self._resident_error_streaks.pop(slot_id, None)
         if fresh_profile:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id} 已使用全新无状态浏览器恢复当前共享标签页 "
+                f"[BrowserCaptcha] project_id={project_id} tab bersama saat ini sudah dipulihkan memakai browser stateless baru "
                 f"(active_slot={slot_id}, warmup_disabled=true)"
             )
         else:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id} 浏览器重启后已恢复当前共享标签页 "
+                f"[BrowserCaptcha] project_id={project_id} tab bersama saat ini sudah dipulihkan setelah restart browser "
                 f"(active_slot={slot_id}, warmup_disabled=true)"
             )
         return True
@@ -10951,7 +10951,7 @@ class BrowserCaptchaService:
         slot_id: Optional[str] = None,
         issued_at: Optional[float] = None,
     ):
-        """上游生成接口异常时，对常驻标签页执行自愈恢复。"""
+        """Saat API generasi upstream exception, jalankan self-healing recovery pada tab resident."""
         if not project_id:
             return
 
@@ -10961,7 +10961,7 @@ class BrowserCaptchaService:
                 resident_info = self._resident_tabs.get(resolved_slot_id)
                 if resident_info is None or not resident_info.tab:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 上游异常回调命中已失效 slot，跳过本次恢复"
+                        f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} callback exception upstream kena slot yang sudah invalid, lewatkan recovery kali ini"
                     )
                     return
                 if (
@@ -10984,19 +10984,19 @@ class BrowserCaptchaService:
         error_lower = error_text.lower()
         if self._is_generation_policy_error(error_text):
             debug_logger.log_info(
-                f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 收到内容安全拒绝，跳过浏览器自愈: {error_reason}"
+                f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} menerima penolakan keamanan konten, lewatkan self-healing browser: {error_reason}"
             )
             return
         if self._is_external_flow_error(error_text):
             debug_logger.log_warning(
-                f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 收到外部链路/鉴权错误，跳过 resident 自愈: {error_reason}"
+                f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} menerima error link eksternal/auth, lewatkan self-healing resident: {error_reason}"
             )
             return
 
         streak = self._resident_error_streaks.get(resolved_slot_id, 0) + 1
         self._resident_error_streaks[resolved_slot_id] = streak
         debug_logger.log_warning(
-            f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} 收到上游异常，streak={streak}, reason={error_reason}, detail={error_message[:200]}"
+            f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} menerima exception upstream, streak={streak}, reason={error_reason}, detail={error_message[:200]}"
         )
 
         if (
@@ -11008,7 +11008,7 @@ class BrowserCaptchaService:
             resident_info.prefer_native_harvest = True
             debug_logger.log_warning(
                 f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} "
-                "trusted JS token 被 reCAPTCHA 风控拒绝，auto 后续优先使用原生 harvest"
+                "Token trusted JS ditolak risk-control reCAPTCHA, auto selanjutnya prioritaskan native harvest"
             )
 
         if not self._initialized or not self.browser:
@@ -11018,7 +11018,7 @@ class BrowserCaptchaService:
             if self._is_force_fresh_browser_restart_error(error_text):
                 debug_logger.log_warning(
                     f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} "
-                    "命中特定 Flow 风控错误，已标记当前 slot 不再复用；浏览器 fresh profile 轮换会等待当前并发 drain 后立即执行"
+                    "Kena error risk-control Flow tertentu, slot saat ini sudah ditandai tidak dipakai ulang; rotasi fresh profile browser akan langsung eksekusi setelah drain konkurensi saat ini"
                 )
                 if resident_info is not None:
                     await self._mark_resident_slot_unavailable(
@@ -11037,7 +11037,7 @@ class BrowserCaptchaService:
                 )
                 return
 
-            # 403 / reCAPTCHA / unusual activity：浏览器级缓存清理 + 本地静态缓存刷新 + resident 恢复
+            # 403 / reCAPTCHA / unusual activity: pembersihan cache level browser + refresh cache statis lokal + recovery resident
             if self._is_recaptcha_cache_reset_error(error_text):
                 restart_threshold = max(
                     2,
@@ -11049,7 +11049,7 @@ class BrowserCaptchaService:
                     ),
                 )
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] project_id={project_id} 检测到 403/reCAPTCHA/unusual_activity 错误，清理缓存并重建"
+                    f"[BrowserCaptcha] project_id={project_id} terdeteksi error 403/reCAPTCHA/unusual_activity, bersihkan cache dan rebuild"
                 )
                 healed = await self._clear_resident_storage_and_reload(
                     project_id,
@@ -11073,14 +11073,14 @@ class BrowserCaptchaService:
 
                 if streak >= restart_threshold or (not healed and not recreated):
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} reCAPTCHA 风控连续失败，升级为整浏览器重启恢复"
+                        f"[BrowserCaptcha] project_id={project_id}, slot={resolved_slot_id} risk-control reCAPTCHA gagal beruntun, naikkan ke recovery restart seluruh browser"
                     )
                     await self._restart_browser_for_project(
                         project_id, token_id=token_id
                     )
                 return
 
-            # 服务端错误：根据连续失败次数决定恢复策略
+            # Error server: tentukan strategi recovery berdasarkan jumlah kegagalan beruntun
             if self._is_server_side_flow_error(error_text):
                 recreate_threshold = max(
                     2,
@@ -11117,7 +11117,7 @@ class BrowserCaptchaService:
                     )
                 return
 
-            # 其他错误：直接重建标签页
+            # Error lain: langsung rebuild tab
             await self._recreate_resident_tab(
                 project_id,
                 token_id=token_id,
@@ -11132,12 +11132,12 @@ class BrowserCaptchaService:
         )
 
     async def _wait_for_recaptcha(self, tab) -> bool:
-        """等待 reCAPTCHA 加载
+        """Menunggu reCAPTCHA dimuat
 
         Returns:
             True if reCAPTCHA loaded successfully
         """
-        debug_logger.log_info("[BrowserCaptcha] 注入 reCAPTCHA 脚本...")
+        debug_logger.log_info("[BrowserCaptcha] Menginjeksi skrip reCAPTCHA...")
 
         await self._inject_recaptcha_bootstrap_script(
             tab,
@@ -11177,8 +11177,8 @@ class BrowserCaptchaService:
 
                 if is_ready:
                     debug_logger.log_info(
-                        f"[BrowserCaptcha] reCAPTCHA 已就绪 "
-                        f"(等待了 {initial_settle_seconds + i * poll_interval_seconds:.1f}s)"
+                        f"[BrowserCaptcha] reCAPTCHA sudah ready "
+                        f"(menunggu {initial_settle_seconds + i * poll_interval_seconds:.1f}s)"
                     )
                     return True
 
@@ -11204,7 +11204,7 @@ class BrowserCaptchaService:
                         )
                     except Exception as state_error:
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] 读取 reCAPTCHA bootstrap 状态失败: {state_error}"
+                            f"[BrowserCaptcha] Gagal membaca status bootstrap reCAPTCHA: {state_error}"
                         )
                         last_bootstrap_state = None
 
@@ -11215,7 +11215,7 @@ class BrowserCaptchaService:
                             .lower()
                         )
                         debug_logger.log_info(
-                            "[BrowserCaptcha] reCAPTCHA bootstrap 状态: "
+                            "[BrowserCaptcha] Status bootstrap reCAPTCHA: "
                             f"status={status or '<empty>'}, "
                             f"attempts={last_bootstrap_state.get('attempts')}, "
                             f"url={last_bootstrap_state.get('url') or '<empty>'}, "
@@ -11235,22 +11235,22 @@ class BrowserCaptchaService:
                 if self._is_browser_runtime_error(e):
                     self._mark_browser_health(False)
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 检查 reCAPTCHA 时浏览器运行态断开，停止等待并触发恢复: {e}"
+                        f"[BrowserCaptcha] State runtime browser diskoneksi saat mengecek reCAPTCHA, hentikan penantian dan picu recovery: {e}"
                     )
                     raise
-                debug_logger.log_warning(f"[BrowserCaptcha] 检查 reCAPTCHA 时异常: {e}")
+                debug_logger.log_warning(f"[BrowserCaptcha] Exception saat mengecek reCAPTCHA: {e}")
                 await tab.sleep(0.5)
 
         if isinstance(last_bootstrap_state, dict):
             debug_logger.log_warning(
-                "[BrowserCaptcha] reCAPTCHA 加载超时 "
+                "[BrowserCaptcha] Timeout pemuatan reCAPTCHA "
                 f"(bootstrap_status={last_bootstrap_state.get('status') or '<empty>'}, "
                 f"attempts={last_bootstrap_state.get('attempts')}, "
                 f"url={last_bootstrap_state.get('url') or '<empty>'}, "
                 f"error={last_bootstrap_state.get('error') or '<empty>'})"
             )
         else:
-            debug_logger.log_warning("[BrowserCaptcha] reCAPTCHA 加载超时")
+            debug_logger.log_warning("[BrowserCaptcha] Timeout pemuatan reCAPTCHA")
         return False
 
     async def _wait_for_custom_recaptcha(
@@ -11259,8 +11259,8 @@ class BrowserCaptchaService:
         website_key: str,
         enterprise: bool = False,
     ) -> bool:
-        """等待任意站点的 reCAPTCHA 加载，用于分数测试。"""
-        debug_logger.log_info("[BrowserCaptcha] 检测自定义 reCAPTCHA...")
+        """Menunggu reCAPTCHA situs apa pun dimuat, untuk pengujian skor."""
+        debug_logger.log_info("[BrowserCaptcha] Mendeteksi reCAPTCHA kustom...")
 
         ready_check = (
             (
@@ -11282,10 +11282,10 @@ class BrowserCaptchaService:
             timeout_seconds=2.5,
         )
         if is_ready:
-            debug_logger.log_info(f"[BrowserCaptcha] 自定义 reCAPTCHA {label} 已加载")
+            debug_logger.log_info(f"[BrowserCaptcha] reCAPTCHA kustom {label} sudah dimuat")
             return True
 
-        debug_logger.log_info("[BrowserCaptcha] 未检测到自定义 reCAPTCHA，注入脚本...")
+        debug_logger.log_info("[BrowserCaptcha] reCAPTCHA kustom tidak terdeteksi, injeksi skrip...")
         await self._inject_recaptcha_bootstrap_script(
             tab,
             script_path=script_path,
@@ -11303,12 +11303,12 @@ class BrowserCaptchaService:
             )
             if is_ready:
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 自定义 reCAPTCHA {label} 已加载（等待了 {i * 0.5} 秒）"
+                    f"[BrowserCaptcha] reCAPTCHA kustom {label} sudah dimuat (menunggu {i * 0.5} detik)"
                 )
                 return True
             await tab.sleep(0.5)
 
-        debug_logger.log_warning("[BrowserCaptcha] 自定义 reCAPTCHA 加载超时")
+        debug_logger.log_warning("[BrowserCaptcha] Timeout pemuatan reCAPTCHA kustom")
         return False
 
     @staticmethod
@@ -11358,13 +11358,13 @@ class BrowserCaptchaService:
             except Exception:
                 pass
             debug_logger.log_info(
-                "[BrowserCaptcha] 已安装新版 Flow trusted reCAPTCHA 捕获钩子 "
+                "[BrowserCaptcha] Hook penangkap trusted reCAPTCHA Flow versi baru sudah dipasang "
                 f"(label={label})"
             )
             return True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 安装 trusted reCAPTCHA 捕获钩子失败 ({label}): {e}"
+                f"[BrowserCaptcha] Gagal memasang hook penangkap trusted reCAPTCHA ({label}): {e}"
             )
             return False
 
@@ -11435,7 +11435,7 @@ class BrowserCaptchaService:
             )
             if error:
                 debug_logger.log_error(
-                    f"[BrowserCaptcha] trusted reCAPTCHA 错误: {error}"
+                    f"[BrowserCaptcha] Error trusted reCAPTCHA: {error}"
                 )
             return None
 
@@ -11445,8 +11445,8 @@ class BrowserCaptchaService:
             else None
         )
         debug_logger.log_info(
-            "[BrowserCaptcha] ✅ trusted reCAPTCHA Token获取成功 "
-            f"(action={normalized_action}, 长度={len(token)}, "
+            "[BrowserCaptcha] ✅ Berhasil mendapatkan Token trusted reCAPTCHA "
+            f"(action={normalized_action}, panjang={len(token)}, "
             f"session={'yes' if session_id else 'no'})"
         )
         return {"token": token, "session_id": session_id}
@@ -11552,7 +11552,7 @@ class BrowserCaptchaService:
             return result is True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 安装原生 harvest 拦截失败: {type(e).__name__}: {str(e)[:160]}"
+                f"[BrowserCaptcha] Gagal memasang intersepsi native harvest: {type(e).__name__}: {str(e)[:160]}"
             )
             return False
 
@@ -11642,7 +11642,7 @@ class BrowserCaptchaService:
             )
         )
         debug_logger.log_info(
-            f"[BrowserCaptcha] {label} 已触发页面原生 StreamChat 提交"
+            f"[BrowserCaptcha] {label} sudah memicu submit StreamChat native halaman"
         )
 
     @staticmethod
@@ -11910,7 +11910,7 @@ class BrowserCaptchaService:
             return result is True
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 安装原生生成响应观察器失败: {type(e).__name__}: {str(e)[:180]}"
+                f"[BrowserCaptcha] Gagal memasang observer respons generasi native: {type(e).__name__}: {str(e)[:180]}"
             )
             return False
 
@@ -11992,7 +11992,7 @@ class BrowserCaptchaService:
                     f"error={error_match.group(0) if error_match else 'UNKNOWN'}"
                 )
             debug_logger.log_info(
-                f"[BrowserCaptcha] {label} 原生生成响应成功 "
+                f"[BrowserCaptcha] {label} respons generasi native sukses "
                 f"(status={status}, chars={len(response_text)}, "
                 f"session={(harvest or {}).get('session_id') or '<empty>'})"
             )
@@ -12011,7 +12011,7 @@ class BrowserCaptchaService:
                     "native generation outcome is unknown"
                 ) from e
             debug_logger.log_warning(
-                f"[BrowserCaptcha] {label} 原生生成失败: "
+                f"[BrowserCaptcha] {label} generasi native gagal: "
                 f"{type(e).__name__}: {str(e)[:240]}"
             )
             return None
@@ -12061,8 +12061,8 @@ class BrowserCaptchaService:
                         if not auto_mode:
                             raise
                         debug_logger.log_warning(
-                            "[BrowserCaptcha] trusted JS 取码失败，"
-                            f"auto 切换原生 harvest: {direct_solve_error}"
+                            "[BrowserCaptcha] Gagal mengambil token via trusted JS,"
+                            f"auto beralih ke native harvest: {direct_solve_error}"
                         )
                         direct_result = None
                     direct_token = str(
@@ -12088,8 +12088,8 @@ class BrowserCaptchaService:
                             ):
                                 raise
                             debug_logger.log_warning(
-                                "[BrowserCaptcha] trusted JS StreamChat 提交失败，"
-                                f"auto 切换原生 harvest: {direct_error}"
+                                "[BrowserCaptcha] Submit StreamChat trusted JS gagal,"
+                                f"auto beralih ke native harvest: {direct_error}"
                             )
                             resident_info.prefer_native_harvest = True
 
@@ -12176,12 +12176,12 @@ class BrowserCaptchaService:
             await self._dismiss_native_page_overlays(tab, label=label)
             if not await self._wait_for_recaptcha(tab):
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] {label} 页面 reCAPTCHA 未就绪"
+                    f"[BrowserCaptcha] {label} reCAPTCHA halaman belum ready"
                 )
                 return None
             if not await self._wait_for_native_prompt_editor(tab, label=label):
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] {label} 页面提示词输入框未就绪"
+                    f"[BrowserCaptcha] {label} kotak input prompt halaman belum ready"
                 )
                 return None
             if not await self._install_native_harvest_hook(tab):
@@ -12213,27 +12213,27 @@ class BrowserCaptchaService:
 
             if not post_data:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] {label} 未捕获页面原生 StreamChat 请求"
+                    f"[BrowserCaptcha] {label} tidak menangkap request StreamChat native halaman"
                 )
                 return None
 
             harvest = self._parse_native_harvest_post_data(post_data)
             if not harvest or not harvest.get("token"):
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] {label} 原生 StreamChat 请求体解析失败 "
+                    f"[BrowserCaptcha] {label} gagal mengurai body request StreamChat native "
                     f"(body_len={len(post_data)})"
                 )
                 return None
 
             debug_logger.log_info(
-                f"[BrowserCaptcha] {label} 原生 harvest 成功 "
+                f"[BrowserCaptcha] {label} native harvest sukses "
                 f"(token_len={len(harvest['token'])}, "
                 f"session={harvest.get('session_id') or '<empty>'})"
             )
             return harvest
         except Exception as e:
             debug_logger.log_warning(
-                f"[BrowserCaptcha] {label} 原生 harvest 失败: "
+                f"[BrowserCaptcha] {label} native harvest gagal: "
                 f"{type(e).__name__}: {str(e)[:200]}"
             )
             return None
@@ -12245,7 +12245,7 @@ class BrowserCaptchaService:
         action: str = "homepage",
         enterprise: bool = False,
     ) -> Optional[str]:
-        """在指定标签页执行任意站点的 reCAPTCHA。"""
+        """Menjalankan reCAPTCHA situs apa pun di tab yang ditentukan."""
         ts = int(time.time() * 1000)
         token_var = f"_custom_recaptcha_token_{ts}"
         error_var = f"_custom_recaptcha_error_{ts}"
@@ -12300,7 +12300,7 @@ class BrowserCaptchaService:
             )
             if error:
                 debug_logger.log_error(
-                    f"[BrowserCaptcha] 自定义 reCAPTCHA 错误: {error}"
+                    f"[BrowserCaptcha] Error reCAPTCHA kustom: {error}"
                 )
                 break
 
@@ -12324,7 +12324,7 @@ class BrowserCaptchaService:
                 pass
             if post_wait_seconds > 0:
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 自定义 reCAPTCHA 已完成，额外等待 {post_wait_seconds:.1f}s 后返回 token"
+                    f"[BrowserCaptcha] reCAPTCHA kustom selesai, tunggu tambahan {post_wait_seconds:.1f}s lalu kembalikan token"
                 )
                 await tab.sleep(post_wait_seconds)
 
@@ -12333,7 +12333,7 @@ class BrowserCaptchaService:
     async def _verify_score_on_tab(
         self, tab, token: str, verify_url: str
     ) -> Dict[str, Any]:
-        """直接读取测试页面展示的分数，避免 verify.php 与页面显示口径不一致。"""
+        """Langsung baca skor yang ditampilkan halaman tes, hindari inkonsistensi antara verify.php dan tampilan halaman."""
         _ = token
         _ = verify_url
         started_at = time.time()
@@ -12462,12 +12462,12 @@ class BrowserCaptchaService:
                 "current_ip_address": last_snapshot.get("current_ip_address") or "",
                 "page_title": last_snapshot.get("title") or "",
                 "page_url": last_snapshot.get("url") or "",
-                "error": last_snapshot.get("error") or "未在页面中读取到分数",
+                "error": last_snapshot.get("error") or "tidak terbaca skor di halaman",
             },
         }
 
     async def _extract_tab_fingerprint(self, tab) -> Optional[Dict[str, Any]]:
-        """从 nodriver 标签页提取浏览器指纹信息。"""
+        """Mengekstrak info fingerprint browser dari tab nodriver."""
         try:
             fingerprint = await self._tab_evaluate(
                 tab,
@@ -12603,11 +12603,11 @@ class BrowserCaptchaService:
                     result["accept_language"] = fallback_lang.strip()
             return result
         except Exception as e:
-            debug_logger.log_warning(f"[BrowserCaptcha] 提取 nodriver 指纹失败: {e}")
+            debug_logger.log_warning(f"[BrowserCaptcha] Gagal mengekstrak fingerprint nodriver: {e}")
             return None
 
     async def _refresh_last_fingerprint(self, tab) -> Optional[Dict[str, Any]]:
-        """缓存最近一次浏览器指纹，避免每次打码成功后都追加一轮 JS 执行。"""
+        """Menyimpan cache fingerprint browser terakhir, biar nggak tiap sukses captcha nambah satu ronde eksekusi JS."""
         if self._is_fingerprint_cache_fresh():
             return self._last_fingerprint
 
@@ -12711,7 +12711,7 @@ class BrowserCaptchaService:
         return dict(bundle) if isinstance(bundle, dict) else None
 
     async def _cache_session_cookies_for_computed(self, resident_info):
-        """提取 Google session cookies 供 reload 链路复用。"""
+        """Mengekstrak Google session cookies untuk dipakai ulang rantai reload."""
         if not resident_info or not resident_info.tab:
             return None
         from nodriver import cdp
@@ -12930,7 +12930,7 @@ class BrowserCaptchaService:
         consume_reservation: bool = False,
         success_label: str,
     ) -> Optional[str]:
-        """在共享常驻标签页上执行一次打码，并统一更新成功态。"""
+        """Menjalankan satu captcha di tab resident bersama, dan mengupdate state sukses secara terpusat."""
         if not resident_info or not resident_info.tab:
             if consume_reservation:
                 await self._release_resident_slot_reservation(
@@ -12964,7 +12964,7 @@ class BrowserCaptchaService:
                     if not auto_mode or str(action or "").strip().upper() != "CHAT_GENERATION":
                         raise
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] auto trusted JS 取码异常，切换原生 harvest "
+                        f"[BrowserCaptcha] Exception pengambilan token trusted JS auto, beralih ke native harvest "
                         f"(slot={slot_id}, action={action}): {direct_solve_error}"
                     )
                     direct_result = None
@@ -12982,8 +12982,8 @@ class BrowserCaptchaService:
             ):
                 if solve_mode == "direct":
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] auto 策略下 trusted JS 取码失败，"
-                        f"切换原生 harvest (slot={slot_id}, action={action})"
+                        f"[BrowserCaptcha] Pengambilan token trusted JS gagal dalam strategi auto,"
+                        f"Beralih ke native harvest (slot={slot_id}, action={action})"
                     )
                 solve_result = await self._run_with_timeout(
                     self._execute_native_harvest_on_tab(
@@ -13010,8 +13010,8 @@ class BrowserCaptchaService:
 
         duration_ms = (time.time() - start_time) * 1000
         debug_logger.log_info(
-            "[BrowserCaptcha] ✅ Token生成成功"
-            f"（slot={slot_id}, 耗时 {duration_ms:.0f}ms, "
+            "[BrowserCaptcha] ✅ Token berhasil digenerate"
+            f"(slot={slot_id}, durasi {duration_ms:.0f}ms, "
             f"slot_use_count={resident_info.use_count}, "
             f"browser_solve_count={browser_solve_count}"
             "）"
@@ -13022,7 +13022,7 @@ class BrowserCaptchaService:
         )
         return token
 
-    # ========== 主要 API ==========
+    # ========== API Utama ==========
 
     async def _get_token_direct(
         self,
@@ -13034,16 +13034,16 @@ class BrowserCaptchaService:
         allow_affinity: bool = True,
         remember_affinity: bool = True,
     ) -> Optional[str] | tuple[Optional[str], Optional[str]]:
-        """获取 reCAPTCHA token
+        """Mengambil reCAPTCHA token
 
-        使用全局共享打码标签页池。标签页不再按 project_id 一对一绑定，
-        谁拿到空闲 tab 就用谁的；只有 Session Token 刷新/故障恢复会优先参考最近一次映射。
+        Memakai pool tab captcha global yang dibagikan. Tab tidak lagi di-bind satu-satu per project_id,
+        siapa dapat tab idle dia yang pakai; hanya refresh Session Token/recovery failure yang memprioritaskan mapping terakhir.
 
         Args:
-            project_id: Flow项目ID
-            action: reCAPTCHA action类型
-                - IMAGE_GENERATION: 图片生成和2K/4K图片放大 (默认)
-                - VIDEO_GENERATION: 视频生成和视频放大
+            project_id: ID proyek Flow
+            action: tipe action reCAPTCHA
+                - IMAGE_GENERATION: generasi gambar dan upscale gambar 2K/4K (default)
+                - VIDEO_GENERATION: generasi video dan upscale video
 
         Returns:
             reCAPTCHA token and its native Flow session id.
@@ -13060,7 +13060,7 @@ class BrowserCaptchaService:
             return token
 
         debug_logger.log_info(
-            f"[BrowserCaptcha] get_token 开始: project_id={project_id}, token_id={token_id}, action={action}, 当前标签页数={len(self._resident_tabs)}/{self._max_resident_tabs}"
+            f"[BrowserCaptcha] get_token mulai: project_id={project_id}, token_id={token_id}, action={action}, jumlah tab saat ini={len(self._resident_tabs)}/{self._max_resident_tabs}"
         )
         self._mark_runtime_active()
 
@@ -13070,7 +13070,7 @@ class BrowserCaptchaService:
             source="get_token_pre_initialize",
         )
 
-        # 确保浏览器已初始化
+        # Pastikan browser sudah diinisialisasi
         await self.initialize()
 
         await self._wait_for_pending_fresh_profile_restart_before_solve(
@@ -13089,7 +13089,7 @@ class BrowserCaptchaService:
 
         try:
             debug_logger.log_info(
-                f"[BrowserCaptcha] 开始从共享打码池获取标签页 (project: {project_id}, token_id={token_id}, 当前: {len(self._resident_tabs)}/{self._max_resident_tabs})"
+                f"[BrowserCaptcha] Mulai mengambil tab dari pool captcha bersama (project: {project_id}, token_id={token_id}, saat ini: {len(self._resident_tabs)}/{self._max_resident_tabs})"
             )
             resident_pick_started_at = time.monotonic()
             try:
@@ -13104,7 +13104,7 @@ class BrowserCaptchaService:
                     raise
                 self._mark_browser_health(False)
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 共享标签页分配时浏览器运行态断开，立即重启恢复 (project: {project_id}, token_id={token_id}): {e}"
+                    f"[BrowserCaptcha] State runtime browser diskoneksi saat alokasi tab bersama, langsung restart recovery (project: {project_id}, token_id={token_id}): {e}"
                 )
                 slot_id, resident_info = None, None
                 if await self._recover_browser_runtime(
@@ -13122,7 +13122,7 @@ class BrowserCaptchaService:
                             raise
                         self._mark_browser_health(False)
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] 浏览器恢复后分配共享标签页仍断开 (project: {project_id}, token_id={token_id}): {retry_error}"
+                            f"[BrowserCaptcha] Alokasi tab bersama tetap diskoneksi setelah recovery browser (project: {project_id}, token_id={token_id}): {retry_error}"
                         )
                         slot_id, resident_info = None, None
             reserved_slot_id = slot_id or None
@@ -13140,7 +13140,7 @@ class BrowserCaptchaService:
             if resident_info is None or not slot_id:
                 if not await self._probe_browser_runtime():
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 共享标签页池为空且浏览器疑似失活，尝试重启恢复 (project: {project_id}, token_id={token_id})"
+                        f"[BrowserCaptcha] Pool tab bersama kosong dan browser diduga tidak aktif, coba restart recovery (project: {project_id}, token_id={token_id})"
                     )
                     if await self._recover_browser_runtime(
                         project_id, reason="ensure_resident_tab"
@@ -13155,7 +13155,7 @@ class BrowserCaptchaService:
 
             if resident_info is None or not slot_id:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 共享标签页池不可用，fallback 到传统模式 (project: {project_id}, token_id={token_id})"
+                    f"[BrowserCaptcha] Pool tab bersama tidak tersedia, fallback ke mode legacy (project: {project_id}, token_id={token_id})"
                 )
                 legacy_token, legacy_session_id = await self._get_token_legacy(
                     project_id, action, token_id=token_id
@@ -13168,7 +13168,7 @@ class BrowserCaptchaService:
                 )
 
             debug_logger.log_info(
-                "[BrowserCaptcha] 共享标签页已分配 "
+                "[BrowserCaptcha] Tab bersama sudah dialokasikan "
                 f"(project_id={project_id}, token_id={token_id}, slot={slot_id}, "
                 f"pick_elapsed={time.monotonic() - resident_pick_started_at:.3f}s, "
                 f"slot_use_count={int(getattr(resident_info, 'use_count', 0) or 0)}, "
@@ -13176,7 +13176,7 @@ class BrowserCaptchaService:
                 f"ready={bool(getattr(resident_info, 'recaptcha_ready', False))})"
             )
             debug_logger.log_info(
-                f"[BrowserCaptcha] ✅ 共享标签页可用 (slot={slot_id}, project={project_id}, token_id={token_id}, use_count={resident_info.use_count})"
+                f"[BrowserCaptcha] ✅ Tab bersama tersedia (slot={slot_id}, project={project_id}, token_id={token_id}, use_count={resident_info.use_count})"
             )
 
             if resident_info and resident_info.tab:
@@ -13187,18 +13187,18 @@ class BrowserCaptchaService:
                 )
                 if not cookie_bound:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 共享标签页 cookie 绑定校验失败，准备重建 (slot={slot_id}, project={project_id}, token_id={token_id})"
+                        f"[BrowserCaptcha] Validasi cookie binding tab bersama gagal, siap rebuild (slot={slot_id}, project={project_id}, token_id={token_id})"
                     )
 
             if resident_info and not resident_info.recaptcha_ready:
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 共享标签页 reCAPTCHA 延迟初始化，继续按目标项目页取码 "
+                    f"[BrowserCaptcha] Inisialisasi reCAPTCHA tab bersama tertunda, lanjutkan ambil token sesuai halaman proyek target "
                     f"(slot={slot_id}, project={project_id}, action={action})"
                 )
 
             if resident_info and resident_info.tab:
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 从共享常驻标签页即时生成 token (slot={slot_id}, project={project_id}, action={action})..."
+                    f"[BrowserCaptcha] Menghasilkan token instan dari tab resident bersama (slot={slot_id}, project={project_id}, action={action})..."
                 )
                 runtime_recovered = False
                 try:
@@ -13214,7 +13214,7 @@ class BrowserCaptchaService:
                     if token:
                         return finish_result(token, slot_id)
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 共享标签页生成失败 (slot={slot_id}, project={project_id}, token_id={token_id})，尝试重建..."
+                        f"[BrowserCaptcha] Tab bersama gagal generate (slot={slot_id}, project={project_id}, token_id={token_id}), mencoba rebuild..."
                     )
                     await self._mark_resident_slot_unavailable(
                         slot_id,
@@ -13224,7 +13224,7 @@ class BrowserCaptchaService:
                 except Exception as e:
                     reserved_slot_id = None
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 共享标签页异常 (slot={slot_id}): {e}，尝试重建..."
+                        f"[BrowserCaptcha] Tab bersama exception (slot={slot_id}): {e}, mencoba rebuild..."
                     )
                     await self._mark_resident_slot_unavailable(
                         slot_id,
@@ -13260,7 +13260,7 @@ class BrowserCaptchaService:
                                 except Exception as retry_error:
                                     reserved_slot_id = None
                                     debug_logger.log_warning(
-                                        f"[BrowserCaptcha] 浏览器重启恢复后共享标签页仍失败 (slot={slot_id}): {retry_error}"
+                                        f"[BrowserCaptcha] Tab bersama tetap gagal setelah recovery restart browser (slot={slot_id}): {retry_error}"
                                     )
 
                 if not runtime_recovered:
@@ -13275,7 +13275,7 @@ class BrowserCaptchaService:
                     reserved_slot_id = slot_id or None
                     if resident_info is None:
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] 共享标签页重建返回空，升级为浏览器级恢复 (slot={slot_id}, project={project_id}, token_id={token_id})"
+                            f"[BrowserCaptcha] Rebuild tab bersama mengembalikan kosong, naikkan ke recovery level browser (slot={slot_id}, project={project_id}, token_id={token_id})"
                         )
                         if await self._recover_browser_runtime(
                             project_id,
@@ -13303,17 +13303,17 @@ class BrowserCaptchaService:
                             reserved_slot_id = None
                             if token:
                                 debug_logger.log_info(
-                                    f"[BrowserCaptcha] ✅ 重建后 Token生成成功 (slot={slot_id})"
+                                    f"[BrowserCaptcha] ✅ Token berhasil digenerate setelah rebuild (slot={slot_id})"
                                 )
                                 return finish_result(token, slot_id)
                             debug_logger.log_warning(
-                                f"[BrowserCaptcha] 重建标签页后未拿到 token (slot={slot_id})，准备执行二次恢复"
+                                f"[BrowserCaptcha] Tidak dapat token setelah rebuild tab (slot={slot_id}), siap menjalankan recovery kedua"
                             )
                             needs_secondary_rebuild = True
                         except Exception as rebuild_error:
                             reserved_slot_id = None
                             debug_logger.log_warning(
-                                f"[BrowserCaptcha] 重建标签页后仍无法打码 (slot={slot_id}): {rebuild_error}"
+                                f"[BrowserCaptcha] Tetap tidak bisa captcha setelah rebuild tab (slot={slot_id}): {rebuild_error}"
                             )
                             needs_secondary_rebuild = True
                             if self._is_browser_runtime_error(rebuild_error):
@@ -13346,7 +13346,7 @@ class BrowserCaptchaService:
                                         except Exception as restart_error:
                                             reserved_slot_id = None
                                             debug_logger.log_warning(
-                                                f"[BrowserCaptcha] 浏览器重启后 resident 仍失败 (slot={slot_id}): {restart_error}"
+                                                f"[BrowserCaptcha] Resident tetap gagal setelah restart browser (slot={slot_id}): {restart_error}"
                                             )
                         if needs_secondary_rebuild and slot_id and resident_info:
                             await self._mark_resident_slot_unavailable(
@@ -13355,7 +13355,7 @@ class BrowserCaptchaService:
                                 reason=f"resident_rebuild_retry:{project_id}",
                             )
                             debug_logger.log_info(
-                                f"[BrowserCaptcha] 重建标签页仍未恢复，开始二次重建 (slot={slot_id}, project={project_id}, token_id={token_id})"
+                                f"[BrowserCaptcha] Rebuild tab tetap tidak pulih, mulai rebuild kedua (slot={slot_id}, project={project_id}, token_id={token_id})"
                             )
                             await release_reserved_slot()
                             slot_id, resident_info = await self._rebuild_resident_tab(
@@ -13379,13 +13379,13 @@ class BrowserCaptchaService:
                                     reserved_slot_id = None
                                     if token:
                                         debug_logger.log_info(
-                                            f"[BrowserCaptcha] ✅ 二次重建后 Token生成成功 (slot={slot_id})"
+                                            f"[BrowserCaptcha] ✅ Token berhasil digenerate setelah rebuild kedua (slot={slot_id})"
                                         )
                                         return finish_result(token, slot_id)
                                 except Exception as second_rebuild_error:
                                     reserved_slot_id = None
                                     debug_logger.log_warning(
-                                        f"[BrowserCaptcha] 二次重建后 resident 仍失败 (slot={slot_id}): {second_rebuild_error}"
+                                        f"[BrowserCaptcha] Resident tetap gagal setelah rebuild kedua (slot={slot_id}): {second_rebuild_error}"
                                     )
                     elif not await self._probe_browser_runtime():
                         if await self._recover_browser_runtime(
@@ -13414,11 +13414,11 @@ class BrowserCaptchaService:
                                 except Exception as empty_recover_error:
                                     reserved_slot_id = None
                                     debug_logger.log_warning(
-                                        f"[BrowserCaptcha] 浏览器空恢复后 resident 仍失败 (slot={slot_id}): {empty_recover_error}"
+                                        f"[BrowserCaptcha] Resident tetap gagal setelah empty recovery browser (slot={slot_id}): {empty_recover_error}"
                                     )
 
             debug_logger.log_warning(
-                f"[BrowserCaptcha] 所有常驻方式失败，fallback 到传统模式 (project: {project_id}, token_id={token_id})"
+                f"[BrowserCaptcha] Semua cara resident gagal, fallback ke mode legacy (project: {project_id}, token_id={token_id})"
             )
             legacy_token, legacy_session_id = await self._get_token_legacy(
                 project_id, action, token_id=token_id
@@ -13442,7 +13442,7 @@ class BrowserCaptchaService:
         *,
         return_slot_id: bool = False,
     ) -> Optional[str] | tuple[Optional[str], Optional[str]]:
-        """对外暴露统一取 token 接口，保持单实例与池化 worker 行为一致。"""
+        """Mengekspos API ambil token terpadu ke luar, menjaga perilaku konsisten antara single instance dan pooled worker."""
         return await self._get_token_direct(
             project_id,
             action=action,
@@ -13500,7 +13500,7 @@ class BrowserCaptchaService:
                 await self._cache_session_cookies_for_computed(resident_info)
             except Exception as cookie_error:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] get_token_bundle 提取 session cookies 失败 "
+                    f"[BrowserCaptcha] get_token_bundle gagal mengekstrak session cookies "
                     f"(slot={slot_id}, project={project_id}, token_id={token_id}): {cookie_error}"
                 )
         fingerprint = (
@@ -13534,31 +13534,31 @@ class BrowserCaptchaService:
         project_id: Optional[str] = None,
         token_id: Optional[int] = None,
     ) -> Optional[ResidentTabInfo]:
-        """创建一个共享常驻打码标签页
+        """Membuat tab captcha resident bersama
 
         Args:
-            slot_id: 共享标签页槽位 ID
-            project_id: 触发创建的项目 ID，仅用于日志和最近映射
+            slot_id: ID slot tab bersama
+            project_id: ID proyek pemicu pembuatan, hanya untuk log dan mapping terakhir
 
         Returns:
-            ResidentTabInfo 对象，或 None（创建失败）
+            Objek ResidentTabInfo, atau None (gagal membuat)
         """
         tab = None
         browser_context_id = None
         try:
             debug_logger.log_info(
-                f"[BrowserCaptcha] 创建共享常驻标签页 slot={slot_id}, seed_project={project_id}, token_id={token_id}"
+                f"[BrowserCaptcha] Membuat tab captcha resident bersama slot={slot_id}, seed_project={project_id}, token_id={token_id}"
             )
 
-            # 获取或创建标签页
+            # Ambil atau buat tab
             browser = self.browser
             if browser is None or getattr(browser, "stopped", False):
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 创建共享常驻标签页前浏览器不可用 (slot={slot_id}, project={project_id}, token_id={token_id})"
+                    f"[BrowserCaptcha] Browser tidak tersedia sebelum membuat tab captcha resident bersama (slot={slot_id}, project={project_id}, token_id={token_id})"
                 )
                 return None
 
-            debug_logger.log_info(f"[BrowserCaptcha] 创建独立 browser context")
+            debug_logger.log_info(f"[BrowserCaptcha] Membuat browser context independen")
             tab, browser_context_id = await self._create_isolated_context_tab(
                 PERSONAL_COOKIE_PREBIND_URL,
                 label=f"resident_browser_create_context:{slot_id}",
@@ -13567,9 +13567,9 @@ class BrowserCaptchaService:
             if browser_context_id is None and self.headless:
                 browser_context_id = self._extract_tab_browser_context_id(tab)
 
-            # 等待页面加载完成（减少等待时间）
+            # Tunggu halaman selesai dimuat (kurangi waktu tunggu)
             page_loaded = False
-            for retry in range(10):  # 减少到10次，最多5秒
+            for retry in range(10):  # Kurangi jadi 10x, maks 5 detik
                 try:
                     await asyncio.sleep(0.5)
                     ready_state = await self._tab_evaluate(
@@ -13580,23 +13580,23 @@ class BrowserCaptchaService:
                     )
                     if ready_state == "complete":
                         page_loaded = True
-                        debug_logger.log_info(f"[BrowserCaptcha] 页面已加载")
+                        debug_logger.log_info(f"[BrowserCaptcha] Halaman sudah dimuat")
                         break
                 except Exception as e:
                     if self._is_browser_runtime_error(e):
                         self._mark_browser_health(False)
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] 等待页面时浏览器运行态断开 (slot={slot_id}, project={project_id}, token_id={token_id}): {e}"
+                            f"[BrowserCaptcha] State runtime browser diskoneksi saat menunggu halaman (slot={slot_id}, project={project_id}, token_id={token_id}): {e}"
                         )
                         raise
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 等待页面异常: {e}，重试 {retry + 1}/10..."
+                        f"[BrowserCaptcha] Exception menunggu halaman: {e}, retry {retry + 1}/10..."
                     )
-                    await asyncio.sleep(0.3)  # 减少重试间隔
+                    await asyncio.sleep(0.3)  # Kurangi interval retry
 
             if not page_loaded:
                 debug_logger.log_error(
-                    f"[BrowserCaptcha] 页面加载超时 (slot={slot_id}, project={project_id}, token_id={token_id})"
+                    f"[BrowserCaptcha] Timeout pemuatan halaman (slot={slot_id}, project={project_id}, token_id={token_id})"
                 )
                 await self._dispose_browser_context_quietly(browser_context_id)
                 await self._close_tab_quietly(tab)
@@ -13621,7 +13621,7 @@ class BrowserCaptchaService:
                 tab, label=f"resident_init:{slot_id}"
             ):
                 debug_logger.log_error(
-                    f"[BrowserCaptcha] 打开 labs 引导页失败 (slot={slot_id}, project={project_id}, token_id={token_id})"
+                    f"[BrowserCaptcha] Gagal membuka halaman panduan labs (slot={slot_id}, project={project_id}, token_id={token_id})"
                 )
                 await self._dispose_browser_context_quietly(browser_context_id)
                 await self._close_tab_quietly(tab)
@@ -13633,13 +13633,13 @@ class BrowserCaptchaService:
             )
             if not warmup_ok:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] Google cookie 预热未完成，继续等待 reCAPTCHA "
+                    f"[BrowserCaptcha] Pemanasan cookie Google belum selesai, lanjutkan menunggu reCAPTCHA "
                     f"(slot={slot_id}, project={project_id}, token_id={token_id})"
                 )
 
-            # 等待 reCAPTCHA 加载
+            # Tunggu reCAPTCHA dimuat
             debug_logger.log_info(
-                f"[BrowserCaptcha] 引导页跳过 reCAPTCHA 预热，等待真实项目页按需初始化 "
+                f"[BrowserCaptcha] Halaman panduan melewatkan pemanasan reCAPTCHA, tunggu halaman proyek asli inisialisasi sesuai kebutuhan "
                 f"(slot={slot_id}, project={project_id}, token_id={token_id})"
             )
             resident_info.recaptcha_ready = False
@@ -13648,13 +13648,13 @@ class BrowserCaptchaService:
                 await self._cache_session_cookies_for_computed(resident_info)
             except Exception as cookie_error:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 初始化共享常驻标签页后提取 session cookies 失败 "
+                    f"[BrowserCaptcha] Gagal mengekstrak session cookies setelah inisialisasi tab resident bersama "
                     f"(slot={slot_id}, project={project_id}, token_id={token_id}): {cookie_error}"
                 )
             self._mark_browser_health(True)
 
             debug_logger.log_info(
-                f"[BrowserCaptcha] ✅ 共享常驻标签页创建成功 (slot={slot_id}, project={project_id}, token_id={token_id})"
+                f"[BrowserCaptcha] ✅ Tab captcha resident bersama berhasil dibuat (slot={slot_id}, project={project_id}, token_id={token_id})"
             )
             return resident_info
 
@@ -13670,19 +13670,19 @@ class BrowserCaptchaService:
             if self._is_browser_runtime_error(e):
                 self._mark_browser_health(False)
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] 创建共享常驻标签页时浏览器运行态断开 (slot={slot_id}, project={project_id}, token_id={token_id}): {e}"
+                    f"[BrowserCaptcha] State runtime browser diskoneksi saat membuat tab captcha resident bersama (slot={slot_id}, project={project_id}, token_id={token_id}): {e}"
                 )
                 raise
             debug_logger.log_error(
-                f"[BrowserCaptcha] 创建共享常驻标签页异常 (slot={slot_id}, project={project_id}, token_id={token_id}): {e}"
+                f"[BrowserCaptcha] Exception membuat tab captcha resident bersama (slot={slot_id}, project={project_id}, token_id={token_id}): {e}"
             )
             return None
 
     async def _close_resident_tab(self, slot_id: str):
-        """关闭指定 slot 的共享常驻标签页
+        """Menutup tab captcha resident bersama untuk slot yang ditentukan
 
         Args:
-            slot_id: 共享标签页槽位 ID
+            slot_id: ID slot tab bersama
         """
         async with self._resident_lock:
             resident_info = self._resident_tabs.pop(slot_id, None)
@@ -13701,32 +13701,32 @@ class BrowserCaptchaService:
                 )
                 await self._close_tab_quietly(resident_info.tab)
                 debug_logger.log_info(
-                    f"[BrowserCaptcha] 已关闭共享常驻标签页 slot={slot_id}"
+                    f"[BrowserCaptcha] Tab captcha resident bersama slot={slot_id} sudah ditutup"
                 )
             except Exception as e:
-                debug_logger.log_warning(f"[BrowserCaptcha] 关闭标签页时异常: {e}")
+                debug_logger.log_warning(f"[BrowserCaptcha] Exception saat menutup tab: {e}")
 
     async def invalidate_token(self, project_id: str):
-        """当检测到 token 无效时调用，重建当前项目最近映射的共享标签页。
+        """Dipanggil saat terdeteksi token invalid, membangun ulang tab bersama yang terakhir di-mapping proyek saat ini.
 
         Args:
-            project_id: 项目 ID
+            project_id: ID proyek
         """
         debug_logger.log_warning(
-            f"[BrowserCaptcha] Token 被标记为无效 (project: {project_id})，仅重建共享池中的对应标签页，避免清空全局浏览器状态"
+            f"[BrowserCaptcha] Token ditandai invalid (project: {project_id}), hanya rebuild tab terkait di pool bersama, hindari mengosongkan state browser global"
         )
 
-        # 重建标签页
+        # Rebuild tab
         slot_id, resident_info = await self._rebuild_resident_tab(
             project_id, return_slot_key=True
         )
         if resident_info and slot_id:
             debug_logger.log_info(
-                f"[BrowserCaptcha] ✅ 标签页已重建 (project: {project_id}, slot={slot_id})"
+                f"[BrowserCaptcha] ✅ Tab sudah di-rebuild (project: {project_id}, slot={slot_id})"
             )
         else:
             debug_logger.log_error(
-                f"[BrowserCaptcha] 标签页重建失败 (project: {project_id})"
+                f"[BrowserCaptcha] Gagal me-rebuild tab (project: {project_id})"
             )
 
     async def _get_token_legacy(
@@ -13736,14 +13736,14 @@ class BrowserCaptchaService:
         *,
         token_id: Optional[int] = None,
     ) -> tuple[Optional[str], Optional[str]]:
-        """传统模式获取 reCAPTCHA token（每次创建新标签页）
+        """Mode legacy mengambil reCAPTCHA token (setiap kali bikin tab baru)
 
         Args:
-            project_id: Flow项目ID
-            action: reCAPTCHA action类型 (IMAGE_GENERATION 或 VIDEO_GENERATION)
+            project_id: ID proyek Flow
+            action: tipe action reCAPTCHA (IMAGE_GENERATION atau VIDEO_GENERATION)
 
         Returns:
-            reCAPTCHA token字符串，如果获取失败返回None
+            String token reCAPTCHA, None bila gagal mengambil
         """
         max_attempts = 2
         async with self._legacy_lock:
@@ -13757,8 +13757,8 @@ class BrowserCaptchaService:
 
                 try:
                     debug_logger.log_info(
-                        "[BrowserCaptcha] 创建独立临时 context 执行验证，"
-                        "先绑定 Cookie 再打开 Flow 页面"
+                        "[BrowserCaptcha] Membuat context temporer independen untuk verifikasi,"
+                        "bind Cookie dulu baru buka halaman Flow"
                     )
                     tab, browser_context_id = await self._create_isolated_context_tab(
                         PERSONAL_COOKIE_PREBIND_URL,
@@ -13787,7 +13787,7 @@ class BrowserCaptchaService:
                         tab, label=f"legacy:{project_id}"
                     ):
                         debug_logger.log_error(
-                            "[BrowserCaptcha] [Legacy] 打开 labs 引导页失败"
+                            "[BrowserCaptcha] [Legacy] Gagal membuka halaman panduan labs"
                         )
                         return None, None
 
@@ -13797,16 +13797,16 @@ class BrowserCaptchaService:
                     )
                     if not warmup_ok:
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] [Legacy] Google cookie 预热未完成，继续等待 reCAPTCHA "
+                            f"[BrowserCaptcha] [Legacy] Pemanasan cookie Google belum selesai, lanjutkan menunggu reCAPTCHA "
                             f"(project={project_id}, token_id={token_id})"
                         )
 
-                    # 等待 reCAPTCHA 加载
+                    # Tunggu reCAPTCHA dimuat
                     recaptcha_ready = await self._wait_for_recaptcha(tab)
 
                     if not recaptcha_ready:
                         debug_logger.log_error(
-                            "[BrowserCaptcha] [Legacy] reCAPTCHA 无法加载"
+                            "[BrowserCaptcha] [Legacy] reCAPTCHA tidak bisa dimuat"
                         )
                         return None, None
 
@@ -13823,7 +13823,7 @@ class BrowserCaptchaService:
 
                     if solve_mode == "direct":
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] [Legacy] trusted JS 执行 reCAPTCHA "
+                            f"[BrowserCaptcha] [Legacy] trusted JS menjalankan reCAPTCHA "
                             f"(action: {action})..."
                         )
                         direct_result = await self._run_with_timeout(
@@ -13849,7 +13849,7 @@ class BrowserCaptchaService:
                         and (solve_mode == "harvest" or auto_mode)
                     ):
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] [Legacy] 触发页面原生 harvest "
+                            f"[BrowserCaptcha] [Legacy] Memicu native harvest halaman "
                             f"(action: {action})..."
                         )
                         solve_result = await self._run_with_timeout(
@@ -13879,7 +13879,7 @@ class BrowserCaptchaService:
                             await self._cache_session_cookies_for_computed(legacy_info)
                         except Exception as cookie_error:
                             debug_logger.log_warning(
-                                f"[BrowserCaptcha] [Legacy] 提取 session cookies 失败 "
+                                f"[BrowserCaptcha] [Legacy] Gagal mengekstrak session cookies "
                                 f"(project={project_id}, token_id={token_id}): {cookie_error}"
                             )
                         self._remember_solve_bundle_snapshot(
@@ -13895,8 +13895,8 @@ class BrowserCaptchaService:
                             )
                         )
                         debug_logger.log_info(
-                            "[BrowserCaptcha] [Legacy] ✅ Token获取成功"
-                            f"（耗时 {duration_ms:.0f}ms, browser_solve_count={browser_solve_count}）"
+                            "[BrowserCaptcha] [Legacy] ✅ Berhasil mendapatkan Token"
+                            f"(durasi {duration_ms:.0f}ms, browser_solve_count={browser_solve_count})"
                         )
                         await self._maybe_execute_pending_fresh_profile_restart(
                             project_id,
@@ -13906,7 +13906,7 @@ class BrowserCaptchaService:
                         return token, session_id
 
                     debug_logger.log_error(
-                        "[BrowserCaptcha] [Legacy] Token获取失败（返回null）"
+                        "[BrowserCaptcha] [Legacy] Gagal mendapatkan Token (return null)"
                     )
                     return None, None
 
@@ -13915,7 +13915,7 @@ class BrowserCaptchaService:
                         e
                     ):
                         debug_logger.log_warning(
-                            f"[BrowserCaptcha] [Legacy] 浏览器运行态异常，尝试重启恢复后重试: {e}"
+                            f"[BrowserCaptcha] [Legacy] State runtime browser exception, coba restart recovery lalu retry: {e}"
                         )
                         await self._recover_browser_runtime(
                             project_id, reason=f"legacy_attempt_{attempt + 1}"
@@ -13923,11 +13923,11 @@ class BrowserCaptchaService:
                         continue
 
                     debug_logger.log_error(
-                        f"[BrowserCaptcha] [Legacy] 获取token异常: {str(e)}"
+                        f"[BrowserCaptcha] [Legacy] Exception mengambil token: {str(e)}"
                     )
                     return None, None
                 finally:
-                    # 关闭 legacy 临时标签页（但保留浏览器）
+                    # Tutup tab temporer legacy (tapi pertahankan browser)
                     if tab:
                         await self._dispose_browser_context_quietly(browser_context_id)
                         await self._close_tab_quietly(tab)
@@ -13935,32 +13935,32 @@ class BrowserCaptchaService:
         return None, None
 
     def get_last_fingerprint(self) -> Optional[Dict[str, Any]]:
-        """返回最近一次打码时的浏览器指纹快照。"""
+        """Mengembalikan snapshot fingerprint browser dari captcha terakhir."""
         if not self._last_fingerprint:
             return None
         return dict(self._last_fingerprint)
 
     async def get_current_user_agent(self) -> Optional[str]:
-        """获取当前浏览器实例的真实 User-Agent。
+        """Mengambil User-Agent asli dari instance browser saat ini.
 
-        按优先级依次尝试：
-        1) 最近一次打码指纹中的 user_agent
-        2) 初始化时构建的 runtime_surface_profile 中的 userAgent
-        3) 通过 CDP 从运行态浏览器实时获取
+        Coba berurutan sesuai prioritas:
+        1) user_agent dari fingerprint captcha terakhir
+        2) userAgent dari runtime_surface_profile yang dibangun saat inisialisasi
+        3) Ambil realtime dari browser runtime via CDP
         """
-        # 1) 从已缓存的浏览器指纹获取
+        # 1) Ambil dari fingerprint browser yang di-cache
         fingerprint = self.get_last_fingerprint()
         if isinstance(fingerprint, dict) and fingerprint.get("user_agent"):
             return fingerprint["user_agent"]
 
-        # 2) 从初始化时已构建的 runtime_surface_profile 获取（无需 CDP 调用）
+        # 2) Ambil dari runtime_surface_profile yang dibangun saat inisialisasi (tanpa perlu panggilan CDP)
         runtime_profile = self._get_runtime_surface_profile()
         if isinstance(runtime_profile, dict):
             user_agent = runtime_profile.get("userAgent")
             if user_agent:
                 return user_agent
 
-        # 3) 通过 CDP 直接从运行态浏览器获取
+        # 3) Ambil langsung dari browser runtime via CDP
         live_ua, _ = await self._get_live_browser_runtime_identity()
         if live_ua:
             return live_ua
@@ -13968,29 +13968,29 @@ class BrowserCaptchaService:
         return None
 
     async def _clear_browser_cache(self):
-        """清理浏览器全部缓存"""
+        """Membersihkan seluruh cache browser"""
         if not self.browser:
             return
 
         try:
             from nodriver import cdp
 
-            debug_logger.log_info("[BrowserCaptcha] 开始清理浏览器缓存...")
+            debug_logger.log_info("[BrowserCaptcha] Mulai membersihkan cache browser...")
 
-            # 使用 Chrome DevTools Protocol 清理缓存
-            # 清理所有类型的缓存数据
+            # Bersihkan cache pakai Chrome DevTools Protocol
+            # Bersihkan semua jenis data cache
             await self._browser_send_command(
                 cdp.network.clear_browser_cache(),
                 label="clear_browser_cache",
             )
 
-            # 清理 Cookies
+            # Bersihkan Cookies
             await self._browser_send_command(
                 cdp.network.clear_browser_cookies(),
                 label="clear_browser_cookies",
             )
 
-            # 清理关键站点存储数据（localStorage, sessionStorage, IndexedDB, SW 等）
+            # Bersihkan data storage situs penting (localStorage, sessionStorage, IndexedDB, SW, dll)
             origins = (
                 "https://www.google.com",
                 "https://www.recaptcha.net",
@@ -14007,13 +14007,13 @@ class BrowserCaptchaService:
                     )
                 except Exception as e:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] 清理 origin 存储失败: origin={origin}, error={e}"
+                        f"[BrowserCaptcha] Gagal membersihkan storage origin: origin={origin}, error={e}"
                     )
 
-            debug_logger.log_info("[BrowserCaptcha] ✅ 浏览器缓存已清理")
+            debug_logger.log_info("[BrowserCaptcha] ✅ Cache browser sudah dibersihkan")
 
         except Exception as e:
-            debug_logger.log_warning(f"[BrowserCaptcha] 清理缓存时异常: {e}")
+            debug_logger.log_warning(f"[BrowserCaptcha] Exception saat membersihkan cache: {e}")
 
     async def _shutdown_browser_runtime(
         self, cancel_idle_reaper: bool = False, reason: str = "shutdown"
@@ -14034,20 +14034,20 @@ class BrowserCaptchaService:
         async with self._browser_lock:
             try:
                 await self._shutdown_browser_runtime_locked(reason=reason)
-                debug_logger.log_info(f"[BrowserCaptcha] 浏览器运行态已清理 ({reason})")
+                debug_logger.log_info(f"[BrowserCaptcha] State runtime browser sudah dibersihkan ({reason})")
             except Exception as e:
                 debug_logger.log_error(
-                    f"[BrowserCaptcha] 清理浏览器运行态异常 ({reason}): {str(e)}"
+                    f"[BrowserCaptcha] Exception membersihkan state runtime browser ({reason}): {str(e)}"
                 )
 
     async def close(self):
-        """关闭浏览器"""
+        """Menutup browser"""
         await self._shutdown_browser_runtime(
             cancel_idle_reaper=True, reason="service_close"
         )
 
     async def open_login_window(self):
-        """打开登录窗口供用户手动登录 Google"""
+        """Membuka jendela login untuk user login manual ke Google"""
         await self.initialize()
         self._mark_runtime_active()
         tab = await self._open_visible_browser_tab(
@@ -14055,10 +14055,10 @@ class BrowserCaptchaService:
             label="open_login_window",
         )
         debug_logger.log_info(
-            "[BrowserCaptcha] 请在打开的浏览器中登录账号。登录完成后，无需关闭浏览器，脚本下次运行时会自动使用此状态。"
+            "[BrowserCaptcha] Silakan login akun di browser yang terbuka. Setelah login selesai, tidak perlu menutup browser, script akan otomatis memakai state ini saat dijalankan berikutnya."
         )
         print(
-            "请在打开的浏览器中登录账号。登录完成后，无需关闭浏览器，脚本下次运行时会自动使用此状态。"
+            "Silakan login akun di browser yang terbuka. Setelah login selesai, tidak perlu menutup browser, script akan otomatis memakai state ini saat dijalankan berikutnya."
         )
 
     async def refresh_google_cookies(
@@ -14134,10 +14134,10 @@ class BrowserCaptchaService:
         project_ids: Optional[list[str]] = None,
         limit: int = 1,
     ) -> list[Optional[str]]:
-        """启动时预热共享常驻标签页。
+        """Memanaskan tab resident bersama saat startup.
 
-        对每个 project_id 调用 _ensure_resident_tab 创建标签页，
-        达到 limit 数量后停止。返回已预热的 slot_id 列表。
+        Memanggil _ensure_resident_tab untuk setiap project_id guna membuat tab,
+        berhenti setelah mencapai jumlah limit. Mengembalikan daftar slot_id yang sudah dipanaskan.
         """
         if not project_ids:
             return []
@@ -14155,26 +14155,26 @@ class BrowserCaptchaService:
                     warmed.append(_slot_id)
             except Exception:
                 debug_logger.log_warning(
-                    f"[BrowserCaptcha] warmup_resident_tabs 预热 project={pid} 失败",
+                    f"[BrowserCaptcha] warmup_resident_tabs gagal memanaskan project={pid}",
                 )
         return warmed
 
-    # ========== 状态查询 ==========
+    # ========== Query Status ==========
 
     def is_resident_mode_active(self) -> bool:
-        """检查是否有任何常驻标签页激活"""
+        """Mengecek apakah ada tab resident yang aktif"""
         return len(self._resident_tabs) > 0 or self._running
 
     def get_resident_count(self) -> int:
-        """获取当前常驻标签页数量"""
+        """Mengambil jumlah tab resident saat ini"""
         return len(self._resident_tabs)
 
     def get_resident_project_ids(self) -> list[str]:
-        """获取所有当前共享常驻标签页的 slot_id 列表。"""
+        """Mengambil daftar slot_id semua tab resident bersama saat ini."""
         return list(self._resident_tabs.keys())
 
     def get_resident_project_id(self) -> Optional[str]:
-        """获取当前共享池中的第一个 slot_id（向后兼容）。"""
+        """Mengambil slot_id pertama di pool bersama saat ini (backward compatible)."""
         if self._resident_tabs:
             return next(iter(self._resident_tabs.keys()))
         return self.resident_project_id
@@ -14182,9 +14182,9 @@ class BrowserCaptchaService:
     def get_token_pool_status(self) -> Dict[str, Any]:
         return {
             "token_pool_enabled": bool(getattr(config, "token_pool_enabled", False)),
-            "token_pool_status": "未启用"
+            "token_pool_status": "tidak diaktifkan"
             if not getattr(config, "token_pool_enabled", False)
-            else "空闲",
+            else "idle",
             "token_pool_total_ready": 0,
             "token_pool_bucket_count": 0,
             "token_pool_waiting_requests": 0,
@@ -14206,9 +14206,9 @@ class BrowserCaptchaService:
         action: str = "homepage",
         enterprise: bool = False,
     ) -> Optional[str]:
-        """为任意站点执行 reCAPTCHA，用于分数测试等场景。
+        """Menjalankan reCAPTCHA untuk situs apa pun, untuk skenario pengujian skor dll.
 
-        与普通 legacy 模式不同，这里会复用同一个常驻标签页，避免每次冷启动新 tab。
+        Berbeda dengan mode legacy biasa, di sini memakai ulang tab resident yang sama, menghindari cold start tab baru setiap kali.
         """
         await self.initialize()
         self._mark_runtime_active()
@@ -14232,7 +14232,7 @@ class BrowserCaptchaService:
                 try:
                     if tab is None:
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] [Custom] 创建常驻测试标签页: {website_url}"
+                            f"[BrowserCaptcha] [Custom] Membuat tab tes resident: {website_url}"
                         )
                         tab = await self._browser_get(
                             website_url,
@@ -14261,7 +14261,7 @@ class BrowserCaptchaService:
                         await tab.sleep(0.5)
 
                     if not page_loaded:
-                        raise RuntimeError("自定义页面加载超时")
+                        raise RuntimeError("Timeout pemuatan halaman kustom")
 
                     if not custom_info.get("recaptcha_ready"):
                         recaptcha_ready = await self._wait_for_custom_recaptcha(
@@ -14270,7 +14270,7 @@ class BrowserCaptchaService:
                             enterprise=enterprise,
                         )
                         if not recaptcha_ready:
-                            raise RuntimeError("自定义 reCAPTCHA 无法加载")
+                            raise RuntimeError("reCAPTCHA kustom tidak bisa dimuat")
                         custom_info["recaptcha_ready"] = True
 
                     try:
@@ -14315,7 +14315,7 @@ class BrowserCaptchaService:
                     if not custom_info.get("warmed_up"):
                         if warmup_seconds > 0:
                             debug_logger.log_info(
-                                f"[BrowserCaptcha] [Custom] 首次预热测试页面 {warmup_seconds:.1f}s 后再执行 token"
+                                f"[BrowserCaptcha] [Custom] Pemanasan pertama halaman tes {warmup_seconds:.1f}s lalu jalankan token"
                             )
                             try:
                                 await self._tab_evaluate(
@@ -14338,12 +14338,12 @@ class BrowserCaptchaService:
                         custom_info["warmed_up"] = True
                     elif per_request_settle_seconds > 0:
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] [Custom] 复用测试标签页，执行前额外等待 {per_request_settle_seconds:.1f}s"
+                            f"[BrowserCaptcha] [Custom] Pakai ulang tab tes, tunggu tambahan {per_request_settle_seconds:.1f}s sebelum eksekusi"
                         )
                         await tab.sleep(per_request_settle_seconds)
 
                     debug_logger.log_info(
-                        f"[BrowserCaptcha] [Custom] 使用常驻测试标签页执行验证 (action: {action})..."
+                        f"[BrowserCaptcha] [Custom] Menjalankan verifikasi pakai tab tes resident (action: {action})..."
                     )
                     token = await self._execute_custom_recaptcha_on_tab(
                         tab=tab,
@@ -14376,14 +14376,14 @@ class BrowserCaptchaService:
                                 extracted_fingerprint = None
                         self._last_fingerprint = extracted_fingerprint
                         debug_logger.log_info(
-                            f"[BrowserCaptcha] [Custom] ✅ 常驻测试标签页 Token获取成功（耗时 {duration_ms:.0f}ms）"
+                            f"[BrowserCaptcha] [Custom] ✅ Berhasil mendapatkan Token tab tes resident (durasi {duration_ms:.0f}ms)"
                         )
                         return token
 
-                    raise RuntimeError("自定义 token 获取失败（返回 null）")
+                    raise RuntimeError("Gagal mendapatkan token kustom (return null)")
                 except Exception as e:
                     debug_logger.log_warning(
-                        f"[BrowserCaptcha] [Custom] 尝试 {attempt + 1}/{max_retries} 失败: {str(e)}"
+                        f"[BrowserCaptcha] [Custom] Percobaan {attempt + 1}/{max_retries} gagal: {str(e)}"
                     )
                     stale_info = self._custom_tabs.pop(cache_key, None)
                     stale_tab = (
@@ -14393,7 +14393,7 @@ class BrowserCaptchaService:
                         await self._close_tab_quietly(stale_tab)
                     if attempt >= max_retries - 1:
                         debug_logger.log_error(
-                            f"[BrowserCaptcha] [Custom] 获取token异常: {str(e)}"
+                            f"[BrowserCaptcha] [Custom] Exception mendapatkan token: {str(e)}"
                         )
                         return None
 
@@ -14407,7 +14407,7 @@ class BrowserCaptchaService:
         action: str = "homepage",
         enterprise: bool = False,
     ) -> Dict[str, Any]:
-        """在同一个常驻标签页里获取 token 并直接校验页面分数。"""
+        """Mengambil token di tab resident yang sama dan langsung memvalidasi skor halaman."""
         self._mark_runtime_active()
         token_started_at = time.time()
         token = await self.get_custom_token(
@@ -14433,7 +14433,7 @@ class BrowserCaptchaService:
             custom_info = self._custom_tabs.get(cache_key)
             tab = custom_info.get("tab") if isinstance(custom_info, dict) else None
             if tab is None:
-                raise RuntimeError("页面分数测试标签页不存在")
+                raise RuntimeError("Tab pengujian skor halaman tidak ada")
             verify_payload = await self._verify_score_on_tab(tab, token, verify_url)
 
         return {
@@ -14444,7 +14444,7 @@ class BrowserCaptchaService:
 
 
 class _PersonalBrowserPoolService:
-    """多浏览器实例调度层。保留现有单浏览器 worker 逻辑，只负责分发与扩缩容。"""
+    """Lapisan scheduling multi-instance browser. Mempertahankan logika worker browser tunggal yang ada, hanya bertanggung jawab atas dispatch dan scaling."""
 
     def __init__(self, db=None):
         self.db = db
@@ -14773,7 +14773,7 @@ class _PersonalBrowserPoolService:
             pass
         except Exception as exc:
             debug_logger.log_warning(
-                f"[BrowserCaptchaPool] token 池后台补货任务异常: {exc}"
+                f"[BrowserCaptchaPool] Exception task restock background pool token: {exc}"
             )
 
     @property
@@ -15230,7 +15230,7 @@ class _PersonalBrowserPoolService:
                 )
             except Exception as exc:
                 debug_logger.log_warning(
-                    f"[BrowserCaptchaPool] worker 内存回收失败 (worker={worker_index + 1}, reason={reason}): {exc}"
+                    f"[BrowserCaptchaPool] Gagal mereklamasi memori worker (worker={worker_index + 1}, reason={reason}): {exc}"
                 )
                 continue
 
@@ -15247,7 +15247,7 @@ class _PersonalBrowserPoolService:
 
         if any(int(value or 0) > 0 for value in reclaimed.values()):
             debug_logger.log_warning(
-                f"[BrowserCaptchaPool] 内存压力回收完成 ({reason}): {reclaimed}"
+                f"[BrowserCaptchaPool] Reclaim tekanan memori selesai ({reason}): {reclaimed}"
             )
         return reclaimed
 
@@ -15260,7 +15260,7 @@ class _PersonalBrowserPoolService:
                 return
             except Exception as exc:
                 debug_logger.log_warning(
-                    f"[BrowserCaptchaPool] token 池维护循环异常: {exc}"
+                    f"[BrowserCaptchaPool] Exception loop pemeliharaan pool token: {exc}"
                 )
 
     async def _maintain_token_pool_once(self) -> None:
@@ -15413,7 +15413,7 @@ class _PersonalBrowserPoolService:
             raise
         except Exception as exc:
             debug_logger.log_warning(
-                f"[BrowserCaptchaPool] token 池补货失败 (bucket={bucket_key or '<empty>'}): {exc}"
+                f"[BrowserCaptchaPool] Gagal merestock pool token (bucket={bucket_key or '<empty>'}): {exc}"
             )
         finally:
             async with self._token_pool_lock:
@@ -15504,7 +15504,7 @@ class _PersonalBrowserPoolService:
                 bucket_key, now_value=time.time()
             )
             debug_logger.log_warning(
-                f"[BrowserCaptchaPool] token 池等待超时，严格池模式下不回退同步获取 "
+                f"[BrowserCaptchaPool] Timeout penantian pool token, tidak fallback ke pengambilan sinkron dalam mode pool ketat "
                 f"(action_bucket={bucket_snapshot['action']}, project_id={project_id or '<empty>'}, "
                 f"token_id={token_id}, action={action}, ready={bucket_snapshot['ready_count']}, "
                 f"waiting={bucket_snapshot['waiting_requests']}, inflight={bucket_snapshot['refill_inflight']})"
@@ -15553,18 +15553,18 @@ class _PersonalBrowserPoolService:
                         )
                     except Exception as e:
                         debug_logger.log_warning(
-                            f"[BrowserCaptchaPool] 空闲浏览器实例回收失败 (worker={worker_index + 1}): {e}"
+                            f"[BrowserCaptchaPool] Gagal mereklamasi instance browser idle (worker={worker_index + 1}): {e}"
                         )
                         continue
                     if did_shutdown:
                         debug_logger.log_info(
-                            f"[BrowserCaptchaPool] 已回收空闲浏览器实例运行态 (worker={worker_index + 1}, idle_ttl={idle_ttl_seconds}s)"
+                            f"[BrowserCaptchaPool] State runtime instance browser idle sudah direklamasi (worker={worker_index + 1}, idle_ttl={idle_ttl_seconds}s)"
                         )
             except asyncio.CancelledError:
                 return
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptchaPool] 空闲浏览器实例回收循环异常: {e}"
+                    f"[BrowserCaptchaPool] Exception loop reklamasi instance browser idle: {e}"
                 )
 
     async def _acquire_worker(
@@ -15583,7 +15583,7 @@ class _PersonalBrowserPoolService:
         acquire_started_at = time.monotonic()
         async with self._worker_dispatch_lock:
             if not self._workers:
-                raise RuntimeError("没有可用的浏览器实例")
+                raise RuntimeError("Tidak ada instance browser yang tersedia")
             if len(self._workers) <= 1:
                 return 0, self._workers[0]
 
@@ -15669,7 +15669,7 @@ class _PersonalBrowserPoolService:
                 len(self._workers), 1
             )
             debug_logger.log_info(
-                "[BrowserCaptchaPool] worker 已选中 "
+                "[BrowserCaptchaPool] worker sudah dipilih "
                 f"(project_id={project_id or '<empty>'}, token_id={token_id}, "
                 f"selected={selected_worker_index + 1}, candidates={[index + 1 for index in candidate_indexes]}, "
                 f"selectable={[index + 1 for index in selectable_indexes]}, "
@@ -15791,7 +15791,7 @@ class _PersonalBrowserPoolService:
                 }
                 self._round_robin_index %= max(len(self._workers), 1)
                 debug_logger.log_info(
-                    "[BrowserCaptchaPool] Personal 池配置已生效 "
+                    "[BrowserCaptchaPool] Konfigurasi pool Personal sudah berlaku "
                     f"(browser_count={configured_browser_count}, "
                     f"per_worker_tabs={per_worker_tabs}, "
                     f"effective_workers={len(worker_limits)}, "
@@ -15805,7 +15805,7 @@ class _PersonalBrowserPoolService:
                 await worker.close()
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptchaPool] 关闭多余浏览器实例失败: {e}"
+                    f"[BrowserCaptchaPool] Gagal menutup instance browser berlebih: {e}"
                 )
 
         if workers_to_reload:
@@ -15886,7 +15886,7 @@ class _PersonalBrowserPoolService:
                 await worker.close()
             except Exception as e:
                 debug_logger.log_warning(
-                    f"[BrowserCaptchaPool] 关闭浏览器实例失败: {e}"
+                    f"[BrowserCaptchaPool] Gagal menutup instance browser: {e}"
                 )
 
     async def _get_token_direct(
@@ -15929,7 +15929,7 @@ class _PersonalBrowserPoolService:
                     worker_index + 1 if worker_index is not None else "unknown"
                 )
                 debug_logger.log_warning(
-                    f"[BrowserCaptchaPool] 浏览器实例打码失败，尝试切换其他实例 (worker={worker_label}): {e}"
+                    f"[BrowserCaptchaPool] Captcha instance browser gagal, coba beralih ke instance lain (worker={worker_label}): {e}"
                 )
                 if BrowserCaptchaService._is_memory_pressure_browser_launch_error(e):
                     await self._reclaim_pool_memory_pressure(
@@ -15995,7 +15995,7 @@ class _PersonalBrowserPoolService:
                     worker_index + 1 if worker_index is not None else "unknown"
                 )
                 debug_logger.log_warning(
-                    f"[BrowserCaptchaPool] 浏览器实例打码(bundle)失败，尝试切换其他实例 (worker={worker_label}): {e}"
+                    f"[BrowserCaptchaPool] Captcha(bundle) instance browser gagal, coba beralih ke instance lain (worker={worker_label}): {e}"
                 )
                 if BrowserCaptchaService._is_memory_pressure_browser_launch_error(e):
                     await self._reclaim_pool_memory_pressure(
@@ -16141,7 +16141,7 @@ class _PersonalBrowserPoolService:
                 bucket_key, now_value=time.time()
             )
             raise TokenPoolTimeoutError(
-                "token 池等待超时且未命中可用 token "
+                "Timeout penantian pool token dan tidak kena token yang tersedia "
                 f"(action_bucket={bucket_snapshot['action']}, project_id={project_id or '<empty>'}, "
                 f"token_id={token_id}, action={action}, ready={bucket_snapshot['ready_count']}, "
                 f"waiting={bucket_snapshot['waiting_requests']}, inflight={bucket_snapshot['refill_inflight']})"
@@ -16197,7 +16197,7 @@ class _PersonalBrowserPoolService:
                 bucket_key, now_value=time.time()
             )
             raise TokenPoolTimeoutError(
-                "token 池等待超时且未命中可用 token "
+                "Timeout penantian pool token dan tidak kena token yang tersedia "
                 f"(action_bucket={bucket_snapshot['action']}, project_id={project_id or '<empty>'}, "
                 f"token_id={token_id}, action={action}, ready={bucket_snapshot['ready_count']}, "
                 f"waiting={bucket_snapshot['waiting_requests']}, inflight={bucket_snapshot['refill_inflight']})"
@@ -16301,7 +16301,7 @@ class _PersonalBrowserPoolService:
     async def open_login_window(self):
         await self._ensure_workers()
         if not self._workers:
-            raise RuntimeError("没有可用的浏览器实例")
+            raise RuntimeError("Tidak ada instance browser yang tersedia")
         await self._workers[0].open_login_window()
 
     async def warmup_resident_tabs(
@@ -16354,7 +16354,7 @@ class _PersonalBrowserPoolService:
         for result in results:
             if isinstance(result, Exception):
                 debug_logger.log_warning(
-                    f"[BrowserCaptchaPool] resident tabs 预热 worker 失败: {result}"
+                    f"[BrowserCaptchaPool] gagal memanaskan resident tabs worker: {result}"
                 )
                 continue
             for slot_id in result or []:
@@ -16368,7 +16368,7 @@ class _PersonalBrowserPoolService:
         self, project_id: Optional[str], *, token_id: int
     ) -> Dict[str, Any]:
         if not token_id:
-            raise ValueError("Cookie 刷新必须指定 Token ID")
+            raise ValueError("Refresh Cookie harus menentukan Token ID")
         await self._ensure_workers()
         excluded_indexes: set[int] = set()
         last_error = None
@@ -16448,7 +16448,7 @@ class _PersonalBrowserPoolService:
         if not self._is_token_pool_enabled():
             return {
                 "token_pool_enabled": False,
-                "token_pool_status": "未启用",
+                "token_pool_status": "tidak diaktifkan",
                 "token_pool_total_ready": 0,
                 "token_pool_bucket_count": 0,
                 "token_pool_waiting_requests": 0,
@@ -16519,15 +16519,15 @@ class _PersonalBrowserPoolService:
         bucket_count = len(bucket_details)
 
         if total_ready > 0:
-            status_text = "运行中"
+            status_text = "berjalan"
         elif refill_inflight > 0 and waiting_requests > 0:
-            status_text = "补货中"
+            status_text = "restock"
         elif refill_inflight > 0:
-            status_text = "预热中"
+            status_text = "pemanasan"
         elif waiting_requests > 0:
-            status_text = "等待中"
+            status_text = "menunggu"
         else:
-            status_text = "空闲"
+            status_text = "idle"
 
         return {
             "token_pool_enabled": True,
@@ -16576,19 +16576,19 @@ class _PersonalBrowserPoolService:
         return None
 
     async def get_current_user_agent(self) -> Optional[str]:
-        """获取当前浏览器实例的真实 User-Agent。
+        """Mengambil User-Agent asli dari instance browser saat ini.
 
-        按优先级依次从 worker 中尝试：
-        1) 最近一次打码指纹中的 user_agent
-        2) 初始化时构建的 runtime_surface_profile 中的 userAgent
-        3) 通过 CDP 从运行态浏览器实时获取
+        Coba berurutan dari worker sesuai prioritas:
+        1) user_agent dari fingerprint captcha terakhir
+        2) userAgent dari runtime_surface_profile yang dibangun saat inisialisasi
+        3) Ambil realtime dari browser runtime via CDP
         """
-        # 1) 从已缓存的浏览器指纹获取
+        # 1) Ambil dari fingerprint browser yang di-cache
         fingerprint = self.get_last_fingerprint()
         if isinstance(fingerprint, dict) and fingerprint.get("user_agent"):
             return fingerprint["user_agent"]
 
-        # 2) 从已初始化的 worker 的 runtime_surface_profile 获取
+        # 2) Ambil dari runtime_surface_profile worker yang sudah diinisialisasi
         for worker in self._workers:
             runtime_profile = worker._get_runtime_surface_profile()
             if isinstance(runtime_profile, dict):
@@ -16596,7 +16596,7 @@ class _PersonalBrowserPoolService:
                 if user_agent:
                     return user_agent
 
-        # 3) 通过 CDP 从有活跃浏览器的 worker 实时获取
+        # 3) Ambil realtime via CDP dari worker yang browsernya aktif
         for worker in self._workers:
             if worker.browser:
                 live_ua, _ = await worker._get_live_browser_runtime_identity()

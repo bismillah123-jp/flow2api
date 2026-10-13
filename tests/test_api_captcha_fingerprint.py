@@ -1,9 +1,11 @@
 """Verify API-mode captcha injects solution user_agent into the request fingerprint.
 
-背景: YesCaptcha / CapMonster / EzCaptcha / CapSolver 返回的 solution 包含
-gRecaptchaResponse 与 userAgent。Google reCAPTCHA V3 评估会校验 token 与
-提交请求的 User-Agent 一致性, 因此调用 Flow API 时必须沿用打码服务返回的
-UA, 否则服务端判定 UNUSUAL_ACTIVITY 并返回 reCAPTCHA evaluation failed。
+Latar: solution yang dikembalikan YesCaptcha / CapMonster / EzCaptcha / CapSolver
+berisi gRecaptchaResponse dan userAgent. Penilaian Google reCAPTCHA V3 memvalidasi
+konsistensi antara token dan User-Agent dari request yang dikirim, sehingga saat
+memanggil Flow API harus memakai UA dari layanan captcha yang mengembalikan
+token tersebut, jika tidak server akan menilai UNUSUAL_ACTIVITY dan mengembalikan
+reCAPTCHA evaluation failed.
 """
 
 import unittest
@@ -18,7 +20,7 @@ class _FakeProxyManager:
 
 
 class _FakeAsyncSession:
-    """模拟 curl_cffi 的 AsyncSession: createTask 返回 taskId, getTaskResult 返回 ready。"""
+    """Simulasi AsyncSession curl_cffi: createTask mengembalikan taskId, getTaskResult mengembalikan ready."""
 
     def __init__(self):
         self._calls = 0
@@ -89,7 +91,7 @@ class _FakeCaptchaRunSession:
 
 class ApiCaptchaFingerprintTests(unittest.IsolatedAsyncioTestCase):
     async def test_api_captcha_returns_token_and_user_agent(self):
-        """_get_api_captcha_token 必须返回 (token, userAgent) 元组。"""
+        """_get_api_captcha_token harus mengembalikan tuple (token, userAgent)."""
         flow = FlowClient.__new__(FlowClient)
         flow.proxy_manager = _FakeProxyManager()
         fake_session = _FakeAsyncSession()
@@ -112,14 +114,14 @@ class ApiCaptchaFingerprintTests(unittest.IsolatedAsyncioTestCase):
                 action="IMAGE_GENERATION",
             )
 
-        self.assertIsNotNone(result, "函数不应返回 None, 因为我们 mock 了 ready 状态")
+        self.assertIsNotNone(result, "fungsi tidak boleh mengembalikan None, karena kita mock status ready")
         self.assertIsInstance(
-            result, tuple, "_get_api_captcha_token 应返回 (token, userAgent) 元组"
+            result, tuple, "_get_api_captcha_token harus mengembalikan tuple (token, userAgent)"
         )
         token, user_agent = result
         self.assertEqual(token, "token-abc")
         self.assertIn(
-            "Windows", user_agent, "userAgent 应当来自打码服务 solution, 包含 Windows"
+            "Windows", user_agent, "userAgent harus berasal dari solution layanan captcha, mengandung Windows"
         )
         self.assertIn("Chrome/147", user_agent)
         self.assertEqual(fake_session.requests[0][1]["json"]["softID"], "33424")

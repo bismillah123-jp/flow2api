@@ -790,7 +790,7 @@ class BrowserCaptchaPersonalTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_wait_for_recaptcha_raises_on_runtime_disconnect(self):
         tab = _ClosableFakeTab()
-        runtime_error = ConnectionRefusedError(1225, "远程计算机拒绝网络连接。")
+        runtime_error = ConnectionRefusedError(1225, "Komputer remote menolak koneksi jaringan.")
         self.service._inject_recaptcha_bootstrap_script = AsyncMock(
             return_value="remote"
         )
@@ -823,7 +823,7 @@ class BrowserCaptchaPersonalTests(unittest.IsolatedAsyncioTestCase):
 
         await self.service.report_flow_error(
             "project-1",
-            "reCAPTCHA 验证失败",
+            "reCAPTCHA gagal diverifikasi",
             error_message="Flow API request failed: PUBLIC_ERROR_UNUSUAL_ACTIVITY: reCAPTCHA evaluation failed",
             token_id=1,
             slot_id="slot-1",

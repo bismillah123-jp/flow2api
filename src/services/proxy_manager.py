@@ -13,9 +13,9 @@ class ProxyManager:
         self.db = db
 
     def _parse_proxy_line(self, line: str) -> Optional[str]:
-        """将用户输入代理转换为标准 URL 格式。
+        """Konversi proxy input user ke format URL standar.
 
-        支持格式：
+        Format yang didukung:
         - http://user:pass@host:port
         - https://user:pass@host:port
         - socks5://user:pass@host:port
@@ -47,13 +47,13 @@ class ProxyManager:
                 return f"socks5://{username}:{password}@{host}:{port}"
             return None
 
-        # 协议前缀格式
+        # Format prefix protokol
         if line.startswith(("http://", "https://", "socks5://", "socks5h://")):
-            # 已是标准 user:pass@host:port（或 host:port）
+            # Sudah standar user:pass@host:port (atau host:port)
             if "@" in line:
                 return line
 
-            # 兼容 protocol://host:port:user:pass
+            # Kompatibel protocol://host:port:user:pass
             try:
                 protocol_end = line.index("://") + 3
                 protocol = line[:protocol_end]
@@ -71,11 +71,11 @@ class ProxyManager:
                 return None
             return None
 
-        # 无协议，带 @：默认按 http 处理
+        # Tanpa protokol, ada @: default perlakukan sebagai http
         if "@" in line:
             return f"http://{line}"
 
-        # 无协议，按冒号数量判断
+        # Tanpa protokol, tentukan dari jumlah colon
         parts = line.split(":")
         if len(parts) == 2 and parts[1].isdigit():
             # host:port
@@ -92,7 +92,7 @@ class ProxyManager:
         return None
 
     def normalize_proxy_url(self, proxy_url: Optional[str]) -> Optional[str]:
-        """标准化代理地址，空值返回 None，非法格式抛 ValueError。"""
+        """Standarisasi alamat proxy, nilai kosong kembalikan None, format ilegal lempar ValueError."""
         if proxy_url is None:
             return None
 
@@ -103,7 +103,7 @@ class ProxyManager:
         parsed = self._parse_proxy_line(raw)
         if not parsed:
             raise ValueError(
-                "代理地址格式错误，支持示例："
+                "Format alamat proxy salah, contoh yang didukung:"
                 "http://user:pass@host:port / "
                 "socks5://user:pass@host:port / "
                 "host:port:user:pass / st5 host:port:user:pass"
@@ -111,7 +111,7 @@ class ProxyManager:
         return parsed
 
     async def get_proxy_url(self) -> Optional[str]:
-        """兼容旧调用：返回请求代理地址"""
+        """Kompatibel pemanggilan lama: kembalikan alamat proxy request"""
         return await self.get_request_proxy_url()
 
     async def get_request_proxy_url(self) -> Optional[str]:

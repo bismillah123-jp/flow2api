@@ -56,7 +56,7 @@ class TwoCaptchaSolverTests(unittest.IsolatedAsyncioTestCase):
             )
         )
         self.assertFalse(
-            handler._should_count_token_error(RuntimeError("twocaptcha API 请求失败"))
+            handler._should_count_token_error(RuntimeError("gagal memanggil twocaptcha API"))
         )
 
     async def test_enterprise_payload_and_five_second_polling(self):
@@ -194,7 +194,7 @@ class TwoCaptchaSolverTests(unittest.IsolatedAsyncioTestCase):
                     with self.assertRaises(asyncio.CancelledError):
                         await task
                 else:
-                    with self.assertRaisesRegex(TwoCaptchaError, "超时"):
+                    with self.assertRaisesRegex(TwoCaptchaError, "Timeout"):
                         await task
                 self.assertTrue(session.closed)
 

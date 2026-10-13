@@ -211,7 +211,7 @@ class ProtocolLogin:
                 "google_cookies": refreshed_cookies,
             }
         except Exception as exc:
-            debug_logger.log_error(f"[PROTOCOL_LOGIN] Flow Cookie 验证异常: {exc}")
+            debug_logger.log_error(f"[PROTOCOL_LOGIN] Error validasi Flow Cookie: {exc}")
             error = f"{type(exc).__name__}: {exc}" if str(exc) else type(exc).__name__
             return {"success": False, "error": error}
 

@@ -14,7 +14,7 @@ class FlowClientImageGenerationArgumentTests(unittest.TestCase):
     def test_reference_images_use_media_envelope(self):
         argument = self.client._build_frontend_image_generation_argument(
             project_id=PROJECT_ID,
-            prompt="换成针织开衫",
+            prompt="ganti jadi cardigan rajutan",
             model_name="BELUGA",
             aspect_ratio="IMAGE_ASPECT_RATIO_LANDSCAPE",
             recaptcha_token="recaptcha-token",
@@ -27,12 +27,12 @@ class FlowClientImageGenerationArgumentTests(unittest.TestCase):
         self.assertEqual(request[2], [[MEDIA_ID, None, None, None, 1]])
         # slot 9 stays null; a serialized settings blob here is rejected
         self.assertIsNone(request[9])
-        self.assertEqual(request[8], [[["换成针织开衫"]]])
+        self.assertEqual(request[8], [[["ganti jadi cardigan rajutan"]]])
 
     def test_text_only_generation_omits_reference_slot(self):
         argument = self.client._build_frontend_image_generation_argument(
             project_id=PROJECT_ID,
-            prompt="一只红苹果",
+            prompt="sebuah apel merah",
             model_name="BELUGA",
             aspect_ratio="IMAGE_ASPECT_RATIO_LANDSCAPE",
             recaptcha_token="recaptcha-token",

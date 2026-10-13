@@ -53,19 +53,19 @@ class DebugLogger:
         self.logger.info(char * length)
 
     def _truncate_large_fields(self, data: Any, max_length: int = 200) -> Any:
-        """对大字段进行截断处理，特别是 base64 编码的图片数据
+        """Lakukan truncate pada field besar, terutama data gambar ber-encoding base64
         
         Args:
-            data: 要处理的数据
-            max_length: 字符串字段的最大长度
+            data: data yang akan diproses
+            max_length: panjang maksimum field string
         
         Returns:
-            截断后的数据副本
+            salinan data yang sudah di-truncate
         """
         if isinstance(data, dict):
             result = {}
             for key, value in data.items():
-                # 对特定的大字段进行截断
+                # Truncate field besar tertentu
                 if (
                     key in ("encodedImage", "base64", "imageData", "data")
                     and isinstance(value, str)
@@ -80,7 +80,7 @@ class DebugLogger:
         elif isinstance(data, list):
             return [self._truncate_large_fields(item, max_length) for item in data]
         elif isinstance(data, str) and len(data) > 10000:
-            # 对超长字符串进行截断（可能是未知的 base64 字段）
+            # Truncate string yang terlalu panjang (mungkin field base64 yang tidak dikenal)
             return f"{data[:100]}... (truncated, total {len(data)} chars)"
         return data
 
@@ -201,7 +201,7 @@ class DebugLogger:
             # Body
             self.logger.info("\n📦 Response Body:")
             if isinstance(body, (dict, list)):
-                # 对大字段进行截断处理
+                # Lakukan truncate pada field besar
                 body_to_log = self._truncate_large_fields(body)
                 body_str = json.dumps(body_to_log, indent=2, ensure_ascii=False)
                 self.logger.info(body_str)
@@ -209,7 +209,7 @@ class DebugLogger:
                 # Try to parse as JSON
                 try:
                     parsed = json.loads(body)
-                    # 对大字段进行截断处理
+                    # Lakukan truncate pada field besar
                     parsed = self._truncate_large_fields(parsed)
                     body_str = json.dumps(parsed, indent=2, ensure_ascii=False)
                     self.logger.info(body_str)
