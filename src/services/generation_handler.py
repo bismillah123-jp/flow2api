@@ -1632,7 +1632,7 @@ class GenerationHandler:
         # 向用户展示开始信息
         if stream:
             yield self._create_stream_chunk(
-                f"✨ {'视频' if generation_type == 'video' else '图片'}生成任务已启动\n",
+                f"✨ Tugas pembuatan {'video' if generation_type == 'video' else 'gambar'} dimulai\n",
                 role="assistant",
             )
             request_log_state["id"] = await self._log_request(
@@ -1721,7 +1721,7 @@ class GenerationHandler:
             # 3. 确保AT有效
             debug_logger.log_info(f"[GENERATION] 检查Token AT有效性...")
             if stream:
-                yield self._create_stream_chunk("初始化生成环境...\n")
+                yield self._create_stream_chunk("Menginisialisasi lingkungan...\n")
 
             await self._update_request_log_progress(
                 request_log_state,
@@ -1950,7 +1950,7 @@ class GenerationHandler:
             )
             raise
         except Exception as e:
-            error_msg = f"生成失败: {str(e)}"
+            error_msg = f"Gagal membuat: {str(e)}"
             debug_logger.log_error(f"[GENERATION] 生成失败: {error_msg}")
             if token:
                 if self._should_count_token_error(e):
@@ -1995,9 +1995,9 @@ class GenerationHandler:
     def _get_no_token_error_message(self, generation_type: str) -> str:
         """获取无可用Token时的详细错误信息"""
         if generation_type == "image":
-            return "没有可用的Token进行图片生成。所有Token都处于禁用、冷却、锁定或已过期状态。"
+            return "Tidak ada Akun/Token yang aktif untuk pembuatan gambar. Status akun saat ini sedang nonaktif atau sesi Cookie Google belum terhubung."
         else:
-            return "没有可用的Token进行视频生成。所有Token都处于禁用、冷却、配额耗尽或已过期状态。"
+            return "Tidak ada Akun/Token yang aktif untuk pembuatan video. Status akun saat ini sedang nonaktif atau sesi Cookie Google belum terhubung."
 
     def _should_count_token_error(self, error: Exception) -> bool:
         """判断失败是否应计入 token 连续错误。
@@ -2108,7 +2108,7 @@ class GenerationHandler:
                     )
                     if stream:
                         yield self._create_stream_chunk(
-                            f"已上传第 {idx + 1}/{len(images)} 张图片\n"
+                            f"Gambar {idx + 1}/{len(images)} terunggah\n"
                         )
             if image_trace is not None:
                 image_trace["upload_images_ms"] = int(
@@ -2119,11 +2119,11 @@ class GenerationHandler:
             if stream:
                 if images and len(images) > 0:
                     yield self._create_stream_chunk(
-                        "参考图片上传完成，正在进行打码验证...\n"
+                        "Upload gambar referensi selesai, sedang memverifikasi reCAPTCHA...\n"
                     )
                 else:
                     yield self._create_stream_chunk(
-                        "正在进行打码验证并提交图片生成请求...\n"
+                        "Sedang memverifikasi reCAPTCHA & mengirim tugas gambar...\n"
                     )
 
             async def _image_progress_callback(status_text: str, progress: int):
@@ -2398,7 +2398,7 @@ class GenerationHandler:
                     progress=90,
                 )
                 if stream:
-                    yield self._create_stream_chunk("正在缓存 1K 图片文件...\n")
+                    yield self._create_stream_chunk("Menyimpan cache gambar 1K...\n")
                 try:
                     cached_filename = await self.file_cache.download_and_cache(
                         image_url, "image"
@@ -2419,7 +2419,7 @@ class GenerationHandler:
                             f"⚠️ 缓存失败: {cache_error}\n正在返回源链接...\n"
                         )
             elif stream:
-                yield self._create_stream_chunk("缓存已关闭,正在返回官方图片链接...\n")
+                yield self._create_stream_chunk("Cache nonaktif, mengembalikan URL resmi...\n")
             if image_trace is not None:
                 image_trace["cache_image_ms"] = int(
                     (time.time() - cache_started_at) * 1000
@@ -2581,7 +2581,7 @@ class GenerationHandler:
                 if image_count == 1:
                     # 只有1张图: 仅作为首帧
                     if stream:
-                        yield self._create_stream_chunk("上传首帧图片...\n")
+                        yield self._create_stream_chunk("Mengunggah frame awal gambar...\n")
                     start_media_id = await self.flow_client.upload_image(
                         token.at,
                         images[0],
@@ -2595,7 +2595,7 @@ class GenerationHandler:
                 elif image_count == 2:
                     # 2张图: 首帧+尾帧
                     if stream:
-                        yield self._create_stream_chunk("上传首帧和尾帧图片...\n")
+                        yield self._create_stream_chunk("Mengunggah frame awal dan akhir gambar...\n")
                     start_media_id = await self.flow_client.upload_image(
                         token.at,
                         images[0],
@@ -2670,7 +2670,7 @@ class GenerationHandler:
 
             # ========== 调用生成API ==========
             if stream:
-                yield self._create_stream_chunk("提交视频生成任务...\n")
+                yield self._create_stream_chunk("Mengirim tugas pembuatan video...\n")
             submit_started_at = time.time()
 
             # I2V: 首尾帧生成
@@ -2733,7 +2733,7 @@ class GenerationHandler:
             # Omni: 有图走 Reference Images 直连链路，无图走纯文本链路
             elif video_type == "omni" and reference_images:
                 if stream:
-                    yield self._create_stream_chunk("提交 Omni 参考图视频任务...\n")
+                    yield self._create_stream_chunk("Mengirim tugas video referensi Omni...\n")
                 result = await self.flow_client.generate_video_reference_images(
                     at=token.at,
                     project_id=project_id,
@@ -2896,7 +2896,7 @@ class GenerationHandler:
 
             # 轮询结果
             if stream:
-                yield self._create_stream_chunk(f"视频生成中...\n")
+                yield self._create_stream_chunk(f"Video sedang diproses...\n")
 
             # 检查是否需要放大
             upsample_config = model_config.get("upsample")
@@ -2996,7 +2996,7 @@ class GenerationHandler:
                         progress=max(45, progress),
                         response_extra={"upstream_status": status},
                     )
-                    yield self._create_stream_chunk(f"生成进度: {progress}%\n")
+                    yield self._create_stream_chunk(f"Progres: {progress}%\n")
 
                 # 检查状态
                 if status == "MEDIA_GENERATION_STATUS_SUCCESSFUL":
@@ -3160,7 +3160,7 @@ class GenerationHandler:
                         )
                         try:
                             if stream:
-                                yield self._create_stream_chunk("正在缓存视频文件...\n")
+                                yield self._create_stream_chunk("Menyimpan cache file video...\n")
                             cached_filename = await self.file_cache.download_and_cache(
                                 video_url, "video"
                             )
@@ -3236,7 +3236,7 @@ class GenerationHandler:
                     )
                     
                     # 返回友好的错误消息，提示用户重试
-                    friendly_error = f"视频生成失败: {error_message}，请重试"
+                    friendly_error = f"Gagal membuat video: {error_message}, silakan coba lagi"
                     self._mark_generation_failed(generation_result, friendly_error)
                     if stream:
                         yield self._create_stream_chunk(f"错误: {friendly_error}\n")
@@ -3245,7 +3245,7 @@ class GenerationHandler:
 
                 elif status.startswith("MEDIA_GENERATION_STATUS_ERROR"):
                     # ??????
-                    error_msg = f"视频生成失败: {status}"
+                    error_msg = f"Gagal membuat video: {status}"
                     await self._fail_video_task(checked_operations, error_msg)
                     self._mark_generation_failed(generation_result, error_msg)
                     yield self._create_error_response(error_msg, status_code=502)

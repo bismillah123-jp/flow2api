@@ -105,7 +105,7 @@ class FlowFrontendMixin:
                     code = code if code is not None else "unknown"
                     if str(code) == "401":
                         raise RuntimeError(
-                            "Flow 登录认证失败：Google Cookie 已失效、不完整，或来自不同账号 "
+                            "Autentikasi Flow gagal: Cookie Google sudah kadaluarsa, tidak lengkap, atau berbeda akun "
                             f"(rpc={rpc_id}, code=401)"
                         )
                     raise RuntimeError(
@@ -653,7 +653,7 @@ class FlowFrontendMixin:
             response_host and response_host != "flow.google.com"
         ):
             raise RuntimeError(
-                "Flow 登录认证失败：Google Cookie 已失效、不完整，或登录态被重定向 "
+                "Autentikasi Flow gagal: Cookie Google sudah kadaluarsa, tidak lengkap, atau sesi dialihkan "
                 f"(code={response.status_code})"
             )
         if response.status_code >= 400:

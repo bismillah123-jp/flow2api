@@ -131,7 +131,7 @@ class CurrentFlowClientMixin:
             google_cookies=google_cookies,
             token_id=token_id,
         )
-        expires = datetime.now(timezone.utc) + timedelta(minutes=55)
+        expires = datetime.now(timezone.utc) + timedelta(hours=12)
         return {
             "access_token": self.FRONTEND_ACCESS_TOKEN,
             "expires": expires.isoformat().replace("+00:00", "Z"),

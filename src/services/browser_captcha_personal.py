@@ -674,8 +674,9 @@ def _build_personal_browser_args(
         return browser_args
 
     browser_args = [
+        "--disable-web-security",
         "--disable-quic",
-        "--disable-features=UseDnsHttpsSvcb,OptimizationHints,AutofillServerCommunication,CertificateTransparencyComponentUpdater,MediaRouter,GlobalMediaControls",
+        "--disable-features=UseDnsHttpsSvcb,OptimizationHints,AutofillServerCommunication,CertificateTransparencyComponentUpdater,MediaRouter,GlobalMediaControls,TrustedTypes",
         "--disable-dev-shm-usage",
         "--disable-setuid-sandbox",
         "--disable-breakpad",
@@ -6957,12 +6958,9 @@ class BrowserCaptchaService:
             expanded.append(cookie)
 
         for cookie in browser_cookies:
+            append_cookie(cookie)
             scope_host = cls._extract_cookie_scope_host(cookie)
-            explicit_domain = str(cookie.get("domain") or "").strip()
             google_family_scope = cls._is_google_family_cookie_host(scope_host)
-
-            if explicit_domain or not google_family_scope:
-                append_cookie(cookie)
 
             if not google_family_scope:
                 continue
@@ -7017,12 +7015,9 @@ class BrowserCaptchaService:
             expanded.append(cookie)
 
         for cookie in browser_cookies:
+            append_cookie(cookie)
             scope_host = cls._extract_cookie_scope_host(cookie)
-            explicit_domain = str(cookie.get("domain") or "").strip()
             google_family_scope = cls._is_google_family_cookie_host(scope_host)
-
-            if explicit_domain or not google_family_scope:
-                append_cookie(cookie)
 
             if not google_family_scope:
                 continue
@@ -9385,8 +9380,8 @@ class BrowserCaptchaService:
     ) -> list[str]:
         """Build the candidate bootstrap URLs for the requested reCAPTCHA script."""
         normalized_path = script_path.lstrip("/")
-        # 默认优先 recaptcha.net；google.com 仅作为回退。
-        hosts = ["https://www.recaptcha.net", "https://www.google.com"]
+        # 默认优先 google.com；recaptcha.net 仅作为回退。
+        hosts = ["https://www.google.com", "https://www.recaptcha.net"]
         suffix = f"?render={website_key}" if website_key else ""
         return [f"{host}/{normalized_path}{suffix}" for host in hosts]
 
@@ -10033,8 +10028,19 @@ class BrowserCaptchaService:
                     state.startedAt = now();
                     state.finishedAt = 0;
                     state.attempts = Number(state.attempts || 0) + 1;
+                    let scriptUrl = urls[index];
+                    try {{
+                        if (window.trustedTypes && window.trustedTypes.createPolicy) {{
+                            if (!window.__flow2apiPolicy) {{
+                                window.__flow2apiPolicy = window.trustedTypes.createPolicy('flow2api_default', {{
+                                    createScriptURL: (u) => u,
+                                }});
+                            }}
+                            scriptUrl = window.__flow2apiPolicy.createScriptURL(scriptUrl);
+                        }}
+                    }} catch (e) {{}}
                     const script = document.createElement('script');
-                    script.src = urls[index];
+                    script.src = scriptUrl;
                     script.async = true;
                     let settled = false;
                     const finish = (status, error) => {{
@@ -14060,7 +14066,7 @@ class BrowserCaptchaService:
     ) -> Dict[str, Any]:
         """Export current Google/Flow Cookies from the reserved account context."""
         if not token_id:
-            raise ValueError("Cookie 刷新必须指定 Token ID")
+            raise ValueError("Refresh cookie harus menentukan Token ID")
         self._mark_runtime_active()
         await self.initialize()
         slot_id, resident_info = await self._ensure_resident_tab(
@@ -14069,16 +14075,16 @@ class BrowserCaptchaService:
         consumed = False
         try:
             if not slot_id or not resident_info or not resident_info.tab:
-                raise RuntimeError("账号浏览器标签页不可用")
+                raise RuntimeError("Tab browser akun tidak tersedia (sesi browser latar belakang belum siap)")
             async with resident_info.solve_lock:
                 await self._consume_resident_slot_reservation(slot_id, resident_info)
                 consumed = True
                 if not await self._apply_token_cookie_binding(
                     resident_info, token_id, label="cookie_refresh", acquire_lock=False
                 ):
-                    raise RuntimeError("账号浏览器 Cookie 绑定失败")
+                    raise RuntimeError("Gagal mengikat Cookie ke tab browser akun")
                 if resident_info.token_id != int(token_id):
-                    raise RuntimeError("浏览器标签页绑定的 Token 不一致")
+                    raise RuntimeError("Token yang terikat pada tab browser tidak cocok")
                 resident_info.recaptcha_ready = False
                 tab = resident_info.tab
                 await self._tab_get(
@@ -14099,9 +14105,9 @@ class BrowserCaptchaService:
                         identity = None
                     await asyncio.sleep(0.3)
                 if not isinstance(identity, dict) or identity.get("ready") != "complete":
-                    raise TimeoutError("Flow Cookie 刷新页面加载超时")
+                    raise TimeoutError("Halaman Google Flow timeout saat memuat sesi")
                 if identity.get("host") != "flow.google.com" or not identity.get("email"):
-                    raise RuntimeError("Flow 登录已失效，请重新同步 Google Cookies")
+                    raise RuntimeError("Sesi Google Flow telah kedaluwarsa, silakan salin ulang Google Cookies yang baru")
                 cookies = await self._get_browser_cookies(
                     label="cookie_refresh_export",
                     browser_context_id=resident_info.browser_context_id,
@@ -16386,7 +16392,7 @@ class _PersonalBrowserPoolService:
                 await self._release_worker_reservation(worker_index)
         if last_error is not None:
             raise last_error
-        raise RuntimeError("账号浏览器 Cookie 刷新失败：没有可用实例")
+        raise RuntimeError("Gagal memperbarui Cookie browser akun: tidak ada instance browser yang tersedia")
 
     async def start_resident_mode(self, project_id: str):
         await self._ensure_workers()

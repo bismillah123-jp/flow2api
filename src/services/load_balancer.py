@@ -215,12 +215,12 @@ class LoadBalancer:
             normalized_tier = normalize_user_paygate_tier(token.user_paygate_tier)
             if model and not supports_model_for_tier(model, normalized_tier):
                 filtered_reasons[token.id] = (
-                    "账号等级不足，需要 " + get_paygate_tier_label(required_tier)
+                    "Tier akun tidak mencukupi, butuh " + get_paygate_tier_label(required_tier)
                 )
                 continue
             if for_image_generation:
                 if not token.image_enabled:
-                    filtered_reasons[token.id] = "图片生成已禁用"
+                    filtered_reasons[token.id] = "Fitur pembuatan gambar dinonaktifkan"
                     continue
 
                 route_ok, route_reason = await self._check_extension_route(token)
@@ -233,12 +233,12 @@ class LoadBalancer:
                     and self.concurrency_manager
                     and not await self.concurrency_manager.can_use_image(token.id)
                 ):
-                    filtered_reasons[token.id] = "图片并发已满"
+                    filtered_reasons[token.id] = "Batas antrean gambar penuh"
                     continue
 
             if for_video_generation:
                 if not token.video_enabled:
-                    filtered_reasons[token.id] = "视频生成已禁用"
+                    filtered_reasons[token.id] = "Fitur pembuatan video dinonaktifkan"
                     continue
 
                 route_ok, route_reason = await self._check_extension_route(token)
@@ -251,7 +251,7 @@ class LoadBalancer:
                     and self.concurrency_manager
                     and not await self.concurrency_manager.can_use_video(token.id)
                 ):
-                    filtered_reasons[token.id] = "视频并发已满"
+                    filtered_reasons[token.id] = "Batas antrean video penuh"
                     continue
 
             inflight, remaining = await self._get_token_load(

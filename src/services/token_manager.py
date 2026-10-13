@@ -644,7 +644,7 @@ class TokenManager:
             at_expires_aware = token.at_expires
 
         time_until_expiry = at_expires_aware - now
-        if time_until_expiry.total_seconds() < 3600:
+        if time_until_expiry.total_seconds() < 300:
             debug_logger.log_info(
                 f"[AT_CHECK] Token {token.id}: AT即将过期 "
                 f"(剩余 {time_until_expiry.total_seconds():.0f} 秒),需要刷新"
@@ -753,7 +753,7 @@ class TokenManager:
             debug_logger.log_error(
                 f"[AT_REFRESH] Token {token_id}: all refresh attempts failed, disabling token"
             )
-            await self.disable_token(token_id)
+            # await self.disable_token(token_id) # ShanIA: do not auto-disable on transient refresh failure
             self._clear_at_validation_cache(token_id)
             return False
 
@@ -1129,7 +1129,7 @@ class TokenManager:
                 f"[TOKEN_BAN] Token {token_id} consecutive error count ({stats.consecutive_error_count}) "
                 f"reached threshold ({admin_config.error_ban_threshold}), auto-disabling"
             )
-            await self.disable_token(token_id)
+            # await self.disable_token(token_id) # ShanIA: do not auto-disable on transient refresh failure
 
     async def record_success(self, token_id: int):
         """Record successful request (reset consecutive error count)
