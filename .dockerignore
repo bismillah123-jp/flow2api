@@ -75,3 +75,6 @@ test_*.py
 # Environment files
 .env
 .env.*
+
+# browser runtime profiles (generated at runtime, break docker build context)
+src/tmp/
